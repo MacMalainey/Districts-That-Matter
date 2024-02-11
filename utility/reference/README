@@ -1,0 +1,19 @@
+# Information
+
+This folder contains the reference information that comes with the following census information:
+
+Census Profile, 2021 - Canada, Provinces, Territories, Census Divisions, Census Subdivisions and Dissemination Areas
+Catalogue number: 98-401-X2021006	Release date: 2022-12-15
+
+The census information itself is NOT stored in this repo due to its large size. Developers will have to download the data themselves.
+You can download the census information from [here](https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger.cfm?Lang=E&SearchText=toronto&DGUIDlist=2021A00053520005&GENDERlist=1&STATISTIClist=1&HEADERlist=0)
+
+**DO NOT COMMIT THE DATA ITSELF TO THIS REPOSITORY OTHERWISE YOU WILL MAKE MAC VERY VERY MAD.**
+
+## Importing Census Data
+
+If you want to have your census data stored in your local copy of the repository, move your data to in `utility/.data`. Git is configured to automatically ignore the contents of that folder, so you won't need to worry about accidentally committing the data.
+
+The helper bash scripts also assume that the data is in `utility/.data` - so this will prevent you from having to re-type CLI args every time.
+
+**NOTES:** You do not need to import the `98-401-X2021006_English_meta.txt` or `README_meta.txt` files. They are just documentation files and can be found in this folder.
