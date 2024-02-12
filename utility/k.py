@@ -4,6 +4,8 @@
 This is just a general combination of the fields, indentifiers, and formats required to parse the data for out use case.
 Not all data in this document may be necessary as per record there tends to be multiple ways to identify different pieces of data.
 However, for completeness and documentation sake we provide the means to easily utilize any method a developer may wish to use BUT NOT ALL DATA.
+
+Fulfills FR25
 '''
 import re
 
@@ -66,6 +68,7 @@ class K_GEO_LEVELS:
     Geographic level specifiers
     '''
     DA = "Dissemination area"
+    CSD = "Census subdivision"
 
 
 class K_DGUID_TYPES:
