@@ -113,7 +113,6 @@ References
 - https://www12.statcan.gc.ca/census-recensement/2021/ref/dict/az/definition-eng.cfm?ID=geo021
 '''
 
-# TODO - turn this into an enum
 K_DATA_CHARACTERISTIC_IDS = [
     1,      # Population, 2021 (1)
     2,      # Population, 2016 (1)
