@@ -5,25 +5,153 @@ import argparse
 import typing
 
 import csv
-import pygml
-
 from lxml import etree
+
+import spatialite
 
 from k import *
 
-class CharacteristicHandler:
-    uids: set
+class SCHEMA_CFG:
+    '''
+    Constants for parsing the schema config file
 
-    def __init__(self):
-        self.uids = set()
+    Fulfills FR27
+    '''
+    ID = 0
+    DESCRIPTION = 1
+    IGNORED = 2
+    CATEGORY = 3
+    TABLE = 4
+    COLUMN = 5
+    LEVEL = 6
 
-    def __call__(self, data: list[str]):
-        self.uids.add(data[K_DATA_FIELDS.DGUID])
+class CharacteristicGroup:
+    '''
+    Used to help define the schema of the database
 
-    def build_uid_filter(self) -> typing.Callable[[str], bool]:
-        return lambda x: x not in self.uids
+    Characteristics that can be categorically grouped together into one table are done so in the schema.
+    This helps optimize queries while simultaneously helps make the data more readable.
 
-def parse_census_data(data: typing.IO, on_event: typing.Callable[[typing.Any], None], ignore: typing.Callable[[str], bool] | None):
+    A characteristic group is by definition the schema for a specific table and is used for saving data and verification.
+
+    Fulfills FR27
+    '''
+    table: str
+    columns: list[str]
+    
+    id_column_map: dict[str, int]
+
+    def __init__(self, table: str) -> None:
+        self.table = table
+        self.columns = []
+        self.id_column_map = {}
+
+    def add_column(self, id: str, column: str):
+        if column in self.id_column_map:
+            raise Exception("BAD SCHEMA_CFG_CFG: Column ({}) already exists in group {}".format(column, self.table))
+        self.id_column_map[id] = len(self.columns)
+        self.columns.append(column)
+
+class Schema:
+    '''
+    Used to store the schema for the database
+
+    Fulfills FR27
+    '''
+    groups: dict[str, CharacteristicGroup]
+    groups_by_id: dict[str, CharacteristicGroup]
+
+class Region:
+    '''
+    Used for keeping track of data for a specific region.
+
+    Performs active verification of expected data format and can save the data to the database
+
+    Fulfills FR27, FR28
+    '''
+    dguid: str
+    _schema: Schema
+    _data: dict[str, dict[str, int]]
+
+    def from_schema(dguid: str, schema: Schema):
+        region = Region()
+        region.dguid = dguid
+        region._schema = schema
+        region._data = {}
+
+        for name in schema.groups.keys():
+            region._data[name] = {}
+
+        return region
+
+    def register(self, id: str, value: int):
+        if id not in self._schema.groups_by_id:
+            raise Exception("Bad id ({}) used to register data to region {}".format(id, self.dguid))
+        
+        group = self._schema.groups_by_id[id]
+        column = group.id_column_map[id]
+
+        if column in self._data[group.table]:
+            raise Exception("Duplicate registration of id ({}) in region {}".format(id, self.dguid))
+        
+        self._data[group.table][group.columns[column]] = value
+    
+    def _validate(self):
+        for group in self._schema.groups.values():
+            if group.table not in self._data:
+                raise Exception("Missing table ({}) in region {}".format(group.table, self.dguid))
+            
+            if len(self._data[group.table]) != len(group.columns):
+                raise Exception("Column mismatch in region {} for group {}: expected {}, found {}".format(self.dguid, group.table, len(self._data[group.table]), len(group.columns)))
+    
+    def save(self, db: spatialite.Connection):
+        self._validate()
+
+        for (table, data) in self._data.items():
+            columns = data.keys()
+            placeholders = [":{}".format(k) for k in columns]
+            stmt = "INSERT INTO {}(dguid, {}) VALUES(:dguid, {})".format(table, ", ".join(columns), ", ".join(placeholders))
+            data["dguid"] = self.dguid
+            db.execute(stmt, data)
+
+
+def load_schema(schema_file: typing.IO) -> Schema:
+    '''
+    Loads the schema from the file that should be used to create the database
+
+    Fulfills FR27
+    '''
+    groups_by_table: dict[str, CharacteristicGroup] = {}
+    groups_by_id: dict[str, CharacteristicGroup] = {}
+
+    reader = csv.reader(schema_file)
+    next(reader) # Skip header line
+    for line in reader:
+
+        if line[SCHEMA_CFG.IGNORED] == "TRUE" or line[SCHEMA_CFG.TABLE] == "":
+            continue
+
+        if line[SCHEMA_CFG.TABLE] not in groups_by_table:
+            groups_by_table[line[SCHEMA_CFG.TABLE]] = CharacteristicGroup(line[SCHEMA_CFG.TABLE])
+
+        groups_by_table[line[SCHEMA_CFG.TABLE]].add_column(line[SCHEMA_CFG.ID], line[SCHEMA_CFG.COLUMN])
+        
+        if line[SCHEMA_CFG.ID] in groups_by_id:
+            raise Exception("BAD SCHEMA_CFG: Characteristic ({}) already assigned to {}".format(line[SCHEMA_CFG.ID], groups_by_id[line[SCHEMA_CFG.ID]].table))
+        
+        groups_by_id[line[SCHEMA_CFG.ID]] = groups_by_table[line[SCHEMA_CFG.TABLE]]
+
+    schema = Schema()
+    schema.groups = groups_by_table
+    schema.groups_by_id = groups_by_id
+
+    return schema
+
+def init_database(db: spatialite.Connection, groups: list[CharacteristicGroup]):
+    for group in groups:
+        db.execute("CREATE TABLE {}(dguid PRIMARY KEY, {})".format(group.table, ", ".join(group.columns)))
+
+def parse_census_data(data: typing.IO, schema: Schema, db: spatialite.Connection, ignore: typing.Callable[[str], bool] | None) -> set[str]:
     '''
     Parses census data from the given file stream, ignoring DAs that aren't included in the filter
 
@@ -39,21 +167,38 @@ def parse_census_data(data: typing.IO, on_event: typing.Callable[[typing.Any], N
 
     skip = False
     subdivision = None
+    region: Region = None
 
-    for (i, record) in enumerate(reader):
+    dauids: set[str] = set()
+
+    for record in reader:
         if record[K_DATA_FIELDS.GEO_LEVEL] != K_GEO_LEVELS.DA:
-            if record[K_DATA_FIELDS.GEO_LEVEL] == K_GEO_LEVELS.CSD and subdivision != record[K_DATA_FIELDS.ALT_GEO_CODE]:
+            if record[K_DATA_FIELDS.GEO_LEVEL] == K_GEO_LEVELS.CSD and record[K_DATA_FIELDS.ALT_GEO_CODE] != subdivision:
+                skip = ignore is not None and ignore(record[K_DATA_FIELDS.ALT_GEO_CODE])
                 subdivision = record[K_DATA_FIELDS.ALT_GEO_CODE]
-                skip = ignore is not None and ignore(subdivision)
             continue
 
         if skip:
-            return # TODO - REMOVE
             continue
 
-        on_event(record)
+        if region == None or record[K_DATA_FIELDS.DGUID] != region.dguid:
+            if region != None:
+                region.save(db)
+            dauids.add(record[K_DATA_FIELDS.DGUID])
+            region = Region.from_schema(record[K_DATA_FIELDS.DGUID], schema)
+        
+        if record[K_DATA_FIELDS.CHARACTERISTIC_ID] not in schema.groups_by_id:
+            continue
 
-        # TODO - save data to GIS
+        # TODO - Convert handle different types accordingly
+        value = None
+        if '.' in record[K_DATA_FIELDS.C1_COUNT_TOTAL]:
+            value = float(record[K_DATA_FIELDS.C1_COUNT_TOTAL])
+        elif record[K_DATA_FIELDS.C1_COUNT_TOTAL] != "":
+            value = int(record[K_DATA_FIELDS.C1_COUNT_TOTAL])
+        region.register(record[K_DATA_FIELDS.CHARACTERISTIC_ID], value)
+
+    region.save(db)
             
 def parse_boundary_data(data: typing.IO, ignore: typing.Callable[[str], bool]) -> etree._Element:
     """
@@ -72,7 +217,7 @@ def parse_boundary_data(data: typing.IO, ignore: typing.Callable[[str], bool]) -
     remove = False
 
     elem: etree._Element
-    for action, elem in context:
+    for _, elem in context:
         tag = elem.tag.split('}')[1]
 
         if elem.prefix == 'gml' and tag == 'featureMember' and remove:
@@ -88,16 +233,14 @@ def parse_boundary_data(data: typing.IO, ignore: typing.Callable[[str], bool]) -
 
     return root
 
-def init_database():
-    pass
-
-
 # Fulfills FR25
 if __name__ == "__main__":
     args = argparse.ArgumentParser(description='Convert 2021 Canada census data to DTM database')
     args.add_argument('census_data', type=argparse.FileType(encoding="latin-1"), help="path to census data file")
     args.add_argument('boundary_data', type=argparse.FileType(mode='rb'), help='path to boundary data file')
+    args.add_argument('--schema', type=argparse.FileType(), default='characteristics.csv', help='path to schema configuration')
     args.add_argument('--filter', type=argparse.FileType(), help="path to filter configuration")
+    args.add_argument('--output', type=str, default="dtm_census_data.db", help="path to output database file")
     pargs = args.parse_args()
 
     filter: typing.Callable[[str], bool] | None = None
@@ -105,9 +248,12 @@ if __name__ == "__main__":
         whitelist = set(pargs.filter.read().splitlines())
         filter = lambda a: a not in whitelist
 
-    handler = CharacteristicHandler()
-    parse_census_data(pargs.census_data, handler, filter)
-    root = parse_boundary_data(pargs.boundary_data, handler.build_uid_filter())
+    schema = load_schema(pargs.schema)
+    with spatialite.connect(pargs.output) as db:
+        init_database(db, schema.groups.values())
+
+        dauids = parse_census_data(pargs.census_data, schema, db, filter)
+        boundaries = parse_boundary_data(pargs.boundary_data, lambda x: x not in dauids)
 
     pargs.census_data.close()
     pargs.boundary_data.close()
