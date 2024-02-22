@@ -11,6 +11,15 @@ import spatialite
 
 from k import *
 
+
+BOUNDARY_TABLE_COLUMN = (
+    "da_basic_info", "boundary", 3347
+)
+
+GEOMETRY_TABLE_COLUMNS = [
+    ("da_basic_info", "boundary", 3347, "POLYGON", "XY", 0),
+]
+
 class SCHEMA_CFG:
     '''
     Constants for parsing the schema config file
@@ -147,9 +156,19 @@ def load_schema(schema_file: typing.IO) -> Schema:
 
     return schema
 
-def init_database(db: spatialite.Connection, groups: list[CharacteristicGroup]):
+def init_database(db: spatialite.Connection, groups: list[CharacteristicGroup], geometries: dict[str, list[str]]):
+    '''
+    Initializes the database using the provided schematic
+
+    Fulfills FR27, FR31
+    '''
+    db.execute("SELECT InitSpatialMetaData()")
+
     for group in groups:
         db.execute("CREATE TABLE {}(dguid PRIMARY KEY, {})".format(group.table, ", ".join(group.columns)))
+    
+    for entry in geometries:
+        db.execute("SELECT AddGeometryColumn(?, ?, ?, ?, ?, ?)", entry)
 
 def parse_census_data(data: typing.IO, schema: Schema, db: spatialite.Connection, ignore: typing.Callable[[str], bool] | None) -> set[str]:
     '''
@@ -190,7 +209,6 @@ def parse_census_data(data: typing.IO, schema: Schema, db: spatialite.Connection
         if record[K_DATA_FIELDS.CHARACTERISTIC_ID] not in schema.groups_by_id:
             continue
 
-        # TODO - Convert handle different types accordingly
         value = None
         if '.' in record[K_DATA_FIELDS.C1_COUNT_TOTAL]:
             value = float(record[K_DATA_FIELDS.C1_COUNT_TOTAL])
@@ -199,8 +217,9 @@ def parse_census_data(data: typing.IO, schema: Schema, db: spatialite.Connection
         region.register(record[K_DATA_FIELDS.CHARACTERISTIC_ID], value)
 
     region.save(db)
+    return dauids
             
-def parse_boundary_data(data: typing.IO, ignore: typing.Callable[[str], bool]) -> etree._Element:
+def parse_boundary_data(data: typing.IO, schema: tuple[str, str], db: spatialite.Connection, ignore: typing.Callable[[str], bool]) -> etree._Element:
     """
     Parses boundary data from the given file stream, ignoring DAs that aren't included in the filter
 
@@ -215,23 +234,32 @@ def parse_boundary_data(data: typing.IO, ignore: typing.Callable[[str], bool]) -
 
     delete = []
     remove = False
+    dguid = None
 
     elem: etree._Element
     for _, elem in context:
         tag = elem.tag.split('}')[1]
 
-        if elem.prefix == 'gml' and tag == 'featureMember' and remove:
-            remove = False
-            elem.clear()
-            delete.append(elem)
-        elif elem.prefix == 'fme' and tag == 'DGUID':
-            remove = ignore(elem.text)
-    
-    root = context.root
-    for elem in delete:
-        root.remove(elem)
+        if elem.prefix == 'gml':
+            if tag == 'featureMember':
+                dguid = None
+                if remove:
+                    remove = False
+                    elem.clear()
+                    delete.append(elem)
+            elif tag == 'posList' and not remove:
+                # Thankfully we can get lazy with parsing as every element uses the same format of a single LinearRing with a single posList
+                raw: list[str] = elem.text.split(' ')
+                coords = list(zip(raw[::2], raw[1::2]))
+                for i in range(len(coords)):
+                    coords[i] = ' '.join(coords[i])
+                value = 'POLYGON(({}))'.format(', '.join(coords))
+                # print('UPDATE {} SET {} = GeomFromText("{}", {}) WHERE dguid = "{}"'.format(schema[0], schema[1], schema[2], value, dguid,))
+                db.execute('UPDATE {} SET {} = GeomFromText(?, ?) WHERE dguid = ?'.format(schema[0], schema[1],), (value, schema[2], dguid,))
 
-    return root
+        elif elem.prefix == 'fme' and tag == 'DGUID':
+            dguid = elem.text
+            remove = ignore(dguid)
 
 # Fulfills FR25
 if __name__ == "__main__":
@@ -250,10 +278,10 @@ if __name__ == "__main__":
 
     schema = load_schema(pargs.schema)
     with spatialite.connect(pargs.output) as db:
-        init_database(db, schema.groups.values())
+        init_database(db, schema.groups.values(), GEOMETRY_TABLE_COLUMNS)
 
         dauids = parse_census_data(pargs.census_data, schema, db, filter)
-        boundaries = parse_boundary_data(pargs.boundary_data, lambda x: x not in dauids)
+        parse_boundary_data(pargs.boundary_data, BOUNDARY_TABLE_COLUMN, db, lambda x: x not in dauids)
 
     pargs.census_data.close()
     pargs.boundary_data.close()
