@@ -11,6 +11,7 @@ function DrawMap(){
     const center = [-79, 43];
     const [selectedmapunit, setselectedmapunit] = useState(null);
     const [colorstate, setcolorstate] = useState(false);
+    // set onselect color and onselect again, deselect and change back to grey
     const colormapunit = (mapunit) => {
       if (mapunit == selectedmapunit) {
          
