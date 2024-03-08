@@ -1,47 +1,47 @@
 import spatialite
 import typing
 import json
+import geojson
 
-db: spatialite.Connection = None
+from flask import current_app, g
 
-def _conguard():
-    if db is None:
-        raise Exception("query_api: database not initialized")
+def _get_db():
+    if 'db' not in g:
+        # TODO fix to use app config
+        g.db = spatialite.connect(
+            "../.local/dtmTORO.db"
+            # current_app.config['DATABASE'],
+        )
 
-def database_connect(path):
-    global db
-    db = spatialite.connect(path)
+    return g.db
 
-def database_close():
-    global db
-    _conguard()
-    db.close()
-    db = None
+def _on_teardown(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
 
 def query_geodata(limit: int | None) -> list[dict[str, typing.Any]]:
-    _conguard()
+    db = _get_db()
 
     cur = db.cursor()
     cur.execute("SELECT dguid, AsGeoJson(transform(boundary, 4326)) FROM da_basic_info")
 
+    # Potential optimization here if we load objects on one thread
+    # and perform packing into the list on another
     data: list[(str, str)]
     if limit is not None:
         data = cur.fetchmany(limit)
     else:
         data = cur.fetchall()
-    
-    for i in range(len(data)):
-        record = data[i]
-        geodata = json.loads(record[1])
-        data[i] = {
-            'type': 'Feature',
-            'properties': {
-                'dguid': record[0]
-            },
-            'geometry': geodata,
-        }
 
-    return {
-        'type': 'FeatureCollection',
-        'features': data
-    }
+    collection = list()
+    
+    for record in data:
+        geom = geojson.loads(record[1])
+        feature = geojson.Feature(geometry=geom, properties={
+            'dguid': record[0]
+        })
+        collection.append(feature)
+
+    return geojson.FeatureCollection(collection)
