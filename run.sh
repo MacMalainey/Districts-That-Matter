@@ -6,4 +6,5 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 	source ./.venv/bin/activate
 fi
 
-flask --app main run
+cd server
+python3 -m flask --app main run
