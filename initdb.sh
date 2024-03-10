@@ -28,8 +28,8 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 	if [[ $? -ne 0 ]]; then
 		exit 1
 	fi
+	cd - > /dev/null
 fi
 
-cd $BASEDIR/utility
-python3 main.py "$CENSUS_DATA" "$BOUNDARY_DATA" --filter GTA_CSD_LIST.txt --output "$BASEDIR/.local/dtmTORO.db"
+python3 ./parser/main.py "$CENSUS_DATA" "$BOUNDARY_DATA" --schema "$BASEDIR/parser/characteristics.csv" --filter "$BASEDIR/parser/GTA_CSD_LIST.txt" --output "$BASEDIR/.local/dtmTORO.db"
 
