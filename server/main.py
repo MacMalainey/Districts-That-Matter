@@ -13,7 +13,12 @@ def hello_world():
 
 @app.route("/api/units/all")
 def api_units_all():
-    return geojson.dumps(queries.query_geodata(None), indent=2)
+    '''
+    Returns all of the registered map units boundary info
+
+    Fulfills FR3, FR4
+    '''
+    return geojson.dumps(queries.query_munit_geodata(queries.get_db()))
 
 @app.route("/api/units/<unit>/demographics")
 def api_units_demographics():
