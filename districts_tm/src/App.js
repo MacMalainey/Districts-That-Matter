@@ -11,7 +11,7 @@ function App() {
       
     <div className='container'>
         <DrawMap/>
-        {/* <Sidebar/> */}
+        <Sidebar/> 
     </div>
     
    
