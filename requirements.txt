@@ -1,7 +1,7 @@
 # Requirements for the server
 flask
 geojson
-
+flask-cors
 # Requirements for the database init script
 lxml
 spatialite
