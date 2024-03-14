@@ -1,12 +1,11 @@
 import { Draw } from "leaflet"
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Polyline, GeoJSON} from 'react-leaflet';
-import data from './polycords-pretty.json'
-import Poly from './PolyGeo';
 import TestPoly from "./TestGeo";
 import L from 'leaflet';
 import './Map.css';
+import axios, { all } from 'axios';
 
 // FR1: Map Render
 // FR2: Map Fetch
@@ -18,26 +17,39 @@ function DrawMap(){
     const center = [-79, 43];
     const [selectedmapunit, setselectedmapunit] = useState(null);
     const [colorstate, setcolorstate] = useState(false);
+    const [allda, setallda] = useState(null)
     // set onselect color and onselect again, deselect and change back to grey
     const colormapunit = (mapunit) => {
       if (mapunit == selectedmapunit) {
          
         return {
           fillColor: 'green',  
-          weight: 1, 
+          weight: 0.2, 
           fillOpacity: 0.6, 
         };
         
       }
-      if( selectedmapunit == 'green'){
-        return {
-          fillColor: 'grey',  
-          weight: 2, 
-          fillOpacity: 0.6, 
-        };
-      }
+      
       
     };
+    useEffect(()=>{
+
+      const MapData = async () => {
+        try {
+          const response = await axios.get('http://127.0.0.1:5000/api/units/all');
+          const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
+          setallda(Alldata);
+        }
+        catch {
+          console.log('Response data not appropriately handled:');
+        }
+      }
+
+       MapData();
+        
+        
+      }, [])
+      
     
     return (
         <div className="map">  
@@ -51,10 +63,11 @@ function DrawMap(){
           {/* //coordinates.map((coord) => [coord.lat, coord.lng])} */}
            {/* <Polyline positions={coord} color="black" />  */}
           
-          <GeoJSON data = {TestPoly} style={{color: 'grey'}} />
-          <GeoJSON data = {TestPoly} style={colormapunit} eventHandlers={{click: (e) => {
+          {allda && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} />}
+          {console.log(allda)}
+          {/* <GeoJSON data = {TestPoly} style={colormapunit} eventHandlers={{click: (e) => {
             setselectedmapunit(e.layer.feature); // Update selected feature
-          },}} /> 
+          },}} />  */}
 
         </MapContainer>
 
