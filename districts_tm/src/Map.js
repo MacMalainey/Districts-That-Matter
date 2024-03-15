@@ -6,6 +6,7 @@ import TestPoly from "./TestGeo";
 import L from 'leaflet';
 import './Map.css';
 import axios, { all } from 'axios';
+import Sidebar from "./Sidebar";
 
 // FR1: Map Render
 // FR2: Map Fetch
@@ -16,15 +17,15 @@ function DrawMap(){
   
     const center = [-79, 43];
     const [selectedmapunit, setselectedmapunit] = useState(null);
-    const [colorstate, setcolorstate] = useState(false);
     const [allda, setallda] = useState(null)
+    const[dguid, setdguid] = useState(null)
     // set onselect color and onselect again, deselect and change back to grey
     const colormapunit = (mapunit) => {
       if (mapunit == selectedmapunit) {
          
         return {
           fillColor: 'green',  
-          weight: 0.2, 
+          weight: 0.5, 
           fillOpacity: 0.6, 
         };
         
@@ -49,6 +50,13 @@ function DrawMap(){
         
         
       }, [])
+
+      const valuetransfer = (id) => {
+          setdguid(id)
+
+        {<Sidebar DGUID = {dguid}/>}
+
+      }
       
     
     return (
@@ -64,7 +72,17 @@ function DrawMap(){
            {/* <Polyline positions={coord} color="black" />  */}
           
           {allda && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} />}
-          {console.log(allda)}
+          {/* {console.log(allda)} */}
+          {allda && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e)=>{setselectedmapunit(e.layer.feature)
+          {valuetransfer(e.layer.feature.properties.dguid)}
+        // {console.log(e.layer.feature.properties)} 
+        // {console.log(dguid)} 
+        
+       
+        }
+          
+          }} />}
+          {/* {console.log(allda)} */}
           {/* <GeoJSON data = {TestPoly} style={colormapunit} eventHandlers={{click: (e) => {
             setselectedmapunit(e.layer.feature); // Update selected feature
           },}} />  */}
