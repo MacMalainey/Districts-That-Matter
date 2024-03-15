@@ -13,6 +13,10 @@ def hello_world():
 ## API ENDPOINTS ##
 ###################
 
+@app.route("/api/units/totals")
+def api_units_totals():
+    pass
+
 @app.route("/api/units/all")
 def api_units_all():
     '''
