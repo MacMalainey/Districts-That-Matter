@@ -61,14 +61,8 @@ def query_munit_demographics_all(db: spatialite.Connection) -> list[dict[str, in
     cur.row_factory = _dict_row_factory
     cur.execute(
         """
-            SELECT dguid, AsText(Centroid(transform(boundary, 4326))) AS center, population, density, area,
-                iage.*, ifam.*, iinc.*, iimm.*, ibir.*, imin.* FROM da_basic_info
-                JOIN da_age_info AS iage USING (dguid)
-                JOIN da_family_info AS ifam USING (dguid)
-                JOIN da_income_info AS iinc USING (dguid)
-                JOIN da_immigrant_data AS iimm USING (dguid)
-                JOIN da_immigrant_birthplace_data AS ibir USING (dguid)
-                JOIN da_visible_minority AS imin USING (dguid)
+            SELECT *, AsText(Centroid(transform(bd.geometry, 4326))) AS center
+                FROM census_data, boundary_data AS bd USING (dguid)
         """
     )
     return cur.fetchall()
@@ -84,14 +78,7 @@ def query_munit_demographics_one(db: spatialite.Connection, dguid: str) -> list[
     cur.row_factory = _dict_row_factory
     cur.execute(
         """
-            SELECT dguid, population, density, area,
-                iage.*, ifam.*, iinc.*, iimm.*, ibir.*, imin.* FROM da_basic_info
-                JOIN da_age_info AS iage USING (dguid)
-                JOIN da_family_info AS ifam USING (dguid)
-                JOIN da_income_info AS iinc USING (dguid)
-                JOIN da_immigrant_data AS iimm USING (dguid)
-                JOIN da_immigrant_birthplace_data AS ibir USING (dguid)
-                JOIN da_visible_minority AS imin USING (dguid)
+            SELECT * FROM census_data
                 WHERE dguid = ?
         """,
         (dguid, )
@@ -106,7 +93,7 @@ def query_munit_geodata(db: spatialite.Connection) -> geojson.FeatureCollection:
     '''
 
     cur = db.cursor()
-    cur.execute("SELECT dguid, AsGeoJson(transform(boundary, 4326)) FROM da_basic_info")
+    cur.execute("SELECT dguid, AsGeoJson(geometry), population, landarea FROM census_data JOIN boundary_data USING (dguid)")
 
     # Potential optimization here if we load objects on one thread
     # and perform packing into the list on another
@@ -117,7 +104,9 @@ def query_munit_geodata(db: spatialite.Connection) -> geojson.FeatureCollection:
     for record in data:
         geom = geojson.loads(record[1])
         feature = geojson.Feature(geometry=geom, properties={
-            'dguid': record[0]
+            'dguid': record[0],
+            'population': record[2],
+            'landarea': record[3]
         })
         collection.append(feature)
 

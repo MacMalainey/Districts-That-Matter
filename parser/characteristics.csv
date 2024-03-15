@@ -5,7 +5,7 @@ ID,DESCRIPTION,IGNORED,CATEGORY,TABLE,COLUMN,LEVEL
 4,Total private dwellings (2),TRUE,,,,0
 5,Private dwellings occupied by usual residents (3),TRUE,,,,0
 6,Population density per square kilometre,FALSE,,census_data,density,0
-7,Land area in square kilometres,FALSE,,census_data,area,0
+7,Land area in square kilometres,FALSE,,census_data,landarea,0
 8,Total - Age groups of the population - 100% data,FALSE,ages,census_data,rc_ages,0
 9,0 to 14 years,FALSE,,,,1
 10,0 to 4 years,FALSE,ages,census_data,ages_0_to_4,2
