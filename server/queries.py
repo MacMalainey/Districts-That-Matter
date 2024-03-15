@@ -50,7 +50,7 @@ def _dict_row_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-def query_munit_demographics(db: spatialite.Connection) -> list[dict[str, int]]:
+def query_munit_demographics_all(db: spatialite.Connection) -> list[dict[str, int]]:
     '''
     Queries map unit demographcs from database
 
@@ -72,6 +72,31 @@ def query_munit_demographics(db: spatialite.Connection) -> list[dict[str, int]]:
         """
     )
     return cur.fetchall()
+
+def query_munit_demographics_one(db: spatialite.Connection, dguid: str) -> list[dict[str, int]]:
+    '''
+    Queries map unit demographcs from database
+
+    Fulfills FR4, FR12
+    '''
+
+    cur = db.cursor()
+    cur.row_factory = _dict_row_factory
+    cur.execute(
+        """
+            SELECT dguid, population, density, area,
+                iage.*, ifam.*, iinc.*, iimm.*, ibir.*, imin.* FROM da_basic_info
+                JOIN da_age_info AS iage USING (dguid)
+                JOIN da_family_info AS ifam USING (dguid)
+                JOIN da_income_info AS iinc USING (dguid)
+                JOIN da_immigrant_data AS iimm USING (dguid)
+                JOIN da_immigrant_birthplace_data AS ibir USING (dguid)
+                JOIN da_visible_minority AS imin USING (dguid)
+                WHERE dguid = ?
+        """,
+        (dguid, )
+    )
+    return cur.fetchone()
 
 def query_munit_geodata(db: spatialite.Connection) -> geojson.FeatureCollection:
     '''
