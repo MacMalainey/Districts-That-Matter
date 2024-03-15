@@ -1,33 +1,33 @@
 ID,DESCRIPTION,IGNORED,CATEGORY,TABLE,COLUMN,LEVEL
-1,"Population, 2021 (1)",FALSE,,da_basic_info,population,0
+1,"Population, 2021 (1)",FALSE,,census_data,population,0
 2,"Population, 2016 (1)",TRUE,,,,0
 3,"Population percentage change, 2016 to 2021",TRUE,,,,0
 4,Total private dwellings (2),TRUE,,,,0
 5,Private dwellings occupied by usual residents (3),TRUE,,,,0
-6,Population density per square kilometre,FALSE,,da_basic_info,density,0
-7,Land area in square kilometres,FALSE,,da_basic_info,area,0
-8,Total - Age groups of the population - 100% data,FALSE,,,,0
+6,Population density per square kilometre,FALSE,,census_data,density,0
+7,Land area in square kilometres,FALSE,,census_data,area,0
+8,Total - Age groups of the population - 100% data,FALSE,ages,census_data,rc_ages,0
 9,0 to 14 years,FALSE,,,,1
-10,0 to 4 years,FALSE,,da_age_info,ages_0_to_4,2
-11,5 to 9 years,FALSE,,da_age_info,ages_5_to_9,2
-12,10 to 14 years,FALSE,,da_age_info,ages_10_to_14,2
+10,0 to 4 years,FALSE,ages,census_data,ages_0_to_4,2
+11,5 to 9 years,FALSE,ages,census_data,ages_5_to_9,2
+12,10 to 14 years,FALSE,ages,census_data,ages_10_to_14,2
 13,15 to 64 years,FALSE,,,,1
-14,15 to 19 years,FALSE,,da_age_info,ages_15_to_19,2
-15,20 to 24 years,FALSE,,da_age_info,ages_20_to_24,2
-16,25 to 29 years,FALSE,,da_age_info,ages_25_to_29,2
-17,30 to 34 years,FALSE,,da_age_info,ages_30_to_34,2
-18,35 to 39 years,FALSE,,da_age_info,ages_35_to_39,2
-19,40 to 44 years,FALSE,,da_age_info,ages_40_to_44,2
-20,45 to 49 years,FALSE,,da_age_info,ages_45_to_49,2
-21,50 to 54 years,FALSE,,da_age_info,ages_50_to_54,2
-22,55 to 59 years,FALSE,,da_age_info,ages_55_to_59,2
-23,60 to 64 years,FALSE,,da_age_info,ages_60_to_64,2
+14,15 to 19 years,FALSE,ages,census_data,ages_15_to_19,2
+15,20 to 24 years,FALSE,ages,census_data,ages_20_to_24,2
+16,25 to 29 years,FALSE,ages,census_data,ages_25_to_29,2
+17,30 to 34 years,FALSE,ages,census_data,ages_30_to_34,2
+18,35 to 39 years,FALSE,ages,census_data,ages_35_to_39,2
+19,40 to 44 years,FALSE,ages,census_data,ages_40_to_44,2
+20,45 to 49 years,FALSE,ages,census_data,ages_45_to_49,2
+21,50 to 54 years,FALSE,ages,census_data,ages_50_to_54,2
+22,55 to 59 years,FALSE,ages,census_data,ages_55_to_59,2
+23,60 to 64 years,FALSE,ages,census_data,ages_60_to_64,2
 24,65 years and over,FALSE,,,,1
-25,65 to 69 years,FALSE,,da_age_info,ages_65_to_69,2
-26,70 to 74 years,FALSE,,da_age_info,ages_70_to_74,2
-27,75 to 79 years,FALSE,,da_age_info,ages_75_to_79,2
-28,80 to 84 years,FALSE,,da_age_info,ages_80_to_84,2
-29,85 years and over,FALSE,,da_age_info,ages_85_and_over,2
+25,65 to 69 years,FALSE,ages,census_data,ages_65_to_69,2
+26,70 to 74 years,FALSE,ages,census_data,ages_70_to_74,2
+27,75 to 79 years,FALSE,ages,census_data,ages_75_to_79,2
+28,80 to 84 years,FALSE,ages,census_data,ages_80_to_84,2
+29,85 years and over,FALSE,ages,census_data,ages_85_and_over,2
 30,85 to 89 years,TRUE,,,,3
 31,90 to 94 years,TRUE,,,,3
 32,95 to 99 years,TRUE,,,,3
@@ -56,15 +56,15 @@ ID,DESCRIPTION,IGNORED,CATEGORY,TABLE,COLUMN,LEVEL
 55,5 or more persons,TRUE,,,,1
 56,Number of persons in private households,TRUE,,,,0
 57,Average household size,TRUE,,,,0
-58,Total - Marital status for the total population aged 15 years and over - 100% data,FALSE,,,,0
-59,Married or living common-law,FALSE,,da_family_info,married,1
+58,Total - Marital status for the total population aged 15 years and over - 100% data,FALSE,,census_data,rc_marital_status,0
+59,Married or living common-law,FALSE,,census_data,marital_status_married,1
 60,Married,TRUE,,,,2
 61,Living common-law,TRUE,,,,2
 62,Living common law - Never married,TRUE,,,,3
 63,Living common law - Separated,TRUE,,,,3
 64,Living common law - Divorced,TRUE,,,,3
 65,Living common law - Widowed,TRUE,,,,3
-66,Not married and not living common-law,FALSE,,da_family_info,not_married,1
+66,Not married and not living common-law,FALSE,,census_data,marital_status_not_married,1
 67,Not married and not living common law - Never married,TRUE,,,,2
 68,Not married and not living common law - Separated,TRUE,,,,2
 69,Not married and not living common law - Divorced,TRUE,,,,2
@@ -98,17 +98,17 @@ ID,DESCRIPTION,IGNORED,CATEGORY,TABLE,COLUMN,LEVEL
 97,Living alone,TRUE,,,,2
 98,Living with other relatives (7),TRUE,,,,2
 99,Living with non-relatives only,TRUE,,,,2
-100,Total - Household type - 100% data,FALSE,,,,0
+100,Total - Household type - 100% data,FALSE,,census_data,rc_household,0
 101,One-census-family households without additional persons,FALSE,,,,1
-102,Couple-family households,FALSE,,da_family_info,couple_family,2
-103,With children (6),FALSE,,da_family_info,cfh_with_children,3
-104,Without children,FALSE,,da_family_info,cfh_without_children,3
-105,One-parent-family households,FALSE,,da_family_info,one_parent,2
-106,Multigenerational households (8),FALSE,,da_family_info,multigenerational,1
-107,Multiple-census-family households (9),FALSE,,da_family_info,multiple_family,1
-108,One-census-family households with additional persons (9),FALSE,,da_family_info,one_family_plus,1
-109,Two-or-more-person non-census-family households ,FALSE,,da_family_info,non_family_plus,1
-110,One-person households,FALSE,,da_family_info,one_person,1
+102,Couple-family households,FALSE,,census_data,household_couple,2
+103,With children (6),FALSE,,census_data,household_couple_with_children,3
+104,Without children,FALSE,,census_data,household_couple_without_children,3
+105,One-parent-family households,FALSE,,census_data,household_one_parent,2
+106,Multigenerational households (8),FALSE,,census_data,household_multigenerational,1
+107,Multiple-census-family households (9),FALSE,,census_data,household_multiple_family,1
+108,One-census-family households with additional persons (9),FALSE,,census_data,household_one_family_plus,1
+109,Two-or-more-person non-census-family households ,FALSE,,census_data,household_non_family_plus,1
+110,One-person households,FALSE,,census_data,household_one_person,1
 111,Total - Income statistics in 2020 for the population aged 15 years and over in private households - 100% data (10),TRUE,,,,0
 112,Number of total income recipients aged 15 years and over in private households in 2020 - 100% data,TRUE,,,,1
 113,Median total income in 2020 among recipients ($),TRUE,,,,2
@@ -258,27 +258,27 @@ ID,DESCRIPTION,IGNORED,CATEGORY,TABLE,COLUMN,LEVEL
 257,Total - Income statistics for two-or-more-persons private households - 25% sample data,TRUE,,,,2
 258,Average total income of two-or-more-person households in 2020 ($),TRUE,,,,3
 259,Average after-tax income of two-or-more-person households in 2020 ($),TRUE,,,,3
-260,Total - Household total income groups in 2020 for private households - 100% data (21),FALSE,,,,0
-261,"Under $5,000",FALSE,,da_income_info,under_5k,1
-262,"$5,000 to $9,999",FALSE,,da_income_info,from_5k_to_10k,1
-263,"$10,000 to $14,999",FALSE,,da_income_info,from_10k_to_10k,1
-264,"$15,000 to $19,999",FALSE,,da_income_info,from_15k_to_20k,1
-265,"$20,000 to $24,999",FALSE,,da_income_info,from_20k_to_25k,1
-266,"$25,000 to $29,999",FALSE,,da_income_info,from_25k_to_30k,1
-267,"$30,000 to $34,999",FALSE,,da_income_info,from_30k_to_35k,1
-268,"$35,000 to $39,999",FALSE,,da_income_info,from_35k_to_40k,1
-269,"$40,000 to $44,999",FALSE,,da_income_info,from_40k_to_45k,1
-270,"$45,000 to $49,999",FALSE,,da_income_info,from_45k_to_50k,1
-271,"$50,000 to $59,999",FALSE,,da_income_info,from_50k_to_60k,1
-272,"$60,000 to $69,999",FALSE,,da_income_info,from_60k_to_70k,1
-273,"$70,000 to $79,999",FALSE,,da_income_info,from_70k_to_80k,1
-274,"$80,000 to $89,999",FALSE,,da_income_info,from_80k_to_90k,1
-275,"$90,000 to $99,999",FALSE,,da_income_info,from_90k_to_100k,1
+260,Total - Household total income groups in 2020 for private households - 100% data (21),FALSE,,census_data,rc_income,0
+261,"Under $5,000",FALSE,,census_data,income_under_5k,1
+262,"$5,000 to $9,999",FALSE,,census_data,income_from_5k_to_10k,1
+263,"$10,000 to $14,999",FALSE,,census_data,income_from_10k_to_10k,1
+264,"$15,000 to $19,999",FALSE,,census_data,income_from_15k_to_20k,1
+265,"$20,000 to $24,999",FALSE,,census_data,income_from_20k_to_25k,1
+266,"$25,000 to $29,999",FALSE,,census_data,income_from_25k_to_30k,1
+267,"$30,000 to $34,999",FALSE,,census_data,income_from_30k_to_35k,1
+268,"$35,000 to $39,999",FALSE,,census_data,income_from_35k_to_40k,1
+269,"$40,000 to $44,999",FALSE,,census_data,income_from_40k_to_45k,1
+270,"$45,000 to $49,999",FALSE,,census_data,income_from_45k_to_50k,1
+271,"$50,000 to $59,999",FALSE,,census_data,income_from_50k_to_60k,1
+272,"$60,000 to $69,999",FALSE,,census_data,income_from_60k_to_70k,1
+273,"$70,000 to $79,999",FALSE,,census_data,income_from_70k_to_80k,1
+274,"$80,000 to $89,999",FALSE,,census_data,income_from_80k_to_90k,1
+275,"$90,000 to $99,999",FALSE,,census_data,income_from_90k_to_100k,1
 276,"$100,000 and over",FALSE,,,,1
-277,"$100,000 to $124,999",FALSE,,da_income_info,from_100k_to_125k,2
-278,"$125,000 to $149,999",FALSE,,da_income_info,from_125k_to_150k,2
-279,"$150,000 to $199,999",FALSE,,da_income_info,from_150k_to_200k,2
-280,"$200,000 and over",FALSE,,da_income_info,from_200k_and_over,2
+277,"$100,000 to $124,999",FALSE,,census_data,income_from_100k_to_125k,2
+278,"$125,000 to $149,999",FALSE,,census_data,income_from_125k_to_150k,2
+279,"$150,000 to $199,999",FALSE,,census_data,income_from_150k_to_200k,2
+280,"$200,000 and over",FALSE,,census_data,income_from_200k_and_over,2
 281,Total - Household after-tax income groups in 2020 for private households - 100% data (22),TRUE,,,,0
 282,"Under $5,000",TRUE,,,,1
 283,"$5,000 to $9,999",TRUE,,,,1
@@ -1525,83 +1525,83 @@ ID,DESCRIPTION,IGNORED,CATEGORY,TABLE,COLUMN,LEVEL
 1524,Canadian citizens aged under 18,TRUE,,,,2
 1525,Canadian citizens aged 18 and over,TRUE,,,,2
 1526,Not Canadian citizens (78),FALSE,,,,1
-1527,Total - Immigrant status and period of immigration for the population in private households - 25% sample data (79),FALSE,,,,0
-1528,Non-immigrants (80),FALSE,,da_immigrant_data,non_immigrants,1
-1529,Immigrants (81),FALSE,,da_immigrant_data,immigrants,1
-1530,Before 1980,FALSE,,da_immigrant_data,year_before_180,2
-1531,1980 to 1990,FALSE,,da_immigrant_data,year_1980_to_1990,2
-1532,1991 to 2000,FALSE,,da_immigrant_data,year_1991_to_2000,2
-1533,2001 to 2010,FALSE,,da_immigrant_data,year_2001_to_2010,2
-1534,2011 to 2021 (82),FALSE,,da_immigrant_data,year_2010_to_2021,2
+1527,Total - Immigrant status and period of immigration for the population in private households - 25% sample data (79),FALSE,,census_data,rc_immigrated,0
+1528,Non-immigrants (80),FALSE,,census_data,immigrated_no,1
+1529,Immigrants (81),FALSE,,census_data,immigrated_yes,1
+1530,Before 1980,FALSE,,census_data,immigrated_year_before_1980,2
+1531,1980 to 1990,FALSE,,census_data,immigrated_year_1980_to_1990,2
+1532,1991 to 2000,FALSE,,census_data,immigrated_year_1991_to_2000,2
+1533,2001 to 2010,FALSE,,census_data,immigrated_year_2001_to_2010,2
+1534,2011 to 2021 (82),FALSE,,census_data,immigrated_year_2011_to_2021,2
 1535,2011 to 2015,TRUE,,,,3
 1536,2016 to 2021,TRUE,,,,3
-1537,Non-permanent residents (83),FALSE,,da_immigrant_data,non_permanent,1
+1537,Non-permanent residents (83),FALSE,,census_data,immigrated_non_permanent,1
 1538,Total - Age at immigration for the immigrant population in private households - 25% sample data (84),TRUE,,,,0
 1539,Under 5 years,TRUE,,,,1
 1540,5 to 14 years,TRUE,,,,1
 1541,15 to 24 years,TRUE,,,,1
 1542,25 to 44 years,TRUE,,,,1
 1543,45 years and over,TRUE,,,,1
-1544,Total - Place of birth for the immigrant population in private households - 25% sample data (85),FALSE,,,,0
+1544,Total - Place of birth for the immigrant population in private households - 25% sample data (85),FALSE,,census_data,rc_birthplace,0
 1545,Americas,FALSE,,,,1
-1546,Brazil,FALSE,,da_immigrant_birthplace_data,brazil,2
-1547,Colombia,FALSE,,da_immigrant_birthplace_data,colombia,2
-1548,El Salvador,FALSE,,da_immigrant_birthplace_data,el_salvador,2
-1549,Guyana,FALSE,,da_immigrant_birthplace_data,guyana,2
-1550,Haiti,FALSE,,da_immigrant_birthplace_data,haiti,2
-1551,Jamaica,FALSE,,da_immigrant_birthplace_data,jamaica,2
-1552,Mexico,FALSE,,da_immigrant_birthplace_data,mexico,2
-1553,Peru,FALSE,,da_immigrant_birthplace_data,peru,2
-1554,Trinidad and Tobago,FALSE,,da_immigrant_birthplace_data,trinidad_and_tobago,2
-1555,United States of America,FALSE,,da_immigrant_birthplace_data,united_states,2
-1556,Other places of birth in Americas,FALSE,,da_immigrant_birthplace_data,americas_other,2
+1546,Brazil,FALSE,,census_data,birthplace_brazil,2
+1547,Colombia,FALSE,,census_data,birthplace_colombia,2
+1548,El Salvador,FALSE,,census_data,birthplace_el_salvador,2
+1549,Guyana,FALSE,,census_data,birthplace_guyana,2
+1550,Haiti,FALSE,,census_data,birthplace_haiti,2
+1551,Jamaica,FALSE,,census_data,birthplace_jamaica,2
+1552,Mexico,FALSE,,census_data,birthplace_mexico,2
+1553,Peru,FALSE,,census_data,birthplace_peru,2
+1554,Trinidad and Tobago,FALSE,,census_data,birthplace_trinidad_and_tobago,2
+1555,United States of America,FALSE,,census_data,birthplace_united_states,2
+1556,Other places of birth in Americas,FALSE,,census_data,birthplace_americas_other,2
 1557,Europe,FALSE,,,,1
-1558,Bosnia and Herzegovina,FALSE,,da_immigrant_birthplace_data,bosnia,2
-1559,Croatia,FALSE,,da_immigrant_birthplace_data,croatia,2
-1560,France,FALSE,,da_immigrant_birthplace_data,france,2
-1561,Germany,FALSE,,da_immigrant_birthplace_data,germany,2
-1562,Greece,FALSE,,da_immigrant_birthplace_data,greece,2
-1563,Hungary,FALSE,,da_immigrant_birthplace_data,hungary,2
-1564,Italy,FALSE,,da_immigrant_birthplace_data,italy,2
-1565,Netherlands,FALSE,,da_immigrant_birthplace_data,netherlands,2
-1566,Poland,FALSE,,da_immigrant_birthplace_data,poland,2
-1567,Portugal,FALSE,,da_immigrant_birthplace_data,portugal,2
-1568,Romania,FALSE,,da_immigrant_birthplace_data,romania,2
-1569,Russian Federation,FALSE,,da_immigrant_birthplace_data,russia_federaion,2
-1570,Serbia (86),FALSE,,da_immigrant_birthplace_data,serbia,2
-1571,Ukraine,FALSE,,da_immigrant_birthplace_data,ukraine,2
-1572,United Kingdom (87),FALSE,,da_immigrant_birthplace_data,united_kingdom,2
-1573,Other places of birth in Europe,FALSE,,da_immigrant_birthplace_data,europe_other,2
+1558,Bosnia and Herzegovina,FALSE,,census_data,birthplace_bosnia,2
+1559,Croatia,FALSE,,census_data,birthplace_croatia,2
+1560,France,FALSE,,census_data,birthplace_france,2
+1561,Germany,FALSE,,census_data,birthplace_germany,2
+1562,Greece,FALSE,,census_data,birthplace_greece,2
+1563,Hungary,FALSE,,census_data,birthplace_hungary,2
+1564,Italy,FALSE,,census_data,birthplace_italy,2
+1565,Netherlands,FALSE,,census_data,birthplace_netherlands,2
+1566,Poland,FALSE,,census_data,birthplace_poland,2
+1567,Portugal,FALSE,,census_data,birthplace_portugal,2
+1568,Romania,FALSE,,census_data,birthplace_romania,2
+1569,Russian Federation,FALSE,,census_data,birthplace_russia_federaion,2
+1570,Serbia (86),FALSE,,census_data,birthplace_serbia,2
+1571,Ukraine,FALSE,,census_data,birthplace_ukraine,2
+1572,United Kingdom (87),FALSE,,census_data,birthplace_united_kingdom,2
+1573,Other places of birth in Europe,FALSE,,census_data,birthplace_europe_other,2
 1574,Africa,FALSE,,,,1
-1575,Algeria,FALSE,,da_immigrant_birthplace_data,algeria,2
-1576,"Congo, Democratic Republic of the",FALSE,,da_immigrant_birthplace_data,congo,2
-1577,Egypt,FALSE,,da_immigrant_birthplace_data,egypt,2
-1578,Eritrea,FALSE,,da_immigrant_birthplace_data,eritrea,2
-1579,Ethiopia,FALSE,,da_immigrant_birthplace_data,ethioopia,2
-1580,Morocco,FALSE,,da_immigrant_birthplace_data,morocco,2
-1581,Nigeria,FALSE,,da_immigrant_birthplace_data,nigeria,2
-1582,Somalia,FALSE,,da_immigrant_birthplace_data,somalia,2
-1583,"South Africa, Republic of",FALSE,,da_immigrant_birthplace_data,south_africa,2
-1584,Other places of birth in Africa,FALSE,,da_immigrant_birthplace_data,africa_other,2
+1575,Algeria,FALSE,,census_data,birthplace_algeria,2
+1576,"Congo, Democratic Republic of the",FALSE,,census_data,birthplace_congo,2
+1577,Egypt,FALSE,,census_data,birthplace_egypt,2
+1578,Eritrea,FALSE,,census_data,birthplace_eritrea,2
+1579,Ethiopia,FALSE,,census_data,birthplace_ethioopia,2
+1580,Morocco,FALSE,,census_data,birthplace_morocco,2
+1581,Nigeria,FALSE,,census_data,birthplace_nigeria,2
+1582,Somalia,FALSE,,census_data,birthplace_somalia,2
+1583,"South Africa, Republic of",FALSE,,census_data,birthplace_south_africa,2
+1584,Other places of birth in Africa,FALSE,,census_data,birthplace_africa_other,2
 1585,Asia,FALSE,,,,1
-1586,Afghanistan,FALSE,,da_immigrant_birthplace_data,afghanistan,2
-1587,Iran (88),FALSE,,da_immigrant_birthplace_data,iran,2
-1588,Iraq,FALSE,,da_immigrant_birthplace_data,iraq,2
-1589,Lebanon,FALSE,,da_immigrant_birthplace_data,lebanon,2
-1590,Syria (89),FALSE,,da_immigrant_birthplace_data,syria,2
-1591,Turkey,FALSE,,da_immigrant_birthplace_data,turkey,2
-1592,China (90),FALSE,,da_immigrant_birthplace_data,china,2
-1593,Hong Kong (91),FALSE,,da_immigrant_birthplace_data,hong_kong,2
-1594,"Korea, South (92)",FALSE,,da_immigrant_birthplace_data,korea,2
-1595,Taiwan,FALSE,,da_immigrant_birthplace_data,taiwan,2
-1596,Philippines,FALSE,,da_immigrant_birthplace_data,phlippines,2
-1597,Viet Nam,FALSE,,da_immigrant_birthplace_data,vietnam,2
-1598,Bangladesh,FALSE,,da_immigrant_birthplace_data,bangladesh,2
-1599,India,FALSE,,da_immigrant_birthplace_data,india,2
-1600,Pakistan,FALSE,,da_immigrant_birthplace_data,pakistan,2
-1601,Sri Lanka,FALSE,,da_immigrant_birthplace_data,sri_lanka,2
-1602,Other places of birth in Asia,FALSE,,da_immigrant_birthplace_data,asia_other,2
-1603,Oceania and other places of birth (93),FALSE,,da_immigrant_birthplace_data,oceania_other,1
+1586,Afghanistan,FALSE,,census_data,birthplace_afghanistan,2
+1587,Iran (88),FALSE,,census_data,birthplace_iran,2
+1588,Iraq,FALSE,,census_data,birthplace_iraq,2
+1589,Lebanon,FALSE,,census_data,birthplace_lebanon,2
+1590,Syria (89),FALSE,,census_data,birthplace_syria,2
+1591,Turkey,FALSE,,census_data,birthplace_turkey,2
+1592,China (90),FALSE,,census_data,birthplace_china,2
+1593,Hong Kong (91),FALSE,,census_data,birthplace_hong_kong,2
+1594,"Korea, South (92)",FALSE,,census_data,birthplace_korea,2
+1595,Taiwan,FALSE,,census_data,birthplace_taiwan,2
+1596,Philippines,FALSE,,census_data,birthplace_phlippines,2
+1597,Viet Nam,FALSE,,census_data,birthplace_vietnam,2
+1598,Bangladesh,FALSE,,census_data,birthplace_bangladesh,2
+1599,India,FALSE,,census_data,birthplace_india,2
+1600,Pakistan,FALSE,,census_data,birthplace_pakistan,2
+1601,Sri Lanka,FALSE,,census_data,birthplace_sri_lanka,2
+1602,Other places of birth in Asia,FALSE,,census_data,birthplace_asia_other,2
+1603,Oceania and other places of birth (93),FALSE,,census_data,birthplace_oceania_other,1
 1604,Total - Place of birth for the recent immigrant population in private households - 25% sample data (94),TRUE,,,,0
 1605,Americas,TRUE,,,,1
 1606,Brazil,TRUE,,,,2
@@ -1663,10 +1663,10 @@ ID,DESCRIPTION,IGNORED,CATEGORY,TABLE,COLUMN,LEVEL
 1662,Oceania and other (93),TRUE,,,,1
 1663,Australia,TRUE,,,,2
 1664,Other places of birth (98),TRUE,,,,2
-1665,Total - Generation status for the population in private households - 25% sample data (99),FALSE,,,,0
-1666,First generation (100),FALSE,,da_immigrant_data,first_generation,1
-1667,Second generation (101),FALSE,,da_immigrant_data,second_generation,1
-1668,Third generation or more (102),FALSE,,da_immigrant_data,third_generation_or_more,1
+1665,Total - Generation status for the population in private households - 25% sample data (99),FALSE,,census_data,rc_generation,0
+1666,First generation (100),FALSE,,census_data,generation_first,1
+1667,Second generation (101),FALSE,,census_data,generation_second,1
+1668,Third generation or more (102),FALSE,,census_data,generation_third_or_more,1
 1669,Total - Admission category and applicant type for the immigrant population in private households who were admitted between 1980 and 2021 - 25% sample data (103),TRUE,,,,0
 1670,Economic immigrants (104),TRUE,,,,1
 1671,Principal applicants (105),TRUE,,,,2
@@ -1682,20 +1682,20 @@ ID,DESCRIPTION,IGNORED,CATEGORY,TABLE,COLUMN,LEVEL
 1681,Other permits before admission (115),TRUE,,,,1
 1682,No pre-admission experience (116),TRUE,,,,1
 1683,Total - Visible minority for the population in private households - 25% sample data (117),FALSE,,,,0
-1684,Total visible minority population (118),FALSE,,,,1
-1685,South Asian,FALSE,,da_visible_minority,south_asian,2
-1686,Chinese,FALSE,,da_visible_minority,chinese,2
-1687,Black,FALSE,,da_visible_minority,black,2
-1688,Filipino,FALSE,,da_visible_minority,filipino,2
-1689,Arab,FALSE,,da_visible_minority,arab,2
-1690,Latin American,FALSE,,da_visible_minority,latin_american,2
-1691,Southeast Asian,FALSE,,da_visible_minority,southeast_asian,2
-1692,West Asian,FALSE,,da_visible_minority,west_asian,2
-1693,Korean,FALSE,,da_visible_minority,korean,2
-1694,Japanese,FALSE,,da_visible_minority,japanese,2
-1695,"Visible minority, n.i.e. (119)",FALSE,,da_visible_minority,other,2
-1696,Multiple visible minorities,FALSE,,da_visible_minority,multiple,2
-1697,Not a visible minority (120),FALSE,,da_visible_minority,not_applicable,1
+1684,Total visible minority population (118),FALSE,,census_data,rc_visible_minority,1
+1685,South Asian,FALSE,,census_data,visibile_minority_south_asian,2
+1686,Chinese,FALSE,,census_data,visibile_minority_chinese,2
+1687,Black,FALSE,,census_data,visibile_minority_black,2
+1688,Filipino,FALSE,,census_data,visibile_minority_filipino,2
+1689,Arab,FALSE,,census_data,visibile_minority_arab,2
+1690,Latin American,FALSE,,census_data,visibile_minority_latin_american,2
+1691,Southeast Asian,FALSE,,census_data,visibile_minority_southeast_asian,2
+1692,West Asian,FALSE,,census_data,visibile_minority_west_asian,2
+1693,Korean,FALSE,,census_data,visibile_minority_korean,2
+1694,Japanese,FALSE,,census_data,visibile_minority_japanese,2
+1695,"Visible minority, n.i.e. (119)",FALSE,,census_data,visibile_minority_other,2
+1696,Multiple visible minorities,FALSE,,census_data,visibile_minority_multiple,2
+1697,Not a visible minority (120),FALSE,,census_data,visibile_minority_not_applicable,1
 1698,Total - Ethnic or cultural origin for the population in private households - 25% sample data (121),FALSE,,,,0
 1699,Canadian,FALSE,,,,1
 1700,English,FALSE,,,,1

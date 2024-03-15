@@ -3,6 +3,7 @@ Utility script for parsing 2021 Canada census data and inserting it into a "Dist
 '''
 import argparse
 import typing
+import os
 
 import csv
 from lxml import etree
@@ -11,14 +12,16 @@ import spatialite
 
 from k import *
 
+CENSUS_DATA_TABLE = "census_data"
+BOUNDARY_DATA_TABLE = "boundary_data"
 
-BOUNDARY_TABLE_COLUMN = (
-    "da_basic_info", "boundary", 3347
-)
+DGUID_COLUMN = "dguid"
+BOUNDARY_DATA_COLUMN = "boundary"
 
-GEOMETRY_TABLE_COLUMNS = [
-    ("da_basic_info", "boundary", 3347, "POLYGON", "XY", 0),
-]
+SOURCE_WKID = 3347
+TARGET_WKID = 4326
+
+COMMA = ", " # Cause f-strings aren't fool proof
 
 class SCHEMA_CFG:
     '''
@@ -34,143 +37,48 @@ class SCHEMA_CFG:
     COLUMN = 5
     LEVEL = 6
 
-class CharacteristicGroup:
-    '''
-    Used to help define the schema of the database
-
-    Characteristics that can be categorically grouped together into one table are done so in the schema.
-    This helps optimize queries while simultaneously helps make the data more readable.
-
-    A characteristic group is by definition the schema for a specific table and is used for saving data and verification.
-
-    Fulfills FR27
-    '''
-    table: str
-    columns: list[str]
-    
-    id_column_map: dict[str, int]
-
-    def __init__(self, table: str) -> None:
-        self.table = table
-        self.columns = []
-        self.id_column_map = {}
-
-    def add_column(self, id: str, column: str):
-        if column in self.id_column_map:
-            raise Exception("BAD SCHEMA_CFG_CFG: Column ({}) already exists in group {}".format(column, self.table))
-        self.id_column_map[id] = len(self.columns)
-        self.columns.append(column)
-
-class Schema:
-    '''
-    Used to store the schema for the database
-
-    Fulfills FR27
-    '''
-    groups: dict[str, CharacteristicGroup]
-    groups_by_id: dict[str, CharacteristicGroup]
-
-class Region:
-    '''
-    Used for keeping track of data for a specific region.
-
-    Performs active verification of expected data format and can save the data to the database
-
-    Fulfills FR27, FR28
-    '''
-    dguid: str
-    _schema: Schema
-    _data: dict[str, dict[str, int]]
-
-    def from_schema(dguid: str, schema: Schema):
-        region = Region()
-        region.dguid = dguid
-        region._schema = schema
-        region._data = {}
-
-        for name in schema.groups.keys():
-            region._data[name] = {}
-
-        return region
-
-    def register(self, id: str, value: int):
-        if id not in self._schema.groups_by_id:
-            raise Exception("Bad id ({}) used to register data to region {}".format(id, self.dguid))
-        
-        group = self._schema.groups_by_id[id]
-        column = group.id_column_map[id]
-
-        if column in self._data[group.table]:
-            raise Exception("Duplicate registration of id ({}) in region {}".format(id, self.dguid))
-        
-        self._data[group.table][group.columns[column]] = value
-    
-    def _validate(self):
-        for group in self._schema.groups.values():
-            if group.table not in self._data:
-                raise Exception("Missing table ({}) in region {}".format(group.table, self.dguid))
-            
-            if len(self._data[group.table]) != len(group.columns):
-                raise Exception("Column mismatch in region {} for group {}: expected {}, found {}".format(self.dguid, group.table, len(self._data[group.table]), len(group.columns)))
-    
-    def save(self, db: spatialite.Connection):
-        self._validate()
-
-        for (table, data) in self._data.items():
-            columns = data.keys()
-            placeholders = [":{}".format(k) for k in columns]
-            stmt = "INSERT INTO {}(dguid, {}) VALUES(:dguid, {})".format(table, ", ".join(columns), ", ".join(placeholders))
-            data["dguid"] = self.dguid
-            db.execute(stmt, data)
-
-
-def load_schema(schema_file: typing.IO) -> Schema:
+def load_schema(schema_file: typing.IO) -> dict[str, str]:
     '''
     Loads the schema from the file that should be used to create the database
 
     Fulfills FR27
     '''
-    groups_by_table: dict[str, CharacteristicGroup] = {}
-    groups_by_id: dict[str, CharacteristicGroup] = {}
+    schema: dict[str, str] = {}
+    reserved_columns: dict[str, str] = {} # Used for veri
 
     reader = csv.reader(schema_file)
     next(reader) # Skip header line
     for line in reader:
 
-        if line[SCHEMA_CFG.IGNORED] == "TRUE" or line[SCHEMA_CFG.TABLE] == "":
+        if line[SCHEMA_CFG.IGNORED] == "TRUE" or line[SCHEMA_CFG.COLUMN] == "":
             continue
 
-        if line[SCHEMA_CFG.TABLE] not in groups_by_table:
-            groups_by_table[line[SCHEMA_CFG.TABLE]] = CharacteristicGroup(line[SCHEMA_CFG.TABLE])
+        if line[SCHEMA_CFG.COLUMN] in reserved_columns:
+            raise Exception(f"BAD SCHEMA_CFG: Column {line[SCHEMA_CFG.COLUMN]} cannot be assigned to {line[SCHEMA_CFG.ID]}, it is already assigned to {reserved_columns[line[SCHEMA_CFG.COLUMN]]}")
 
-        groups_by_table[line[SCHEMA_CFG.TABLE]].add_column(line[SCHEMA_CFG.ID], line[SCHEMA_CFG.COLUMN])
-        
-        if line[SCHEMA_CFG.ID] in groups_by_id:
-            raise Exception("BAD SCHEMA_CFG: Characteristic ({}) already assigned to {}".format(line[SCHEMA_CFG.ID], groups_by_id[line[SCHEMA_CFG.ID]].table))
-        
-        groups_by_id[line[SCHEMA_CFG.ID]] = groups_by_table[line[SCHEMA_CFG.TABLE]]
-
-    schema = Schema()
-    schema.groups = groups_by_table
-    schema.groups_by_id = groups_by_id
+        schema[line[SCHEMA_CFG.ID]] = line[SCHEMA_CFG.COLUMN]
+        reserved_columns[line[SCHEMA_CFG.COLUMN]] = line[SCHEMA_CFG.ID]
 
     return schema
 
-def init_database(db: spatialite.Connection, groups: list[CharacteristicGroup], geometries: dict[str, list[str]]):
+def init_database(db: spatialite.Connection, schema: list[str]):
     '''
     Initializes the database using the provided schematic
 
     Fulfills FR27, FR31
     '''
     db.execute("SELECT InitSpatialMetaData()")
+    db.execute(f"CREATE TABLE {CENSUS_DATA_TABLE}({DGUID_COLUMN} PRIMARY KEY, {COMMA.join(schema)})")
+    # db.execute(f"CREATE TABLE {BOUNDARY_DATA_TABLE}({DGUID_COLUMN} PRIMARY KEY)")
+    # db.execute("SELECT AddGeometryColumn(?, ?, ?, ?, ?, ?)", (BOUNDARY_DATA_TABLE, BOUNDARY_DATA_COLUMN, TARGET_WKID, "POLYGON", "XY", 0))
 
-    for group in groups:
-        db.execute("CREATE TABLE {}(dguid PRIMARY KEY, {})".format(group.table, ", ".join(group.columns)))
-    
-    for entry in geometries:
-        db.execute("SELECT AddGeometryColumn(?, ?, ?, ?, ?, ?)", entry)
+def save_census_data(dguid: str, data: dict[str, int], db: spatialite.Connection):
+    schema = list(data.keys())
+    placeholders = [":{}".format(k) for k in schema]
+    data['dguid'] = dguid
+    db.execute(f"INSERT INTO {CENSUS_DATA_TABLE}(dguid, {COMMA.join(schema)}) VALUES(:dguid, {COMMA.join(placeholders)})", data)
 
-def parse_census_data(data: typing.IO, schema: Schema, db: spatialite.Connection, ignore: typing.Callable[[str], bool] | None) -> set[str]:
+def parse_census_data(data: typing.IO, schema: dict[str, str], db: spatialite.Connection, ignore: typing.Callable[[str], bool] | None) -> set[str]:
     '''
     Parses census data from the given file stream, ignoring DAs that aren't included in the filter
 
@@ -186,9 +94,10 @@ def parse_census_data(data: typing.IO, schema: Schema, db: spatialite.Connection
 
     skip = False
     subdivision = None
-    region: Region = None
+    data: dict[str, int] = {}
+    dguid: str = None
 
-    dauids: set[str] = set()
+    saved: set[str] = set()
 
     for record in reader:
         if record[K_DATA_FIELDS.GEO_LEVEL] != K_GEO_LEVELS.DA:
@@ -200,26 +109,37 @@ def parse_census_data(data: typing.IO, schema: Schema, db: spatialite.Connection
         if skip:
             continue
 
-        if region == None or record[K_DATA_FIELDS.DGUID] != region.dguid:
-            if region != None:
-                region.save(db)
-            dauids.add(record[K_DATA_FIELDS.DGUID])
-            region = Region.from_schema(record[K_DATA_FIELDS.DGUID], schema)
+        if dguid == None or record[K_DATA_FIELDS.DGUID] != dguid:
+            if dguid != None:
+                if len(data) != len(schema):
+                    raise Exception(f"SCHEMA MISMATCH: expected {len(schema)} characteristics, found {len(data)} in region {dguid}")
+                save_census_data(dguid, data, db)
+                data = {}
+            dguid = record[K_DATA_FIELDS.DGUID]
+            saved.add(dguid)
         
-        if record[K_DATA_FIELDS.CHARACTERISTIC_ID] not in schema.groups_by_id:
+        if record[K_DATA_FIELDS.CHARACTERISTIC_ID] not in schema:
             continue
+
+        field = schema[record[K_DATA_FIELDS.CHARACTERISTIC_ID]]
+
+        if field in data:
+            raise Exception(f"DUPLICATE CHARACTERISTIC: ID ({id}) in region {dguid}")
 
         value = None
         if '.' in record[K_DATA_FIELDS.C1_COUNT_TOTAL]:
             value = float(record[K_DATA_FIELDS.C1_COUNT_TOTAL])
         elif record[K_DATA_FIELDS.C1_COUNT_TOTAL] != "":
             value = int(record[K_DATA_FIELDS.C1_COUNT_TOTAL])
-        region.register(record[K_DATA_FIELDS.CHARACTERISTIC_ID], value)
+        data[field] = value
 
-    region.save(db)
-    return dauids
-            
-def parse_boundary_data(data: typing.IO, schema: tuple[str, str], db: spatialite.Connection, ignore: typing.Callable[[str], bool]) -> etree._Element:
+    if len(data) != len(schema):
+        raise Exception(f"SCHEMA MISMATCH: expected {len(schema)} characteristics, found {len(data)} in region {dguid}")
+    save_census_data(dguid, data, db)
+
+    return saved
+
+def parse_boundary_data(data: typing.IO, db: spatialite.Connection, ignore: typing.Callable[[str], bool]) -> etree._Element:
     """
     Parses boundary data from the given file stream, ignoring DAs that aren't included in the filter
 
@@ -232,9 +152,9 @@ def parse_boundary_data(data: typing.IO, schema: tuple[str, str], db: spatialite
 
     context = etree.iterparse(data, events=('end',))
 
-    delete = []
     remove = False
     dguid = None
+    collide = set()
 
     elem: etree._Element
     for _, elem in context:
@@ -246,17 +166,18 @@ def parse_boundary_data(data: typing.IO, schema: tuple[str, str], db: spatialite
                 if remove:
                     remove = False
                     elem.clear()
-                    delete.append(elem)
             elif tag == 'posList' and not remove:
                 # Thankfully we can get lazy with parsing as every element uses the same format of a single LinearRing with a single posList
                 raw: list[str] = elem.text.split(' ')
                 coords = list(zip(raw[::2], raw[1::2]))
                 for i in range(len(coords)):
                     coords[i] = ' '.join(coords[i])
-                value = 'POLYGON(({}))'.format(', '.join(coords))
-                # print('UPDATE {} SET {} = GeomFromText("{}", {}) WHERE dguid = "{}"'.format(schema[0], schema[1], schema[2], value, dguid,))
-                db.execute('UPDATE {} SET {} = GeomFromText(?, ?) WHERE dguid = ?'.format(schema[0], schema[1],), (value, schema[2], dguid,))
-
+                value = f'POLYGON(({COMMA.join(coords)}))'
+                if dguid in collide:
+                    print(f"Found duplicate dguid ({dguid}) among {len(collide)}")
+                    continue
+                collide.add(dguid)
+                db.execute(f'INSERT INTO {BOUNDARY_DATA_TABLE}({DGUID_COLUMN}, {BOUNDARY_DATA_COLUMN}) VALUES(?, Transform(GeomFromText(?, ?), ?))', (dguid, value, SOURCE_WKID, TARGET_WKID))
         elif elem.prefix == 'fme' and tag == 'DGUID':
             dguid = elem.text
             remove = ignore(dguid)
@@ -265,11 +186,15 @@ def parse_boundary_data(data: typing.IO, schema: tuple[str, str], db: spatialite
 if __name__ == "__main__":
     args = argparse.ArgumentParser(description='Convert 2021 Canada census data to DTM database')
     args.add_argument('census_data', type=argparse.FileType(encoding="latin-1"), help="path to census data file")
-    args.add_argument('boundary_data', type=argparse.FileType(mode='rb'), help='path to boundary data file')
+    # args.add_argument('boundary_data', type=argparse.FileType(mode='rb'), help='path to boundary data file')
     args.add_argument('--schema', type=argparse.FileType(), default='characteristics.csv', help='path to schema configuration')
     args.add_argument('--filter', type=argparse.FileType(), help="path to filter configuration")
     args.add_argument('--output', type=str, default="dtm_census_data.db", help="path to output database file")
     pargs = args.parse_args()
+
+    if os.path.exists(pargs.output):
+        print(f"FATAL: {pargs.output} already exists - cannot overwrite")
+        exit(1)
 
     filter: typing.Callable[[str], bool] | None = None
     if pargs.filter is not None:
@@ -277,11 +202,19 @@ if __name__ == "__main__":
         filter = lambda a: a not in whitelist
 
     schema = load_schema(pargs.schema)
+    print("Schema load successful!")
+
     with spatialite.connect(pargs.output) as db:
-        init_database(db, schema.groups.values(), GEOMETRY_TABLE_COLUMNS)
+        init_database(db, list(schema.values()))
+        print("Database initialized - importing data")
 
         dauids = parse_census_data(pargs.census_data, schema, db, filter)
-        parse_boundary_data(pargs.boundary_data, BOUNDARY_TABLE_COLUMN, db, lambda x: x not in dauids)
+        print("Census data imported")
+
+        # parse_boundary_data(pargs.boundary_data, db, lambda x: x not in dauids)
+        print("Boundary data imported")
 
     pargs.census_data.close()
-    pargs.boundary_data.close()
+    # pargs.boundary_data.close()
+
+    print("Database setup successful!")
