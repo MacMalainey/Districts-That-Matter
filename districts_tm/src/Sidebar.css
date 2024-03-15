@@ -5,4 +5,37 @@
     
   }
 
+.paint-brush:hover{
+  color:rebeccapurple;
+  cursor:pointer
+}
 
+.paint-brush{
+  transition: color 0.2s ease-in-out;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.hand-cursor{
+  margin-left: 10px;
+  font-size: 30px;
+  transition: color 0.2s ease-in-out;
+  
+}
+
+.hand-cursor:hover{
+  color:rebeccapurple;
+  cursor:pointer
+}
+
+.eraser{
+  margin-left: 10px;
+  font-size: 30px;
+  transition: color 0.2s ease-in-out;
+  
+}
+
+.eraser:hover{
+  color:rebeccapurple;
+  cursor:pointer
+}
