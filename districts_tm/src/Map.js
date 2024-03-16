@@ -13,12 +13,12 @@ import Sidebar from "./Sidebar";
 // FR3: Map.Units.Render
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
-function DrawMap(){
+function DrawMap({mapid}){
   
     const center = [-79, 43];
     const [selectedmapunit, setselectedmapunit] = useState(null);
     const [allda, setallda] = useState(null)
-    const[dguid, setdguid] = useState(null)
+    const[dguid, setdguid] = useState(15)
     // set onselect color and onselect again, deselect and change back to grey
     const colormapunit = (mapunit) => {
       if (mapunit == selectedmapunit) {
@@ -52,9 +52,15 @@ function DrawMap(){
       }, [])
 
       const valuetransfer = (id) => {
-          setdguid(id)
+      
+          // setdguid(mid)
+         mapid = id
+         
+        // {<Sidebar DGUID = {dguid}/>}
+        
 
-        {<Sidebar DGUID = {dguid}/>}
+        
+        
 
       }
       
@@ -68,20 +74,25 @@ function DrawMap(){
             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             
           />
+          
           {/* //coordinates.map((coord) => [coord.lat, coord.lng])} */}
            {/* <Polyline positions={coord} color="black" />  */}
           
-          {allda && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} />}
+          {allda && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />}
+          {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
+          {/* {console.log(selectedmapunit)} */}
+          
+          {selectedmapunit && <Sidebar DGUID = {selectedmapunit}/>}
+          {/* {selectedmapunit && <Sidebar DGUID = {selectedmapunit}/>} */}
           {/* {console.log(allda)} */}
-          {allda && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e)=>{setselectedmapunit(e.layer.feature)
+          {/* {allda && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e)=>{setselectedmapunit(e.layer.feature)
           {valuetransfer(e.layer.feature.properties.dguid)}
-        // {console.log(e.layer.feature.properties)} 
-        // {console.log(dguid)} 
-        
-       
+
         }
           
-          }} />}
+          }}
+          
+          />} */}
           {/* {console.log(allda)} */}
           {/* <GeoJSON data = {TestPoly} style={colormapunit} eventHandlers={{click: (e) => {
             setselectedmapunit(e.layer.feature); // Update selected feature
