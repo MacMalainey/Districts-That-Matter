@@ -12,12 +12,14 @@ import DataLayer from './DataLayer';
 import Evaluation from './Evaluation';
 
 function Sidebar({DGUID}) {
+    
     const [selectpaint, setselectpaint] = useState(false)
     const [selectcursor, setselectcursor] = useState(false)
     const [selecttab, setselecttab] = useState(null)
     const [colorpalette, setcolorpalette] = useState(false)
     const [cursor, setcursor] = useState(false)
     const [eraser, seteraser] = useState(false)
+    const[id,setid] = useState(0)
     const submit = () => {
         
         window.location.reload();
@@ -45,11 +47,16 @@ function Sidebar({DGUID}) {
         setcolorpalette(false)
         setcursor(false)
     }
+    
+    
   return (
     
         <div className = 'sidebar'>
+            <input type='text' placeholder='Update District Number'/> <br/>
+            <button type='submit' onClick={submit}>submit</button> <br></br>
+            <button type = 'submit' onClick={colordata}>Run Analysis</button>
             
-            
+
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 
             
             <FaRegHandPaper className="hand-cursor"  onClick={handlecursor}/> 
@@ -59,9 +66,6 @@ function Sidebar({DGUID}) {
             {cursor && colorpalette}
             {eraser && colorpalette && cursor}
             
-
-            
-            
             {/* <SketchPicker/> */}
             <button onClick={() => handletab('Inspect')} style={{fontSize:'20px', padding:'10px', width:'167px'}}>Inspect</button>
             <button onClick={() => handletab('DataLayer')} style={{fontSize: '20px', padding: '10px', width:'167px'}}>Data Layer</button>
@@ -69,13 +73,12 @@ function Sidebar({DGUID}) {
             {selecttab === 'Inspect' && <Inspect/>}
             {selecttab === 'DataLayer' && <DataLayer/>}
             {selecttab === 'Evaluation' && <Evaluation/>}
-            {/* <input type='text' placeholder='Update District Number'/> <br/>
-            <button type='submit' onClick={submit}>submit</button> <br></br>
-            <button type = 'submit' onClick={colordata}>Run Analysis</button>
+            {console.log("Sidebar",DGUID)}
+            {<p>DGUID is {DGUID}</p>}
+            
+          
 
-            <p>Data Layer</p>
-            <input type='checkbox'></input>
-            <label>Show painted region</label> */}
+          
         </div>
        
   )
