@@ -7,17 +7,17 @@ import './App.css';
 // import DataLayer from './DataLayer';
 // import Inspect from './Inspect';
 function App() {
-    // const [selecttab, setselecttab] = useState(null)
+    const [id, setid] = useState(0)
   
-    // const handletab = (tab) => {
-    //   setselecttab(tab)
+    const handleid = (newid) => {
+       setid(newid)
 
-    // }
+    }
   return (
       
     <div className='container'>
         <DrawMap/>
-        <Sidebar/> 
+        <Sidebar /> 
         
     </div>
     
