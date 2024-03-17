@@ -2,10 +2,12 @@
 Utility script for parsing 2021 Canada census data and inserting it into a "Districts that Matter" compatible database
 '''
 import argparse
+from pathlib import Path
 import typing
 import os
 
 import csv
+import json
 from lxml import etree
 
 import spatialite
@@ -33,33 +35,44 @@ class SCHEMA_CFG:
     DESCRIPTION = 1
     IGNORED = 2
     CATEGORY = 3
-    TABLE = 4
-    COLUMN = 5
-    LEVEL = 6
+    COLUMN = 4
+    LEVEL = 5
 
-def load_schema(schema_file: typing.IO) -> dict[str, str]:
+def load_schema(schema_file: typing.IO) -> tuple[dict[str, str], dict[str, list[str]]]:
     '''
     Loads the schema from the file that should be used to create the database
 
     Fulfills FR27
     '''
+    categories: dict[str, list[str]] = {}
     schema: dict[str, str] = {}
-    reserved_columns: dict[str, str] = {} # Used for veri
+    reserved_columns: dict[str, str] = {} # Used for verification
 
     reader = csv.reader(schema_file)
     next(reader) # Skip header line
     for line in reader:
 
-        if line[SCHEMA_CFG.IGNORED] == "TRUE" or line[SCHEMA_CFG.COLUMN] == "":
+        column = line[SCHEMA_CFG.COLUMN]
+        if line[SCHEMA_CFG.IGNORED] == "TRUE" or column == "":
             continue
 
-        if line[SCHEMA_CFG.COLUMN] in reserved_columns:
-            raise Exception(f"BAD SCHEMA_CFG: Column {line[SCHEMA_CFG.COLUMN]} cannot be assigned to {line[SCHEMA_CFG.ID]}, it is already assigned to {reserved_columns[line[SCHEMA_CFG.COLUMN]]}")
+        if line[SCHEMA_CFG.CATEGORY] != '':
+            if line[SCHEMA_CFG.CATEGORY] not in categories:
+                categories[line[SCHEMA_CFG.CATEGORY]] = []
+            
+            if column == 'rc':
+                column = f'rc_{line[SCHEMA_CFG.CATEGORY]}'
+            else:
+                column = f'{line[SCHEMA_CFG.CATEGORY]}_{column}'
+                categories[line[SCHEMA_CFG.CATEGORY]].append(column)
 
-        schema[line[SCHEMA_CFG.ID]] = line[SCHEMA_CFG.COLUMN]
-        reserved_columns[line[SCHEMA_CFG.COLUMN]] = line[SCHEMA_CFG.ID]
+        if column in reserved_columns:
+            raise Exception(f"BAD SCHEMA CONFIG: Column {column} cannot be assigned to {line[SCHEMA_CFG.ID]}, it is already assigned to {reserved_columns[column]}")
 
-    return schema
+        schema[line[SCHEMA_CFG.ID]] = column
+        reserved_columns[column] = line[SCHEMA_CFG.ID]
+
+    return schema, categories
 
 def init_database(db: spatialite.Connection, schema: list[str]):
     '''
@@ -186,10 +199,9 @@ def parse_boundary_data(data: typing.IO, db: spatialite.Connection, ignore: typi
 if __name__ == "__main__":
     args = argparse.ArgumentParser(description='Convert 2021 Canada census data to DTM database')
     args.add_argument('census_data', type=argparse.FileType(encoding="latin-1"), help="path to census data file")
-    # args.add_argument('boundary_data', type=argparse.FileType(mode='rb'), help='path to boundary data file')
     args.add_argument('--schema', type=argparse.FileType(), default='characteristics.csv', help='path to schema configuration')
     args.add_argument('--filter', type=argparse.FileType(), help="path to filter configuration")
-    args.add_argument('--output', type=str, default="dtm_census_data.db", help="path to output database file")
+    args.add_argument('--output', type=str, default="dtmALL.db", help="path to output database file")
     pargs = args.parse_args()
 
     if os.path.exists(pargs.output):
@@ -201,20 +213,24 @@ if __name__ == "__main__":
         whitelist = set(pargs.filter.read().splitlines())
         filter = lambda a: a not in whitelist
 
-    schema = load_schema(pargs.schema)
+    schema, categories = load_schema(pargs.schema)
     print("Schema load successful!")
 
     with spatialite.connect(pargs.output) as db:
+        print("Initializing database... this takes a while")
         init_database(db, list(schema.values()))
-        print("Database initialized - importing data")
+        print("Database initialized!")
 
+        print("Importing data... this takes a while")
         dauids = parse_census_data(pargs.census_data, schema, db, filter)
         print("Census data imported")
 
-        # parse_boundary_data(pargs.boundary_data, db, lambda x: x not in dauids)
-        print("Boundary data imported")
+    out_path = Path(pargs.output)
+    with open(out_path.parent.joinpath(out_path.stem + '_schema.json'), 'w') as out:
+        json.dump(categories, out, indent=2)
 
     pargs.census_data.close()
-    # pargs.boundary_data.close()
+    pargs.schema.close()
+    pargs.filter.close()
 
     print("Database setup successful!")
