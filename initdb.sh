@@ -3,7 +3,7 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR"
 CENSUS_DATA=".local/98-401-X2021006_English_CSV_data_Ontario.csv"
-BOUNDARY_DATA=".local/lda_000a21g_e.gml"
+BOUNDARY_DATA=".local/lda_000a21a_e.shp"
 
 if [[ ! -f "$CENSUS_DATA" ]]; then
 	echo "Unable to find census data at: $BASEDIR/$CENSUS_DATA"
@@ -32,6 +32,6 @@ fi
 
 
 python3 parser/main.py "$CENSUS_DATA" --schema "parser/characteristics.csv" --filter "parser/GTA_CSD_LIST.txt" --output ".local/dtmTORO.db" || exit 1
-# spatialite_tool -i -shp .local/lda_000a21a_e.shp -d .local/dtmTORO.db -c CP1252 -s 3347 -t tempgeom -g geom
 spatialite -bail ".local/dtmTORO.db" < "parser/load_boundary.sql" || exit 1
+echo "Database initialized!!! Execute run.sh to start the server!"
 
