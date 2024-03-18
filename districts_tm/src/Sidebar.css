@@ -1,5 +1,5 @@
 .sidebar {
-    flex: 0 0 30%; /* Sidebar takes 30% of the container */
+    flex: 1; /* Sidebar takes 30% of the container */
     background-color: lightgrey; /* Example background color */
     /* Other styles for sidebar */
     
