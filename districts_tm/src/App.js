@@ -7,17 +7,21 @@ import './App.css';
 // import DataLayer from './DataLayer';
 // import Inspect from './Inspect';
 function App() {
-    const [id, setid] = useState(0)
+    const [mapdata, setmapdata] = useState(null)
   
-    const handleid = (newid) => {
-       setid(newid)
-
-    }
+    
+    const num = localStorage.getItem('mapid')
+      
+    
+    
+    
+    
   return (
       
     <div className='container'>
-        <DrawMap/>
-        <Sidebar /> 
+        <DrawMap/>    
+        
+        <Sidebar/>
         
     </div>
     

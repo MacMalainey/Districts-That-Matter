@@ -1,5 +1,9 @@
 .map {
-    flex: 1; /* Map takes remaining space */
+    /* flex: 1; Map takes remaining space */
+    flex:1;
+    
     /* Other styles for map */
     
   }
+
+  

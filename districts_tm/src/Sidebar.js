@@ -25,6 +25,9 @@ function Sidebar({DGUID}) {
         window.location.reload();
     }
 
+    const demodata = () => {
+    
+    }
     
     const colordata = () =>{
         alert('data sent')
@@ -73,8 +76,8 @@ function Sidebar({DGUID}) {
             {selecttab === 'Inspect' && <Inspect/>}
             {selecttab === 'DataLayer' && <DataLayer/>}
             {selecttab === 'Evaluation' && <Evaluation/>}
-            {console.log("Sidebar",DGUID)}
-            {<p>DGUID is {DGUID}</p>}
+            {/* {console.log("Sidebar",DGUID)} */}
+            {<p>DGUID is {localStorage.getItem('mapid')}</p>}
             
           
 
