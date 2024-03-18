@@ -19,9 +19,10 @@ function DrawMap(){
     const [selectedmapunit, setselectedmapunit] = useState(null);
     const [allda, setallda] = useState(null)
     const[dguid, setdguid] = useState(15)
+    const coloractiveid = localStorage.getItem('coloractive')
     // set onselect color and onselect again, deselect and change back to grey
     const colormapunit = (mapunit) => {
-      if (mapunit == selectedmapunit) {
+      if (coloractiveid == 1 && mapunit == selectedmapunit) {
          
         return {
           fillColor: 'green',  
@@ -76,6 +77,7 @@ function DrawMap(){
                   {/* <Polyline positions={coord} color="black" />  */}
                   
                   {allda && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />}
+                  {allda && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />}
                   {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
                   {/* {console.log(selectedmapunit)} */}
                   {localStorage.setItem('mapid', selectedmapunit)}
