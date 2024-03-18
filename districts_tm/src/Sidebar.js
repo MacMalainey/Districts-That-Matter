@@ -40,15 +40,18 @@ function Sidebar({DGUID}) {
 
     const handlepaint = () =>{
         setcolorpalette(true)
+        localStorage.setItem('coloractive', 1)
     }
     const handlecursor = () => {
         setcolorpalette(false)
         setcursor(true)
+        localStorage.setItem('coloractive', 0)
     }
     const handleeraser = () => {
         seteraser(true)
         setcolorpalette(false)
         setcursor(false)
+        localStorage.setItem('coloractive', 0)
     }
     
     
