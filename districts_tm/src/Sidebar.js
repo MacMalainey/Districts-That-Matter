@@ -53,15 +53,22 @@ function Sidebar({DGUID}) {
         setcursor(false)
         localStorage.setItem('coloractive', 0)
     }
-    
+    const sendid = (colorid) => {
+        
+        localStorage.setItem('colorid', colorid)
+    }
     
   return (
     
         <div className = 'sidebar'>
-            <input type='text' placeholder='Update District Number'/> <br/>
+            {/* <input type='text' placeholder='Update District Number'/> <br/>
             <button type='submit' onClick={submit}>submit</button> <br></br>
-            <button type = 'submit' onClick={colordata}>Run Analysis</button>
-            
+            <button type = 'submit' onClick={colordata}>Run Analysis</button> */}
+            <button onClick={ () => sendid(11)}>Red</button>
+            <button onClick={() => sendid(12)}>Blue</button>
+            <button onClick={() => sendid(13)}>Yellow</button>
+            <button onClick={() => sendid(14)}>Green</button>
+
 
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 
             

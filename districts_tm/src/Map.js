@@ -20,18 +20,47 @@ function DrawMap(){
     const [allda, setallda] = useState(null)
     const[dguid, setdguid] = useState(15)
     const coloractiveid = localStorage.getItem('coloractive')
+    const colid = localStorage.getItem('colorid')
     // set onselect color and onselect again, deselect and change back to grey
     const colormapunit = (mapunit) => {
       if (coloractiveid == 1 && mapunit == selectedmapunit) {
-         
-        return {
-          fillColor: 'green',  
-          weight: 0.5, 
-          fillOpacity: 0.6,
-           
-        };
+        if (colid == 11) {
+          return {
+            fillColor: 'red',  
+            weight: 0.5, 
+            fillOpacity: 0.6,
+             
+          };
+        }
+        else if (colid==12) {
+          return {
+            fillColor: 'blue',  
+            weight: 0.5, 
+            fillOpacity: 0.6,
+             
+          };
+        }
+        else if (colid==13) {
+          return {
+            fillColor: 'yellow',  
+            weight: 0.5, 
+            fillOpacity: 0.6,
+             
+          };
+        }
+        else if (colid==14) {
+          return {
+            fillColor: 'green',  
+            weight: 0.5, 
+            fillOpacity: 0.6,
+             
+          };
+        }
+        
         
       }
+      
+      
       
       
     };
