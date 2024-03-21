@@ -132,12 +132,7 @@ function Sidebar({DGUID}) {
             {selecttab === 'DataLayer' && <DataLayer/>}
             {selecttab === 'Evaluation' && <Evaluation/>}
             {/* {console.log("Sidebar",DGUID)} */}
-            
-            
-            
-          
-
-          
+ 
         </div>
        
   )
