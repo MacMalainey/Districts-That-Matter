@@ -21,6 +21,7 @@ function DrawMap(){
     const[dguid, setdguid] = useState(15)
     const coloractiveid = localStorage.getItem('coloractive')
     const colid = localStorage.getItem('colorid')
+    const eraseractiveid = localStorage.getItem('eraser')
     // set onselect color and onselect again, deselect and change back to grey
     
     const colormapunit = (mapunit) => {
@@ -349,10 +350,21 @@ function DrawMap(){
         
       }
       
-      
-      
-      
+
     };
+
+    const decolormapunit = (mapunit) => {
+      if (coloractiveid == 0 && eraseractiveid==1 && mapunit == selectedmapunit) {
+        if (colid == 11) {
+          return {
+            fillColor: '',  
+            weight: 0.5, 
+            fillOpacity: 0.6,
+             
+          };
+        }
+      }
+    }
     useEffect(()=>{
 
       const MapData = async () => {
@@ -393,6 +405,7 @@ function DrawMap(){
                   {allda && coloractiveid == 0 && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)} }} />}
                   {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />}
                   {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
+                  {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />}
                   {console.log(selectedmapunit)}
                   {localStorage.setItem('mapid', selectedmapunit)}
                   {/* {selectedmapunit && <Sidebar DGUID = {selectedmapunit}/>} */}
