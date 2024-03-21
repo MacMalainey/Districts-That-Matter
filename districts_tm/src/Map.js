@@ -388,8 +388,7 @@ function DrawMap(){
                     
                   />
                               
-                  {/* //coordinates.map((coord) => [coord.lat, coord.lng])} */}
-                  {/* <Polyline positions={coord} color="black" />  */}
+                 
                   
                   {allda && coloractiveid == 0 && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)} }} />}
                   {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />}
