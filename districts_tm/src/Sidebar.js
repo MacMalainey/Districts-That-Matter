@@ -40,17 +40,20 @@ function Sidebar({DGUID}) {
     const handlepaint = () =>{
         setcolorpalette(true)
         localStorage.setItem('coloractive', 1)
+        localStorage.setItem('eraser', 0)
     }
     const handlecursor = () => {
         setcolorpalette(false)
         setcursor(true)
         localStorage.setItem('coloractive', 0)
+        localStorage.setItem('eraser', 0)
     }
     const handleeraser = () => {
         seteraser(true)
         setcolorpalette(false)
         setcursor(false)
         localStorage.setItem('coloractive', 0)
+        localStorage.setItem('eraser', 1)
     }
     const sendid = (colorid) => {
         
@@ -86,9 +89,10 @@ function Sidebar({DGUID}) {
   return (
     
         <div className = 'sidebar'>
-            {/* <input type='text' placeholder='Update District Number'/> <br/>
+
+            <input type='text' placeholder='Update District Number'/> <br/>
             <button type='submit' onClick={submit}>submit</button> <br></br>
-            <button type = 'submit' onClick={colordata}>Run Analysis</button> */}
+           
 
            
             
