@@ -387,17 +387,14 @@ function DrawMap(){
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     
                   />
-                  
-                
-              
-            
+                              
                   {/* //coordinates.map((coord) => [coord.lat, coord.lng])} */}
                   {/* <Polyline positions={coord} color="black" />  */}
                   
-                  {allda && coloractiveid == 0 && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />}
+                  {allda && coloractiveid == 0 && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)} }} />}
                   {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />}
                   {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
-                  {/* {console.log(selectedmapunit)} */}
+                  {console.log(selectedmapunit)}
                   {localStorage.setItem('mapid', selectedmapunit)}
                   {/* {selectedmapunit && <Sidebar DGUID = {selectedmapunit}/>} */}
                 

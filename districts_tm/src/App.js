@@ -7,12 +7,8 @@ import './App.css';
 // import DataLayer from './DataLayer';
 // import Inspect from './Inspect';
 function App() {
-    const [mapdata, setmapdata] = useState(null)
-  
-    
-    const num = localStorage.getItem('mapid')
-      
-    
+    const [mapdata, setmapdata] = useState(0)
+
     
     
     
@@ -22,6 +18,8 @@ function App() {
         <DrawMap/>    
         
         <Sidebar/>
+        
+        
         
     </div>
     
