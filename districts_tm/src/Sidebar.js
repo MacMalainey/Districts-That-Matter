@@ -10,6 +10,7 @@ import { BsEraser } from "react-icons/bs";
 import Inspect from './Inspect';
 import DataLayer from './DataLayer';
 import Evaluation from './Evaluation';
+import axios, { all } from 'axios';
 
 function Sidebar({DGUID}) {
     
@@ -20,22 +21,20 @@ function Sidebar({DGUID}) {
     const [cursor, setcursor] = useState(false)
     const [eraser, seteraser] = useState(false)
     const[id,setid] = useState(null)
+    const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
     const submit = () => {
         
         window.location.reload();
     }
-
-    const demodata = () => {
-    
-    }
-    
     const colordata = () =>{
         alert('data sent')
     }
     const handletab = (tab, idvalue) => {
         setselecttab(tab)
         setid(idvalue)
+        DemoData()
+        
       }
 
     const handlepaint = () =>{
@@ -57,7 +56,32 @@ function Sidebar({DGUID}) {
         
         localStorage.setItem('colorid', colorid)
     }
-    
+    useEffect(()=>{
+        
+        
+        
+  
+         DemoData();
+         
+          
+          
+        }, [])
+    const DemoData = async () => {
+            try {
+              const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
+              const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
+              setdemodata(Alldata)
+              console.log('http://127.0.0.1:5000/api/units/' + id + '/demographics')
+              for (const k in Alldata){
+                  console.log("The {} has value {}", k, Alldata[k])
+                  localStorage.setItem(k,Alldata[k])
+                  
+              }
+            }
+            catch {
+              console.log('Response data not appropriately handled:');
+            }
+          }
     
   return (
     
