@@ -1,4 +1,4 @@
-import {React, useState} from 'react'
+import {React, useEffect, useState} from 'react'
 import './Sidebar.css'; // Import your CSS file
 import {SketchPicker} from 'react-color'
 import { FaPaintBrush } from "react-icons/fa";
@@ -13,13 +13,14 @@ import Evaluation from './Evaluation';
 
 function Sidebar({DGUID}) {
     
-    const [selectpaint, setselectpaint] = useState(false)
-    const [selectcursor, setselectcursor] = useState(false)
+    // const [selectpaint, setselectpaint] = useState(false)
+    // const [selectcursor, setselectcursor] = useState(false)
     const [selecttab, setselecttab] = useState(null)
     const [colorpalette, setcolorpalette] = useState(false)
     const [cursor, setcursor] = useState(false)
     const [eraser, seteraser] = useState(false)
-    const[id,setid] = useState(0)
+    const[id,setid] = useState(null)
+    const temp = localStorage.getItem('mapid')
     const submit = () => {
         
         window.location.reload();
@@ -32,8 +33,9 @@ function Sidebar({DGUID}) {
     const colordata = () =>{
         alert('data sent')
     }
-    const handletab = (tab) => {
+    const handletab = (tab, idvalue) => {
         setselecttab(tab)
+        setid(idvalue)
       }
 
     const handlepaint = () =>{
@@ -56,18 +58,7 @@ function Sidebar({DGUID}) {
         localStorage.setItem('colorid', colorid)
     }
     
-    const show = () => {
-        return <button style={{background :'red', borderRadius: 10, color: 'red'}} onClick={ () => sendid(11)}>One</button>,
-            <button style={{background:'blue', borderRadius: 10, color:'blue'}} onClick={() => sendid(12)}>One</button>,
-            <button style={{background:'yellow', borderRadius: 10, color:'yellow'}} onClick={() => sendid(13)}>One</button>,
-            <button style={{background:'green', borderRadius:10, color:'green'}} onClick={() => sendid(14)}>One</button> ,
-            <button style={{background:'brown', borderRadius:10, color:'brown'}} onClick={() => sendid(14)}>One</button>, <br></br>,
-            <button style={{background:'lightgreen', borderRadius:10, color:'lightgreen'}} onClick={() => sendid(14)}>One</button>, 
-            <button style={{background:'#ffa500', borderRadius:10, color:'#ffa500'}} onClick={() => sendid(14)}>One</button>, 
-            <button style={{background:'purple', borderRadius:10, color:'purple'}} onClick={() => sendid(14)}>One</button> ,
-            <button style={{background:'#008080', borderRadius:10, color:'#008080'}} onClick={() => sendid(14)}>One</button>, 
-            <button style={{background:'#133337', borderRadius:10, color:'#133337'}} onClick={() => sendid(14)}>One</button>, <br></br>
-    }
+    
   return (
     
         <div className = 'sidebar'>
@@ -75,8 +66,8 @@ function Sidebar({DGUID}) {
             <button type='submit' onClick={submit}>submit</button> <br></br>
             <button type = 'submit' onClick={colordata}>Run Analysis</button> */}
 
-
-
+           
+            
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 
             
             <FaRegHandPaper className="hand-cursor"  onClick={handlecursor}/>
@@ -133,14 +124,16 @@ function Sidebar({DGUID}) {
             {eraser && colorpalette && cursor}
             
             {/* <SketchPicker/> */}
-            <button onClick={() => handletab('Inspect')} style={{fontSize:'20px', padding:'10px', width:'167px'}}>Inspect</button>
+            
+            <button onClick={() => handletab('Inspect', localStorage.getItem('mapid'))} style={{fontSize:'20px', padding:'10px', width:'167px'}}>Inspect</button>
             <button onClick={() => handletab('DataLayer')} style={{fontSize: '20px', padding: '10px', width:'167px'}}>Data Layer</button>
             <button onClick={() => handletab('Evaluation')} style={{fontSize: '20px', padding: '10px', width:'167px'}}>Evaluation</button>
-            {selecttab === 'Inspect' && <Inspect/>}
+            {selecttab === 'Inspect' && <Inspect MUid = {id}/>}
             {selecttab === 'DataLayer' && <DataLayer/>}
             {selecttab === 'Evaluation' && <Evaluation/>}
             {/* {console.log("Sidebar",DGUID)} */}
-            {<p>DGUID is {localStorage.getItem('mapid')}</p>}
+            
+            
             
           
 
