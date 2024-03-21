@@ -50,7 +50,51 @@ def _dict_row_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-def query_munit_demographics(db: spatialite.Connection) -> list[dict[str, int]]:
+def _geojson_row_factory(cursor, row):
+    '''
+    Transforms rows into geojson by the database
+
+    Fulfills FR4, FR12
+    '''
+    properties = {}
+    geom_index = None
+    for idx, col in enumerate(cursor.description):
+        if col[0] == 'geometry':
+            geom_index = idx
+            continue
+        properties[col[0]] = row[idx]
+
+    assert(geom_index is not None)
+
+    geom = geojson.loads(row[geom_index])
+    feature = geojson.Feature(geometry=geom, properties=properties)
+
+    return feature
+
+# TODO this should be replaced by the OLAP
+def query_munit_totals(db: spatialite.Connection, other=None) -> list[dict[str, int]]:
+    '''
+    Queries demographics totals from the database
+
+    Fulfills FR4, FR12
+    '''
+
+    cur = db.cursor()
+    cur.row_factory = _dict_row_factory
+
+    other_str = ""
+    if other is not None and len(other) > 0:
+        other_str = ", {}".format(", ".join([f"MAX({col}) as {col}" for col in other]))
+
+    cur.execute(
+        f"""
+            SELECT SUM(population) as population {other_str}
+                FROM census_data, boundary_data AS bd USING (dguid)
+        """
+    )
+    return cur.fetchone()
+
+def query_munit_demographics_all(db: spatialite.Connection) -> list[dict[str, int]]:
     '''
     Queries map unit demographcs from database
 
@@ -61,19 +105,31 @@ def query_munit_demographics(db: spatialite.Connection) -> list[dict[str, int]]:
     cur.row_factory = _dict_row_factory
     cur.execute(
         """
-            SELECT dguid, AsText(Centroid(transform(boundary, 4326))) AS center, population, density, area,
-                iage.*, ifam.*, iinc.*, iimm.*, ibir.*, imin.* FROM da_basic_info
-                JOIN da_age_info AS iage USING (dguid)
-                JOIN da_family_info AS ifam USING (dguid)
-                JOIN da_income_info AS iinc USING (dguid)
-                JOIN da_immigrant_data AS iimm USING (dguid)
-                JOIN da_immigrant_birthplace_data AS ibir USING (dguid)
-                JOIN da_visible_minority AS imin USING (dguid)
+            SELECT *, AsText(Centroid(transform(bd.geometry, 4326))) AS center
+                FROM census_data, boundary_data AS bd USING (dguid)
         """
     )
     return cur.fetchall()
 
-def query_munit_geodata(db: spatialite.Connection) -> geojson.FeatureCollection:
+def query_munit_demographics_one(db: spatialite.Connection, dguid: str) -> list[dict[str, int]]:
+    '''
+    Queries map unit demographcs from database
+
+    Fulfills FR4, FR12
+    '''
+
+    cur = db.cursor()
+    cur.row_factory = _dict_row_factory
+    cur.execute(
+        """
+            SELECT * FROM census_data
+                WHERE dguid = ?
+        """,
+        (dguid, )
+    )
+    return cur.fetchone()
+
+def query_munit_geodata(db: spatialite.Connection, other=None) -> geojson.FeatureCollection:
     '''
     Queries map unit boundaries from database
 
@@ -81,7 +137,13 @@ def query_munit_geodata(db: spatialite.Connection) -> geojson.FeatureCollection:
     '''
 
     cur = db.cursor()
-    cur.execute("SELECT dguid, AsGeoJson(transform(boundary, 4326)) FROM da_basic_info")
+    cur.row_factory = _geojson_row_factory
+
+    other_str = ""
+    if other is not None and len(other) > 0:
+        other_str = ", {}".format(", ".join(other))
+
+    cur.execute(f"SELECT dguid, AsGeoJson(geometry) as geometry, population, landarea {other_str} FROM census_data JOIN boundary_data USING (dguid)")
 
     # Potential optimization here if we load objects on one thread
     # and perform packing into the list on another
@@ -90,10 +152,6 @@ def query_munit_geodata(db: spatialite.Connection) -> geojson.FeatureCollection:
     collection = list()
     
     for record in data:
-        geom = geojson.loads(record[1])
-        feature = geojson.Feature(geometry=geom, properties={
-            'dguid': record[0]
-        })
-        collection.append(feature)
+        collection.append(record)
 
-    return geojson.FeatureCollection(collection)
+    return geojson.FeatureCollection(features=collection)
