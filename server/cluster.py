@@ -1,5 +1,5 @@
 import os
-import numpy
+import numpy as np
 import shapely
 import spatialite
 from libpysal.weights import Queen
@@ -9,9 +9,34 @@ import queries
 import matplotlib.pyplot as plt
 import json
 from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram
+
+
+def plot_dendrogram(model, **kwargs):
+    # Create linkage matrix and then plot the dendrogram
+
+    # create the counts of samples under each node
+    counts = np.zeros(model.children_.shape[0])
+    n_samples = len(model.labels_)
+    for i, merge in enumerate(model.children_):
+        current_count = 0
+        for child_idx in merge:
+            if child_idx < n_samples:
+                current_count += 1  # leaf node
+            else:
+                current_count += counts[child_idx - n_samples]
+        counts[i] = current_count
+
+    linkage_matrix = np.column_stack(
+        [model.children_, model.distances_, counts]
+    ).astype(float)
+
+    # Plot the corresponding dendrogram
+    dendrogram(linkage_matrix, **kwargs)
 
 
 """ Get data from database and create pandas frame"""
+print("Loading and Processing Data...")
 db = spatialite.connect(
             os.path.dirname(__file__) + "/../.local/dtmTORO.db"
         )
@@ -47,11 +72,11 @@ for col_name in schema["generation"]:
     pd_df[col_name] = pd_df[col_name] / pd_df["rc_generation"]  * 100
 
 for col_name in schema["visible_minority"]:
-    pd_df[col_name] = pd_df[col_name] / pd_df["rc_visible_minority"]  * 100
+    pd_df[col_name] = pd_df[col_name] / (pd_df["rc_visible_minority"] + pd_df["visible_minority_not_applicable"])  * 100
 
 # The column names below is the only one where inf values are possible if rc (for visible minoirties) = 0 yet there are still
 # those who are not visible minorities
-pd_df['visible_minority_not_applicable'] = pd_df['visible_minority_not_applicable'].replace([float('inf'), float('-inf')], 100)
+#pd_df['visible_minority_not_applicable'] = pd_df['visible_minority_not_applicable'].replace([float('inf'), float('-inf')], 100)
 
 
 """ Create geopandas dataframe and contiguiuty weights matrix """
@@ -60,18 +85,20 @@ pd_df['geometry'] = pd_df['geometry_wkt'].apply(lambda x: shapely.from_wkt(x))
 
 gpd_df = gpd.GeoDataFrame(pd_df, crs="EPSG:4326", geometry="geometry")
 
+print("Building a contiguity matrix...")
 contiguity_weights = Queen.from_dataframe(gpd_df, use_index=True)
 
-
 """ Clustering """
+print("Clustering to form COIs...")
 # Set seed for reproducibility
-numpy.random.seed(0)
+np.random.seed(0)
 # Initialize the algorithm
-model = AgglomerativeClustering(linkage="ward", n_clusters=5)
+model = AgglomerativeClustering(linkage="ward", n_clusters=50, connectivity=contiguity_weights.sparse, compute_distances=True)
 # Fill in null values
-df_cluster_cols = gpd_df[schema["ages"] + schema["marital_status"] + schema["household"] + schema["income"] + schema["immigrated"] + schema["birthplace"] + schema["generation"] + schema["visible_minority"]]
+clustering_relevant_cols = schema["ages"] + schema["marital_status"] + schema["household"] + schema["income"] + schema["immigrated"] + schema["birthplace"] + schema["generation"] + schema["visible_minority"]
+df_cluster_cols = gpd_df[clustering_relevant_cols]
 df_filled = df_cluster_cols.fillna(df_cluster_cols.mean())
-# Run clustering ( WITHOUT REGIONALIZATION RIGHT NOW)
+# Run clustering
 model.fit(df_filled)
 # Assign labels to main data table
 gpd_df["COI"] = model.labels_
@@ -87,8 +114,26 @@ gpd_df.plot(
 
 plt.savefig('plot.png')
 
+sizes = gpd_df.groupby("COI").size()
+poplation_totals = gpd_df.groupby("COI")["population"].sum()
+merged_summary = pd.concat([sizes, poplation_totals], axis=1)
+print(merged_summary)
 
+    
 """Code Snippets for Debugging"""
+
+# means = gpd_df.groupby("COI")[clustering_relevant_cols].mean()
+# means.to_csv("means.csv")
+
+
+# ------
+# plt.title("Hierarchical Clustering Dendrogram")
+# # plot the top three levels of the dendrogram
+# plot_dendrogram(model, truncate_mode="level", p=10)
+# plt.xlabel("Number of points in node (or index of point if no parenthesis).")
+# plt.savefig("dendogram.png")
+
+# ---------
 
 #contiguity_weights.plot(gpd_df)
 
