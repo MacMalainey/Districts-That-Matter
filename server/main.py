@@ -1,7 +1,8 @@
-import geojson
-
 from . import queries
 from . import app
+from . import schema
+
+from flask import request
 
 
 @app.route("/")
@@ -12,6 +13,18 @@ def hello_world():
 ## API ENDPOINTS ##
 ###################
 
+@app.route("/api/schema")
+def api_schema():
+    return schema
+    
+
+@app.route("/api/units/totals")
+def api_units_totals():
+    include = []
+    for cols in schema.values():
+        include.extend(cols)
+    return queries.query_munit_totals(queries.get_db(), include)
+
 @app.route("/api/units/all")
 def api_units_all():
     '''
@@ -19,9 +32,14 @@ def api_units_all():
 
     Fulfills FR3, FR4
     '''
-    return geojson.dumps(queries.query_munit_geodata(queries.get_db()))
+    other = None
+    include = request.args.get('include')
+    if include is not None:
+        if include not in schema:
+            return {'reason': 'unknown category'}, 400
+        other = [f"rc_{include}", *(schema[include])]
+    return queries.query_munit_geodata(queries.get_db(), other)
 
-@app.route("/api/units/<unit>/demographics")
-def api_units_demographics():
-    pass
-    
+@app.route("/api/units/<dguid>/demographics")
+def api_units_demographics(dguid):
+    return queries.query_munit_demographics_one(queries.get_db(), dguid)
