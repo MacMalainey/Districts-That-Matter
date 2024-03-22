@@ -261,7 +261,7 @@ ID,DESCRIPTION,IGNORED,CATEGORY,NAME,LEVEL
 260,Total - Household total income groups in 2020 for private households - 100% data (21),FALSE,income,rc,0
 261,"Under $5,000",FALSE,income,under_5k,1
 262,"$5,000 to $9,999",FALSE,income,from_5k_to_10k,1
-263,"$10,000 to $14,999",FALSE,income,from_10k_to_10k,1
+263,"$10,000 to $14,999",FALSE,income,from_10k_to_15k,1
 264,"$15,000 to $19,999",FALSE,income,from_15k_to_20k,1
 265,"$20,000 to $24,999",FALSE,income,from_20k_to_25k,1
 266,"$25,000 to $29,999",FALSE,income,from_25k_to_30k,1
