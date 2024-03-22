@@ -18,11 +18,12 @@ function Inspect({MUid}) {
             <option value='Placeholder'>---</option>
             <option value='Age'>Age</option>
             <option value='Birthplace'>Birthplace</option>
+           
+            <option value='Income'>Income</option>
             <option value='Density'>Density</option>
             <option value='Generation'>Generation</option>
             <option value='Household'>Houshold</option>
             <option value='Imigrated'>Imigrated</option>
-            <option value='Income'>Income</option>
 
       </select>
 
