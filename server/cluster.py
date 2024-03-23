@@ -2,7 +2,7 @@ import os
 import numpy as np
 import shapely
 import spatialite
-from libpysal.weights import Queen
+from libpysal.weights import Queen, KNN
 import pandas as pd
 import geopandas as gpd
 import queries
@@ -65,14 +65,15 @@ pd_df.drop(columns=["geometry_wkt"])
 gpd_df = gpd.GeoDataFrame(pd_df, crs="EPSG:4326", geometry="geometry")
 
 print("Building a contiguity matrix...")
-contiguity_weights = Queen.from_dataframe(gpd_df, use_index=True)
+queen_contiguity_weights = Queen.from_dataframe(gpd_df, use_index=True)
+knn_contiguity_weights = KNN.from_dataframe(gpd_df, k=4)
 
 """ Clustering """
 print("Clustering to form COIs...")
 # Set seed for reproducibility
 np.random.seed(0)
 # Initialize the algorithm
-model = AgglomerativeClustering(linkage="ward", n_clusters=10, connectivity=contiguity_weights.sparse, compute_distances=True)
+model = AgglomerativeClustering(linkage="ward", n_clusters=10, connectivity=knn_contiguity_weights.sparse, compute_distances=True)
 # Fill in null values
 clustering_relevant_cols = schema["ages"] + schema["marital_status"] + schema["household"] + schema["income"] + schema["immigrated"] + schema["birthplace"] + schema["generation"] + schema["visible_minority"]
 df_cluster_cols = gpd_df[clustering_relevant_cols]
@@ -118,26 +119,39 @@ clusters_df = gpd_df.dissolve(by='COI', aggfunc=COI_col_aggfuncs)
 COI_neighbor_weight_matrix = Queen.from_dataframe(clusters_df, use_index=True)
 
 clusters_df['explanation'] = pd.Series([None] * len(clusters_df))
+bad_expl_count = 0
 for index, row in clusters_df.iterrows():
     neighbor_indices = list(COI_neighbor_weight_matrix[index].keys())
     neighbor_rows = clusters_df.iloc[neighbor_indices]
     neighbor_rows = neighbor_rows[clustering_relevant_cols]
     neighbor_means = neighbor_rows.mean()
+    neighbor_pop_mean = clusters_df.loc[neighbor_indices, 'population'].mean()
     neighbor_vars = neighbor_rows.std()
-    neighbor_vars.fillna(100)
-    z_scores = (row - neighbor_means) / neighbor_vars
-    z_scores = z_scores.astype('float64')
+    z_scores = pd.Series(dtype=float)
+    for col in clustering_relevant_cols:
+        #if neighbor_vars[col] ==0 or pd.isna(neighbor_vars[col]):
+        neighbor_vars[col] = 5 #set 20% difference to be one standard deviation
+        z_scores[col] = (row[col] - neighbor_means[col]) / neighbor_vars[col]
     z_scores_abs = z_scores.abs()
-    largest_z_scores = z_scores_abs.nlargest(5)
+    large_z_scores =  z_scores_abs[z_scores_abs > 2] 
+    largest_z_scores =  z_scores_abs.nlargest(5, keep='all')  #z_scores_abs[z_scores_abs > 2.5] #
     explaination_dict = {}
-    for attribute in largest_z_scores.index:
+    #print(f"largest_z_scores: {largest_z_scores} for index {index}")
+    for attribute in large_z_scores.index:
+        #print(f"attr: {attribute}")
         explaination_dict[attribute] = {'z-score': z_scores[attribute], 'my_val': row[attribute], 
-                                        'neighbor-mean': neighbor_means[attribute], 
+                                        'neighbor-mean': neighbor_means[attribute],
+                                        'neighbor-var': neighbor_vars[attribute], 
                                         'neighbor_vals': neighbor_rows[attribute].to_list()}
     clusters_df.at[index, 'explanation'] = explaination_dict
+    if (large_z_scores.count() < 2):
+            print(f"For COI {index}, explnation {explaination_dict}")
+            bad_expl_count +=1
 #TODO: Think about how to modify clustering to avoid conflicting columns from being clustered
 #TODO: Investigate and Drop explanation attributes where z-score is too low
+#TODO: Change clustering alg to not look at std var in distance but rather have 5% as variation
 
+print(f"bad_expl_count: {bad_expl_count}")
 
 """Code Snippets for Debugging"""
 
