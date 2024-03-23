@@ -9,31 +9,6 @@ import queries
 import matplotlib.pyplot as plt
 import json
 from sklearn.cluster import AgglomerativeClustering
-from scipy.cluster.hierarchy import dendrogram
-
-
-def plot_dendrogram(model, **kwargs):
-    # Create linkage matrix and then plot the dendrogram
-
-    # create the counts of samples under each node
-    counts = np.zeros(model.children_.shape[0])
-    n_samples = len(model.labels_)
-    for i, merge in enumerate(model.children_):
-        current_count = 0
-        for child_idx in merge:
-            if child_idx < n_samples:
-                current_count += 1  # leaf node
-            else:
-                current_count += counts[child_idx - n_samples]
-        counts[i] = current_count
-
-    linkage_matrix = np.column_stack(
-        [model.children_, model.distances_, counts]
-    ).astype(float)
-
-    # Plot the corresponding dendrogram
-    dendrogram(linkage_matrix, **kwargs)
-
 
 """ Get data from database and create pandas frame"""
 print("Loading and Processing Data...")
@@ -44,7 +19,8 @@ db = spatialite.connect(
 query = "SELECT *, AsText(bd.geometry) AS geometry_wkt FROM census_data AS cd, boundary_data AS bd USING (dguid);"
 
 pd_df = pd.read_sql(query,db)
-
+#TODO: make dguid as the index column and make downstream changes
+#TODO: ask Mac to add query to queries.py
 
 """ Process data to get percentages"""
 with open(os.path.dirname(__file__) + "/../.local/dtmTORO_schema.json", 'r') as schema_file:
@@ -74,6 +50,8 @@ for col_name in schema["generation"]:
 for col_name in schema["visible_minority"]:
     pd_df[col_name] = pd_df[col_name] / (pd_df["rc_visible_minority"] + pd_df["visible_minority_not_applicable"])  * 100
 
+#TODO: ask Mac to modify database
+
 # The column names below is the only one where inf values are possible if rc (for visible minoirties) = 0 yet there are still
 # those who are not visible minorities
 #pd_df['visible_minority_not_applicable'] = pd_df['visible_minority_not_applicable'].replace([float('inf'), float('-inf')], 100)
@@ -82,6 +60,7 @@ for col_name in schema["visible_minority"]:
 """ Create geopandas dataframe and contiguiuty weights matrix """
 
 pd_df['geometry'] = pd_df['geometry_wkt'].apply(lambda x: shapely.from_wkt(x))
+pd_df.drop(columns=["geometry_wkt"])
 
 gpd_df = gpd.GeoDataFrame(pd_df, crs="EPSG:4326", geometry="geometry")
 
@@ -93,7 +72,7 @@ print("Clustering to form COIs...")
 # Set seed for reproducibility
 np.random.seed(0)
 # Initialize the algorithm
-model = AgglomerativeClustering(linkage="ward", n_clusters=50, connectivity=contiguity_weights.sparse, compute_distances=True)
+model = AgglomerativeClustering(linkage="ward", n_clusters=10, connectivity=contiguity_weights.sparse, compute_distances=True)
 # Fill in null values
 clustering_relevant_cols = schema["ages"] + schema["marital_status"] + schema["household"] + schema["income"] + schema["immigrated"] + schema["birthplace"] + schema["generation"] + schema["visible_minority"]
 df_cluster_cols = gpd_df[clustering_relevant_cols]
@@ -119,7 +98,47 @@ poplation_totals = gpd_df.groupby("COI")["population"].sum()
 merged_summary = pd.concat([sizes, poplation_totals], axis=1)
 print(merged_summary)
 
-    
+""" Explaining COI creation"""
+print("Generating Explanation for formed COIs...")
+
+def aggregate_to_list(series):
+    return list(series)
+
+COI_col_aggfuncs = {}
+for col in clustering_relevant_cols:
+    COI_col_aggfuncs[col] = 'mean'
+COI_col_aggfuncs |= {'dguid': aggregate_to_list, 'population': 'sum', 'landarea': 'sum', 
+                                                 'rc_ages': 'sum', 'rc_marital_status': 'sum', 'rc_household': 'sum',
+                                                  'rc_income': 'sum', 'rc_immigrated': 'sum', 'rc_birthplace': 'sum', 
+                                                  'rc_generation': 'sum', 'rc_visible_minority': 'sum', 
+                                                  'landarea': 'mean', 'density': 'mean' }
+clusters_df = gpd_df.dissolve(by='COI', aggfunc=COI_col_aggfuncs)
+#TODO: Ask Harsh if this data for the COIs is what he needs
+
+COI_neighbor_weight_matrix = Queen.from_dataframe(clusters_df, use_index=True)
+
+clusters_df['explanation'] = pd.Series([None] * len(clusters_df))
+for index, row in clusters_df.iterrows():
+    neighbor_indices = list(COI_neighbor_weight_matrix[index].keys())
+    neighbor_rows = clusters_df.iloc[neighbor_indices]
+    neighbor_rows = neighbor_rows[clustering_relevant_cols]
+    neighbor_means = neighbor_rows.mean()
+    neighbor_vars = neighbor_rows.std()
+    neighbor_vars.fillna(100)
+    z_scores = (row - neighbor_means) / neighbor_vars
+    z_scores = z_scores.astype('float64')
+    z_scores_abs = z_scores.abs()
+    largest_z_scores = z_scores_abs.nlargest(5)
+    explaination_dict = {}
+    for attribute in largest_z_scores.index:
+        explaination_dict[attribute] = {'z-score': z_scores[attribute], 'my_val': row[attribute], 
+                                        'neighbor-mean': neighbor_means[attribute], 
+                                        'neighbor_vals': neighbor_rows[attribute].to_list()}
+    clusters_df.at[index, 'explanation'] = explaination_dict
+#TODO: Think about how to modify clustering to avoid conflicting columns from being clustered
+#TODO: Investigate and Drop explanation attributes where z-score is too low
+
+
 """Code Snippets for Debugging"""
 
 # means = gpd_df.groupby("COI")[clustering_relevant_cols].mean()
