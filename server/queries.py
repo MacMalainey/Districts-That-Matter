@@ -155,3 +155,24 @@ def query_munit_geodata(db: spatialite.Connection, other=None) -> geojson.Featur
         collection.append(record)
 
     return geojson.FeatureCollection(features=collection)
+
+def query_districts(db: spatialite.Connection):
+    """
+    Queries all defined districts from the database
+
+    Fulfills FR21
+    """
+
+    cur = db.cursor()
+    cur.execute("SELECT dguid, id FROM districts")
+
+    res = {}
+    for line in cur.fetchall():
+        res[line[0]] = line[1]
+
+    return res
+
+def insert_districts(db: spatialite.Connection, districts: list[tuple[str, int]]):
+    cur = db.cursor()
+    cur.executemany("INSERT OR REPLACE INTO districts(dguid, id) VALUES (?, ?)", districts)
+    db.commit()

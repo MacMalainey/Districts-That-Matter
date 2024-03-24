@@ -42,3 +42,12 @@ def api_units_all():
 @app.route("/api/units/<dguid>/demographics")
 def api_units_demographics(dguid):
     return queries.query_munit_demographics_one(queries.get_db(), dguid)
+
+@app.route("/api/districts")
+def api_districts():
+    return queries.query_districts(queries.get_db())
+
+@app.route("/api/districts/update", methods=["POST"])
+def api_districts_update():
+    queries.insert_districts(queries.get_db(), request.get_json())
+    return {"success": True}
