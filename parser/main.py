@@ -74,31 +74,33 @@ def load_schema(schema_file: typing.IO) -> tuple[dict[str, str], dict[str, list[
 
     return schema, categories
 
-def init_database(db: spatialite.Connection, schema: list[str]):
+def create_database_tables(db: spatialite.Connection, schema: list[str]):
     '''
     Initializes the database using the provided schematic
 
-    Fulfills FR27, FR31
+    Fulfills FR27
     '''
-    db.execute("SELECT InitSpatialMetaData()")
     db.execute(f"CREATE TABLE {CENSUS_DATA_TABLE}({DGUID_COLUMN} PRIMARY KEY, {COMMA.join(schema)})")
-    # db.execute(f"CREATE TABLE {BOUNDARY_DATA_TABLE}({DGUID_COLUMN} PRIMARY KEY)")
-    # db.execute("SELECT AddGeometryColumn(?, ?, ?, ?, ?, ?)", (BOUNDARY_DATA_TABLE, BOUNDARY_DATA_COLUMN, TARGET_WKID, "POLYGON", "XY", 0))
 
-def save_census_data(dguid: str, data: dict[str, int], db: spatialite.Connection):
+def save_census_entry(dguid: str, data: dict[str, int], db: spatialite.Connection):
+    '''
+    Saves a row to the database
+
+    Fulfills FR27
+    '''
     schema = list(data.keys())
     placeholders = [":{}".format(k) for k in schema]
     data['dguid'] = dguid
     db.execute(f"INSERT INTO {CENSUS_DATA_TABLE}(dguid, {COMMA.join(schema)}) VALUES(:dguid, {COMMA.join(placeholders)})", data)
 
-def parse_census_data(data: typing.IO, schema: dict[str, str], db: spatialite.Connection, ignore: typing.Callable[[str], bool] | None) -> set[str]:
+def parse_census_data(data: typing.IO, schema: dict[str, str], db: spatialite.Connection, whitelist: set[str] | None) -> int:
     '''
     Parses census data from the given file stream, ignoring DAs that aren't included in the filter
 
     IO stream is assumed to be a CSV otherwise an error will be thrown if the format is invalid.
     Additionally the header is checked to see if it conforms to the expected column layout.
 
-    Fulfills FR25, FR26
+    Fulfills FR25, FR26, FR27
     '''
     reader = csv.reader(data)
 
@@ -112,10 +114,17 @@ def parse_census_data(data: typing.IO, schema: dict[str, str], db: spatialite.Co
 
     saved: set[str] = set()
 
+    count = 0
     for record in reader:
         if record[K_DATA_FIELDS.GEO_LEVEL] != K_GEO_LEVELS.DA:
             if record[K_DATA_FIELDS.GEO_LEVEL] == K_GEO_LEVELS.CSD and record[K_DATA_FIELDS.ALT_GEO_CODE] != subdivision:
-                skip = ignore is not None and ignore(record[K_DATA_FIELDS.ALT_GEO_CODE])
+                if whitelist is not None:
+                    # Exhausted whitelist - break early
+                    if len(whitelist) == 0:
+                        break
+                    skip = record[K_DATA_FIELDS.ALT_GEO_CODE] not in whitelist
+                    if not skip:
+                        whitelist.remove(record[K_DATA_FIELDS.ALT_GEO_CODE])
                 subdivision = record[K_DATA_FIELDS.ALT_GEO_CODE]
             continue
 
@@ -126,7 +135,11 @@ def parse_census_data(data: typing.IO, schema: dict[str, str], db: spatialite.Co
             if dguid != None:
                 if len(data) != len(schema):
                     raise Exception(f"SCHEMA MISMATCH: expected {len(schema)} characteristics, found {len(data)} in region {dguid}")
-                save_census_data(dguid, data, db)
+                save_census_entry(dguid, data, db)
+                count += 1
+                if count % 300 == 0:
+                    print(f"Loaded {count} Dissemination Areas...")
+
                 data = {}
             dguid = record[K_DATA_FIELDS.DGUID]
             saved.add(dguid)
@@ -148,89 +161,43 @@ def parse_census_data(data: typing.IO, schema: dict[str, str], db: spatialite.Co
 
     if len(data) != len(schema):
         raise Exception(f"SCHEMA MISMATCH: expected {len(schema)} characteristics, found {len(data)} in region {dguid}")
-    save_census_data(dguid, data, db)
+    save_census_entry(dguid, data, db)
 
-    return saved
-
-def parse_boundary_data(data: typing.IO, db: spatialite.Connection, ignore: typing.Callable[[str], bool]) -> etree._Element:
-    """
-    Parses boundary data from the given file stream, ignoring DAs that aren't included in the filter
-
-    IO stream is assumed to contain Geographical Markup Language (GML) content. The GML is assumed to have
-    certain extra fields that correspond to identifiable DA info, in accordance to the Government of Canada
-    2021 census boundary data GML format.
-
-    Fulfills 29, 30
-    """
-
-    context = etree.iterparse(data, events=('end',))
-
-    remove = False
-    dguid = None
-    collide = set()
-
-    elem: etree._Element
-    for _, elem in context:
-        tag = elem.tag.split('}')[1]
-
-        if elem.prefix == 'gml':
-            if tag == 'featureMember':
-                dguid = None
-                if remove:
-                    remove = False
-                    elem.clear()
-            elif tag == 'posList' and not remove:
-                # Thankfully we can get lazy with parsing as every element uses the same format of a single LinearRing with a single posList
-                raw: list[str] = elem.text.split(' ')
-                coords = list(zip(raw[::2], raw[1::2]))
-                for i in range(len(coords)):
-                    coords[i] = ' '.join(coords[i])
-                value = f'POLYGON(({COMMA.join(coords)}))'
-                if dguid in collide:
-                    print(f"Found duplicate dguid ({dguid}) among {len(collide)}")
-                    continue
-                collide.add(dguid)
-                db.execute(f'INSERT INTO {BOUNDARY_DATA_TABLE}({DGUID_COLUMN}, {BOUNDARY_DATA_COLUMN}) VALUES(?, Transform(GeomFromText(?, ?), ?))', (dguid, value, SOURCE_WKID, TARGET_WKID))
-        elif elem.prefix == 'fme' and tag == 'DGUID':
-            dguid = elem.text
-            remove = ignore(dguid)
+    return count
 
 # Fulfills FR25
 if __name__ == "__main__":
     args = argparse.ArgumentParser(description='Convert 2021 Canada census data to DTM database')
-    args.add_argument('census_data', type=argparse.FileType(encoding="latin-1"), help="path to census data file")
-    args.add_argument('--schema', type=argparse.FileType(), default='characteristics.csv', help='path to schema configuration')
+    args.add_argument('data', type=argparse.FileType(encoding="latin-1"), help="path to census data file")
+    args.add_argument('--schema', required=True, type=argparse.FileType(), help='path to schema configuration')
     args.add_argument('--filter', type=argparse.FileType(), help="path to filter configuration")
-    args.add_argument('--output', type=str, default="dtmALL.db", help="path to output database file")
+    args.add_argument('--output', type=str, default="regions.db", help="path to output database file")
     pargs = args.parse_args()
 
-    if os.path.exists(pargs.output):
-        print(f"FATAL: {pargs.output} already exists - cannot overwrite")
-        exit(1)
-
-    filter: typing.Callable[[str], bool] | None = None
+    whitelist: set[str] | None = None
     if pargs.filter is not None:
         whitelist = set(pargs.filter.read().splitlines())
-        filter = lambda a: a not in whitelist
+        pargs.filter.close()
 
     schema, categories = load_schema(pargs.schema)
+    pargs.schema.close()
     print("Schema load successful!")
 
+    db_path = Path(pargs.output)
     with spatialite.connect(pargs.output) as db:
-        print("Initializing database... this takes a while")
-        init_database(db, list(schema.values()))
-        print("Database initialized!")
+        print("Creating tables...")
+        create_database_tables(db, list(schema.values()))
+        print("Tables created!")
 
         print("Importing data... this takes a while")
-        dauids = parse_census_data(pargs.census_data, schema, db, filter)
+        count = parse_census_data(pargs.data, schema, db, whitelist)
         print("Census data imported")
+        print(f"Total areas loaded: {count}")
+    pargs.data.close()
 
-    out_path = Path(pargs.output)
-    with open(out_path.parent.joinpath(out_path.stem + '_schema.json'), 'w') as out:
+    db_schema_path = db_path.parent.joinpath(db_path.stem + '_schema.json')
+    with open(db_schema_path, 'w') as out:
         json.dump(categories, out, indent=2)
+    print(f"Schema saved at: {db_schema_path}")
 
-    pargs.census_data.close()
-    pargs.schema.close()
-    pargs.filter.close()
-
-    print("Database setup successful!")
+    print("Census data load successful!")

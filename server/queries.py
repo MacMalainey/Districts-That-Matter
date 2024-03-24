@@ -17,6 +17,8 @@ def get_db():
 
     If a context for the given request already exists it will return it
 
+    Note: this ONLY works for an instance of a request - nothing else
+
     Fulfills FR4, FR12
     '''
     if 'db' not in g:
@@ -105,8 +107,8 @@ def query_munit_demographics_all(db: spatialite.Connection) -> list[dict[str, in
     cur.row_factory = _dict_row_factory
     cur.execute(
         """
-            SELECT *, AsText(Centroid(transform(bd.geometry, 4326))) AS center
-                FROM census_data, boundary_data AS bd USING (dguid)
+            SELECT cd.*, AsGeoJSON(bd.geometry) AS center
+                FROM census_data as cd, boundary_data AS bd USING (dguid)
         """
     )
     return cur.fetchall()
@@ -143,7 +145,7 @@ def query_munit_geodata(db: spatialite.Connection, other=None) -> geojson.Featur
     if other is not None and len(other) > 0:
         other_str = ", {}".format(", ".join(other))
 
-    cur.execute(f"SELECT dguid, AsGeoJson(geometry) as geometry, population, landarea {other_str} FROM census_data JOIN boundary_data USING (dguid)")
+    cur.execute(f"SELECT dguid, AsGeoJSON(geometry) as geometry, population, landarea {other_str} FROM census_data JOIN boundary_data USING (dguid)")
 
     # Potential optimization here if we load objects on one thread
     # and perform packing into the list on another
