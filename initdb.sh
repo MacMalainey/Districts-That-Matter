@@ -30,8 +30,16 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 	fi
 fi
 
+fatal () {
+	if [[ -f ".local/dtmTORO.db" ]]; then
+		rm ".local/dtmTORO.db"
+	fi
+	exit 1
+}
 
-python3 parser/main.py "$CENSUS_DATA" --schema "parser/characteristics.csv" --filter "parser/GTA_CSD_LIST.txt" --output ".local/dtmTORO.db" || exit 1
-spatialite -bail ".local/dtmTORO.db" < "parser/load_boundary.sql" || exit 1
+spatialite -bail -silent -batch ".local/dtmTORO.db" "" || fatal
+python3 parser/main.py "$CENSUS_DATA" --schema "parser/characteristics.csv" --filter "parser/GTA_CSD_LIST.txt" --output ".local/dtmTORO.db" || fatal
+echo "Loading boundary data..."
+spatialite -bail -silent -batch ".local/dtmTORO.db" < "parser/load_boundary.sql" || fatal
 echo "Database initialized!!! Execute run.sh to start the server!"
 

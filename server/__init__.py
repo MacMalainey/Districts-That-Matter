@@ -1,6 +1,8 @@
 import json
 
 from flask import Flask
+from flask_cors import CORS
+
 from . import queries
 from flask_cors import CORS
 
