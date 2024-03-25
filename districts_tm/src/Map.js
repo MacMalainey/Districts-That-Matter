@@ -13,10 +13,12 @@ import Sidebar from "./Sidebar";
 // FR3: Map.Units.Render
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
+let array = [];
 function DrawMap(){
   
     const center = [ 43.65107, - 79.347015];
     const [selectedmapunit, setselectedmapunit] = useState(null);
+    const [selectedmapunitid, setselectedmapunitid] = useState(null);
     const [allda, setallda] = useState(null)
     const[dguid, setdguid] = useState(15)
     const coloractiveid = localStorage.getItem('coloractive')
@@ -24,7 +26,10 @@ function DrawMap(){
     const eraseractiveid = localStorage.getItem('eraser')
     // set onselect color and onselect again, deselect and change back to grey
     const[state, setstate] = useState(false);
-
+    const[Dmapid, setDmapid] = useState()
+    const[Dcolorid, setDcolorid] = useState()
+    
+    
     const colormapunit = (mapunit) => {
       if (coloractiveid == 1 && mapunit == selectedmapunit) {
         if (colid == 11) {
@@ -377,8 +382,26 @@ function DrawMap(){
         
         
       }, [])
-
       
+      const definedistrict= (val1, val2) =>{
+          try { 
+            setDmapid(val1)
+            setDcolorid(val2)
+            array.push(([Dmapid, parseInt(Dcolorid)]))
+            console.log(array)
+            
+          }
+          catch {
+            console.log("Cant recieve id's on time")
+          }
+          
+         }
+        
+   
+     
+      
+         
+     
       
     
     return (
@@ -386,38 +409,26 @@ function DrawMap(){
         <div className="map">  
           
             
-          
+                 
                   <MapContainer center={center} zoom={10} style={{ height: '1000px' }}>
                   <TileLayer
                     
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     
                   />
-                              
-                 
+                                                
+                  {allda  && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunitid(e.layer.feature.properties.dguid)} }} />}
+                  {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
+                  setselectedmapunitid(e.layer.feature.properties.dguid);
+                  definedistrict(selectedmapunitid, colid)
+                  console.log("selected map unit id is ", selectedmapunitid)
+                  }}} />}
                   
-                  {allda  && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)} }} />}
-                  {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature );}}} />}
                   {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
                   {/* {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />} */}
-                  {console.log(selectedmapunit)}
-                  {localStorage.setItem('mapid', selectedmapunit)}
-                  {/* {selectedmapunit && <Sidebar DGUID = {selectedmapunit}/>} */}
-                
-                  {/* {selectedmapunit && <Sidebar DGUID = {selectedmapunit}/>} */}
-                  {/* {console.log(allda)} */}
-                  {/* {allda && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e)=>{setselectedmapunit(e.layer.feature)
-                  {valuetransfer(e.layer.feature.properties.dguid)}
-
-                }
                   
-                  }}
-                  
-                  />} */}
-                  {/* {console.log(allda)} */}
-                  {/* <GeoJSON data = {TestPoly} style={colormapunit} eventHandlers={{click: (e) => {
-                    setselectedmapunit(e.layer.feature); // Update selected feature
-                  },}} />  */}
+                  {localStorage.setItem('mapid', selectedmapunitid)}
+                  {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 
                 </MapContainer>
 

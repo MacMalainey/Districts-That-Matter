@@ -23,6 +23,7 @@ function Sidebar({DGUID}) {
     const[id,setid] = useState(null)
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
+    const testdistrict = localStorage.getItem('defineddistricts')
     const submit = () => {
         
         window.location.reload();
@@ -85,15 +86,26 @@ function Sidebar({DGUID}) {
               console.log('Response data not appropriately handled:');
             }
           }
-    
+         
+    // this function is saving the map units for a district
+    const DefinedDistrict = async () => {
+        
+            const testar = JSON.parse(testdistrict)
+            const filteredarray = testar.filter(values => values !== null)
+            console.log(filteredarray)
+            await axios.post('http://127.0.0.1:5000/api/districts/update', filteredarray).catch(error =>{console.log(error)});
+            console.log(testdistrict)   
+          }
+            
+   
   return (
     
         <div className = 'sidebar'>
 
-            <input type='text' placeholder='Update District Number'/> <br/>
-            <button type='submit' onClick={submit}>submit</button> <br></br>
-           
-
+            <input type='text' placeholder='Update District Number'/> 
+            <button type='submit' onClick={submit}>submit</button> 
+            <button type='submit' onClick={DefinedDistrict}>Save</button> <br></br>
+            
            
             
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 
@@ -101,7 +113,7 @@ function Sidebar({DGUID}) {
             <FaRegHandPaper className="hand-cursor"  onClick={handlecursor}/>
             
             <BsEraser className='eraser' onClick={handleeraser} /> 
-            <button style={{marginLeft:'20px', marginBottom:'10px'}}>Save</button> <br></br>
+             <br></br>
             {colorpalette && (
                 <>
             <button style={{background:'#ff1a1a', borderRadius: 10,height:'35px', color:'#ff1a1a'}} onClick={() => sendid(11)}>One</button>
