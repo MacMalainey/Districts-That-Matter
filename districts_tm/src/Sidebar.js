@@ -87,6 +87,32 @@ function Sidebar({DGUID}) {
             }
           }
          
+    // useEffect(()=>{
+        
+        
+        
+  
+    //         DefinedDistrict();
+            
+             
+             
+    //        }, [])
+    // const DefinedDistrict = async () => {
+    //         try {
+    //           const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
+    //           const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
+    //           setdemodata(Alldata)
+    //           console.log('http://127.0.0.1:5000/api/units/' + id + '/demographics')
+    //           for (const k in Alldata){
+    //               console.log("The {} has value {}", k, Alldata[k])
+    //               localStorage.setItem(k,Alldata[k])
+                  
+    //           }
+    //         }
+    //         catch {
+    //           console.log('Response data not appropriately handled:');
+    //         }
+    //       }
             
    
             
