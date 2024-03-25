@@ -41,12 +41,14 @@ function Sidebar({DGUID}) {
     const handlepaint = () =>{
         setcolorpalette(true)
         localStorage.setItem('coloractive', 1)
+        localStorage.setItem('cursor', 0)
         localStorage.setItem('eraser', 0)
     }
     const handlecursor = () => {
         setcolorpalette(false)
         setcursor(true)
         localStorage.setItem('coloractive', 0)
+        localStorage.setItem('cursor', 1)
         localStorage.setItem('eraser', 0)
     }
     const handleeraser = () => {
@@ -70,10 +72,11 @@ function Sidebar({DGUID}) {
           
           
         }, [])
+    // this function will get demographic data for a defined dguid of a map unit
     const DemoData = async () => {
             try {
               const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
-              const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
+              const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
               setdemodata(Alldata)
               console.log('http://127.0.0.1:5000/api/units/' + id + '/demographics')
               for (const k in Alldata){
@@ -112,7 +115,7 @@ function Sidebar({DGUID}) {
             
             <FaRegHandPaper className="hand-cursor"  onClick={handlecursor}/>
             
-            <BsEraser className='eraser' onClick={handleeraser} /> 
+            <BsEraser className='eraser' onClick={() => sendid(100)} /> 
              <br></br>
             {colorpalette && (
                 <>
