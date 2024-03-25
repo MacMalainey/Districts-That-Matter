@@ -170,7 +170,8 @@ def query_districts(db: spatialite.Connection):
 
     res = {}
     for line in cur.fetchall():
-        res[line[0]] = line[1]
+        if line[0] is not None:
+            res[line[0]] = line[1]
 
     return res
 
