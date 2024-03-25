@@ -89,8 +89,9 @@ function Sidebar({DGUID}) {
          
     
     const DefinedDistrict = async () => {
-            
-            await axios.post('http://127.0.0.1:5000/api/districts/update', testdistrict).catch(e =>{console.log(e)});
+        
+           const testar = [["2021S051235191287",11],["2021S051235190181",11],["2021S051235190182",11]]
+            await axios.post('http://127.0.0.1:5000/api/districts/update', testar).catch(e =>{console.log(e)});
             console.log(testdistrict)   
           }
             

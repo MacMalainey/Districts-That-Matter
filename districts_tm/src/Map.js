@@ -387,7 +387,7 @@ function DrawMap(){
           try { 
             setDmapid(val1)
             setDcolorid(val2)
-            array.push(([Dmapid,parseInt(Dcolorid)]))
+            array.push(([Dmapid, parseInt(Dcolorid)]))
             console.log(array)
             
           }
@@ -395,7 +395,6 @@ function DrawMap(){
             console.log("Cant recieve id's on time")
           }
           
-         
          }
         
    
@@ -417,9 +416,7 @@ function DrawMap(){
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     
                   />
-                              
-                 
-                  
+                                                
                   {allda  && <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunitid(e.layer.feature.properties.dguid)} }} />}
                   {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
                   setselectedmapunitid(e.layer.feature.properties.dguid);
@@ -431,7 +428,7 @@ function DrawMap(){
                   {/* {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />} */}
                   
                   {localStorage.setItem('mapid', selectedmapunitid)}
-                  {localStorage.setItem('defineddistricts', array)}
+                  {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 
                 </MapContainer>
 
