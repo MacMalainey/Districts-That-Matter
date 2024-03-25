@@ -23,7 +23,7 @@ function Sidebar({DGUID}) {
     const[id,setid] = useState(null)
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
-    
+    const testdistrict = localStorage.getItem('defineddistricts')
     const submit = () => {
         
         window.location.reload();
@@ -87,32 +87,12 @@ function Sidebar({DGUID}) {
             }
           }
          
-    // useEffect(()=>{
-        
-        
-        
-  
-    //         DefinedDistrict();
+    
+    const DefinedDistrict = async () => {
             
-             
-             
-    //        }, [])
-    // const DefinedDistrict = async () => {
-    //         try {
-    //           const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
-    //           const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
-    //           setdemodata(Alldata)
-    //           console.log('http://127.0.0.1:5000/api/units/' + id + '/demographics')
-    //           for (const k in Alldata){
-    //               console.log("The {} has value {}", k, Alldata[k])
-    //               localStorage.setItem(k,Alldata[k])
-                  
-    //           }
-    //         }
-    //         catch {
-    //           console.log('Response data not appropriately handled:');
-    //         }
-    //       }
+            await axios.post('http://127.0.0.1:5000/api/districts/update', testdistrict).catch(e =>{console.log(e)});
+            console.log(testdistrict)   
+          }
             
    
             
@@ -122,8 +102,8 @@ function Sidebar({DGUID}) {
         <div className = 'sidebar'>
 
             <input type='text' placeholder='Update District Number'/> 
-            <button type='submit' onClick={submit}>submit</button> <br></br>
-            
+            <button type='submit' onClick={submit}>submit</button> 
+            <button type='submit' onClick={DefinedDistrict}>Set District</button> <br></br>
             
            
             

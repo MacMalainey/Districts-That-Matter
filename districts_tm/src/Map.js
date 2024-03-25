@@ -387,7 +387,7 @@ function DrawMap(){
           try { 
             setDmapid(val1)
             setDcolorid(val2)
-            array.push(([Dmapid,Dcolorid]))
+            array.push(([Dmapid,parseInt(Dcolorid)]))
             console.log(array)
             
           }
@@ -431,7 +431,7 @@ function DrawMap(){
                   {/* {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />} */}
                   
                   {localStorage.setItem('mapid', selectedmapunitid)}
-                  {localStorage.setItem('defineddistricts', JSON.stringify(array))}
+                  {localStorage.setItem('defineddistricts', array)}
                 
                 </MapContainer>
 
