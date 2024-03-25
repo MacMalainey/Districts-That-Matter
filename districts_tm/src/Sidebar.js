@@ -23,6 +23,7 @@ function Sidebar({DGUID}) {
     const[id,setid] = useState(null)
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
+    
     const submit = () => {
         
         window.location.reload();
@@ -85,15 +86,19 @@ function Sidebar({DGUID}) {
               console.log('Response data not appropriately handled:');
             }
           }
+         
+            
+   
+            
     
   return (
     
         <div className = 'sidebar'>
 
-            <input type='text' placeholder='Update District Number'/> <br/>
+            <input type='text' placeholder='Update District Number'/> 
             <button type='submit' onClick={submit}>submit</button> <br></br>
-           
-
+            
+            
            
             
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 
