@@ -104,7 +104,7 @@ function Sidebar({DGUID}) {
 
             <input type='text' placeholder='Update District Number'/> 
             <button type='submit' onClick={submit}>submit</button> 
-            <button type='submit' onClick={DefinedDistrict}>Set District</button> <br></br>
+            <button type='submit' onClick={DefinedDistrict}>Save</button> <br></br>
             
            
             
@@ -113,7 +113,7 @@ function Sidebar({DGUID}) {
             <FaRegHandPaper className="hand-cursor"  onClick={handlecursor}/>
             
             <BsEraser className='eraser' onClick={handleeraser} /> 
-            <button style={{marginLeft:'20px', marginBottom:'10px'}}>Save</button> <br></br>
+             <br></br>
             {colorpalette && (
                 <>
             <button style={{background:'#ff1a1a', borderRadius: 10,height:'35px', color:'#ff1a1a'}} onClick={() => sendid(11)}>One</button>
