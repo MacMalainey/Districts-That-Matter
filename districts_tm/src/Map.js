@@ -397,7 +397,6 @@ function DrawMap(){
         else if (colid==100){
           return {
             fillColor: '#c2dcff',
-            
             weight: 2, 
             fillOpacity: 0.6,
             
@@ -409,12 +408,7 @@ function DrawMap(){
         
         
       }
-      
-      
-      
-      
-      
-      
+ 
 
     };
 
@@ -470,14 +464,16 @@ function DrawMap(){
 
                     </LayersControl.BaseLayer>
                     <LayersControl.Overlay name = 'ColorLayer'>
-                    {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={{fillColor: 'transparent',color:'grey',weight: 2,fillOpacity: 0.6,}} />}
-                    {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
+                    
+                    {allda && (coloractiveid == 1 || coloractiveid==0) && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
                   setselectedmapunitid(e.layer.feature.properties.dguid);
                   definedistrict(selectedmapunitid, colid)
                   console.log("selected map unit id is ", selectedmapunitid)
                   }}} />}
                     </LayersControl.Overlay>
-
+                    <LayersControl.Overlay name = 'COI Layer'>
+                    {allda && (coloractiveid == 0 || coloractiveid==1) && <GeoJSON data = {allda} style={{fillColor: 'yellow',color:'black',weight: 2,fillOpacity: 0.6,}} />}
+                    </LayersControl.Overlay>
                     </LayersControl>                             
                   
                   

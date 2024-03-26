@@ -168,9 +168,9 @@ function Sidebar({DGUID}) {
             
             {/* <SketchPicker/> */}
             
-            <button onClick={() => handletab('Inspect', localStorage.getItem('mapid'))} style={{fontSize:'20px', padding:'10px', width:'167px'}}>Inspect</button>
-            <button onClick={() => handletab('DataLayer')} style={{fontSize: '20px', padding: '10px', width:'167px'}}>Data Layer</button>
-            <button onClick={() => handletab('Evaluation')} style={{fontSize: '20px', padding: '10px', width:'167px'}}>Evaluation</button>
+            <button onClick={() => handletab('Inspect', localStorage.getItem('mapid'))} style={{fontSize:'20px', padding:'10px', width:'150px'}}>Inspect</button>
+            <button onClick={() => handletab('DataLayer')} style={{fontSize: '20px', padding: '10px', width:'150px'}}>Data Layer</button>
+            <button onClick={() => handletab('Evaluation')} style={{fontSize: '20px', padding: '10px', width:'150px'}}>Evaluation</button>
             {selecttab === 'Inspect' && <Inspect MUid = {id}/>}
             {selecttab === 'DataLayer' && <DataLayer/>}
             {selecttab === 'Evaluation' && <Evaluation/>}
