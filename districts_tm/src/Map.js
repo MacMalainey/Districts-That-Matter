@@ -396,7 +396,7 @@ function DrawMap(){
         }
         else if (colid==100){
           return {
-            fillColor: '#76ABDF',
+            fillColor: '#c2dcff',
             
             weight: 2, 
             fillOpacity: 0.6,
@@ -409,15 +409,7 @@ function DrawMap(){
         
         
       }
-      else if (state==true && coloractiveid == 0 && mapunit == selectedmapunit){
-        setstate(false)
-        return {
-          fillColor: 'lightgrey',  
-          weight: 0.5, 
-          fillOpacity: 0.6,
-           
-        };
-      }
+      
       
       
       
@@ -474,11 +466,11 @@ function DrawMap(){
                   />
                    <LayersControl postition='topright'>
                     <LayersControl.BaseLayer name='Baselayer' checked='Baselayer'>
-                    {allda  &&  <GeoJSON data = {allda} style={{color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunitid(e.layer.feature.properties.dguid)} }} />}
+                    {allda  &&  <GeoJSON data = {allda} style={{ fillColor: 'transparent', color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunitid(e.layer.feature.properties.dguid)} }} />}
 
                     </LayersControl.BaseLayer>
                     <LayersControl.Overlay name = 'ColorLayer'>
-                    {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={{fillColor: '#76ABDF',color:'#4169E1',weight: 2,fillOpacity: 0.6,}} />}
+                    {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={{fillColor: 'transparent',color:'grey',weight: 2,fillOpacity: 0.6,}} />}
                     {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
                   setselectedmapunitid(e.layer.feature.properties.dguid);
                   definedistrict(selectedmapunitid, colid)
