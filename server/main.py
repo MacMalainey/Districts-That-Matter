@@ -1,6 +1,4 @@
-from . import queries
-from . import app
-from . import schema
+from . import queries, get_db, app, schema, processor
 
 from flask import request
 
@@ -20,10 +18,7 @@ def api_schema():
 
 @app.route("/api/units/totals")
 def api_units_totals():
-    include = []
-    for cols in schema.values():
-        include.extend(cols)
-    return queries.query_munit_totals(queries.get_db(), include)
+    return processor.map_units_totals().to_json()
 
 @app.route("/api/units/all")
 def api_units_all():
@@ -32,23 +27,37 @@ def api_units_all():
 
     Fulfills FR3, FR4
     '''
-    other = None
+    fields = ["population", "landarea", "geometry"]
     include = request.args.get('include')
     if include is not None:
         if include not in schema:
             return {'reason': 'unknown category'}, 400
-        other = [f"rc_{include}", *(schema[include])]
-    return queries.query_munit_geodata(queries.get_db(), other)
+        fields.append(f"rc_{include}")
+        for field in schema[include]:
+            fields.append(field)
+
+    return processor.all_map_units(fields).to_json()
 
 @app.route("/api/units/<dguid>/demographics")
 def api_units_demographics(dguid):
-    return queries.query_munit_demographics_one(queries.get_db(), dguid)
+    return processor.single_map_unit(dguid).to_json()
+
+@app.route("/api/cois/all")
+def api_cois_all():
+    seed = request.args.get('seed', 0, int)
+    return processor.cluster(seed, n=100).to_json()
+
+@app.route("/api/districts/demographics")
+def api_districts_demographics():
+    return processor.districts_demographics().to_json()
 
 @app.route("/api/districts")
 def api_districts():
-    return queries.query_districts(queries.get_db())
+    return processor.districts().to_json()
 
 @app.route("/api/districts/update", methods=["POST"])
 def api_districts_update():
-    queries.insert_districts(queries.get_db(), request.get_json())
+    queries.insert_districts(get_db(), request.get_json())
+    processor._districts = queries.query_districts_dataframe(get_db())
+
     return {"success": True}
