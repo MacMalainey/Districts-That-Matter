@@ -1,6 +1,4 @@
-from . import queries
-from . import app
-from . import schema
+from . import queries, get_db, app, schema, processor
 
 from flask import request
 
@@ -38,17 +36,17 @@ def api_units_all():
         if include not in schema:
             return {'reason': 'unknown category'}, 400
         other = [f"rc_{include}", *(schema[include])]
-    return queries.query_munit_geodata(queries.get_db(), other)
+    return queries.query_munit_geodata(get_db(), other)
 
 @app.route("/api/units/<dguid>/demographics")
 def api_units_demographics(dguid):
-    return queries.query_munit_demographics_one(queries.get_db(), dguid)
+    return queries.query_munit_demographics_one(get_db(), dguid)
 
 @app.route("/api/districts")
 def api_districts():
-    return queries.query_districts(queries.get_db())
+    return queries.query_districts(get_db())
 
 @app.route("/api/districts/update", methods=["POST"])
 def api_districts_update():
-    queries.insert_districts(queries.get_db(), request.get_json())
+    queries.insert_districts(get_db(), request.get_json())
     return {"success": True}

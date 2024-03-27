@@ -1,45 +1,8 @@
 import spatialite
 import geojson
+import pandas as pd
 
 from flask import current_app, g, Flask
-
-def init_app(app: Flask):
-    '''
-    Initializes the flask app to support the application's database
-
-    Fulfills FR4, FR12
-    '''
-    app.teardown_appcontext(_on_teardown)
-
-def get_db():
-    '''
-    Initiatlizes a database context for request
-
-    If a context for the given request already exists it will return it
-
-    Note: this ONLY works for an instance of a request - nothing else
-
-    Fulfills FR4, FR12
-    '''
-    if 'db' not in g:
-        # TODO fix to use app config
-        g.db = spatialite.connect(
-            "../.local/dtmTORO.db"
-            # current_app.config['DATABASE'],
-        )
-
-    return g.db
-
-def _on_teardown(e=None):
-    '''
-    Closes the database context for the given request
-
-    Fulfills FR4, FR12
-    '''
-    db = g.pop('db', None)
-
-    if db is not None:
-        db.close()
 
 def _dict_row_factory(cursor, row):
     '''
@@ -96,22 +59,17 @@ def query_munit_totals(db: spatialite.Connection, other=None) -> list[dict[str, 
     )
     return cur.fetchone()
 
-def query_munit_demographics_all(db: spatialite.Connection) -> list[dict[str, int]]:
+def query_munit_as_dataframe(db: spatialite.Connection) -> pd.DataFrame:
     '''
     Queries map unit demographcs from database
 
     Fulfills FR4, FR12
     '''
 
-    cur = db.cursor()
-    cur.row_factory = _dict_row_factory
-    cur.execute(
-        """
-            SELECT cd.*, AsGeoJSON(bd.geometry) AS center
-                FROM census_data as cd, boundary_data AS bd USING (dguid)
-        """
+    return pd.read_sql(
+        "SELECT cd.*, AsText(bd.geometry) AS geometry_wkt FROM census_data AS cd, boundary_data AS bd USING (dguid);",
+        db
     )
-    return cur.fetchall()
 
 def query_munit_demographics_one(db: spatialite.Connection, dguid: str) -> list[dict[str, int]]:
     '''
