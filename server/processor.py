@@ -1,5 +1,3 @@
-from typing import Any
-
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -38,22 +36,27 @@ def _interpret_z_score(z_score):
 class Processor:
     _data: gpd.GeoDataFrame
     _clusters: gpd.GeoDataFrame
+    _districts: gpd.GeoDataFrame
     _seed: int
 
     _ratios_labels: list[str]
     _reported_labels: list[str]
-    _coi_aggregations: dict[str, Any]
+    _coi_aggregations: dict[str, str]
+    _totals_aggregations: dict[str, str]
 
     def __init__(self, data: pd.DataFrame, schema: dict[str, list[str]]):
         self._seed = None
         self._ratios_labels = []
-        self._reported_labels = []
+        self._reported_labels = ["population", "landarea"]
         self._coi_aggregations = {
-            'dguid': lambda x: list(x),
             'population': 'sum',
-            'landarea': 'mean',
-            'density': 'mean'
+            'landarea': 'sum',
         }
+        self._totals_aggregations = {
+            'population': 'max',
+            'landarea': 'max',
+        }
+        self._districts = None
         self._clusters = None
 
         # The response count is recorded in an odd way for visible minority - N/A responses are not counted
@@ -66,6 +69,7 @@ class Processor:
 
                 self._coi_aggregations[ratio_label] = 'mean'
                 self._coi_aggregations[chr_label] = 'sum'
+                self._totals_aggregations[chr_label] = 'max'
 
                 self._ratios_labels.append(ratio_label)
                 self._reported_labels.append(chr_label)
@@ -132,3 +136,26 @@ class Processor:
         self._clusters = self._clusters.drop(to_remove)
         return self._clusters
 
+    def map_units_totals(self):
+        total_series = pd.Series(
+            data={
+                'total_population': self._data['population'].sum(),
+                'total_landarea': self._data['landarea'].sum()
+            },
+            index=['total_population', 'total_landarea']
+        )
+        return self._data.agg(self._totals_aggregations).combine_first(total_series)
+
+    def all_map_units(self, fields: list[str]):
+        return self._data[fields]
+
+    def single_map_unit(self, dguid: str):
+        return pd.DataFrame(self._data).loc[dguid, self._reported_labels]
+    
+    def districts(self):
+        return self._districts["district"]
+    
+    def districts_demographics(self):
+        data = pd.DataFrame(self._data[self._reported_labels]).assign(district=self._districts).groupby("district").sum()
+        data.index = data.index.astype(int)
+        return data.T
