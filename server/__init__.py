@@ -45,13 +45,15 @@ def _on_teardown(e=None):
     if db is not None:
         db.close()
 
-def _load_data(app: Flask):
+def _init_processor():
     db = spatialite.connect("../.local/dtmTORO.db")
-    data = queries.query_munit_as_dataframe(db)
+    data = queries.query_munits(db)
+    p = Processor(data, schema)
+    p._districts = queries.query_districts_dataframe(db)
     db.close()
-    return data
+    return p
 
 app = Flask(__name__)
 CORS(app)
-processor = Processor(_load_data(app), schema)
+processor = _init_processor()
 app.teardown_appcontext(_on_teardown)
