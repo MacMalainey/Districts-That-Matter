@@ -11,7 +11,7 @@ import Inspect from './Inspect';
 import DataLayer from './DataLayer';
 import Evaluation from './Evaluation';
 import axios, { all } from 'axios';
-
+let testdistrict = []
 function Sidebar({DGUID}) {
     
     // const [selectpaint, setselectpaint] = useState(false)
@@ -23,7 +23,7 @@ function Sidebar({DGUID}) {
     const[id,setid] = useState(null)
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
-    const testdistrict = localStorage.getItem('defineddistricts')
+    
     const submit = () => {
         
         window.location.reload();
@@ -91,13 +91,25 @@ function Sidebar({DGUID}) {
           }
          
     // this function is saving the map units for a district
+    useEffect(()=>{
+        testdistrict = localStorage.getItem('defineddistricts');
+    },[])
+
     const DefinedDistrict = async () => {
+
         
+        
+       
             const testar = JSON.parse(testdistrict)
-            const filteredarray = testar.filter(values => values !== null)
-            console.log(filteredarray)
-            await axios.post('http://127.0.0.1:5000/api/districts/update', filteredarray).catch(error =>{console.log(error)});
-            console.log(testdistrict)   
+            
+            const testing = [["2021S051235191288",40],["2021S051235191287",40],["2021S051235191290",40],["2021S051235191038",40],["2021S051235191104",40],["2021S051235191290",null],["2021S051235190747",47],["2021S051235190433",47]]
+            console.log("testing returned array", testar)
+            await axios.post('http://127.0.0.1:5000/api/districts/update', testar).catch(error =>{console.log(error)});
+        
+        
+            
+           
+           
           }
             
    

@@ -14,6 +14,9 @@ import Sidebar from "./Sidebar";
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
 let array = [];
+localStorage.setItem('coloractive', '')
+localStorage.setItem('mapid','')
+localStorage.setItem('colorid','')
 function DrawMap(){
   
     const center = [ 43.65107, - 79.347015];
@@ -430,21 +433,41 @@ function DrawMap(){
         
         
       }, [])
+//  this gets the mapid only after its set
+      useEffect(()=>{
+        if (selectedmapunitid !=null){
+        localStorage.setItem('mapid', selectedmapunitid)
+        console.log("selected map unit is: ", selectedmapunitid)
+        definedistrict(selectedmapunitid,colid)
+        }
+        
+        
+      }, [selectedmapunitid])
+
+      // this function checks for dguids and color id, if the id is non 100, it sends both values otherwise it sends a null as in erase 
       
-      const definedistrict= (val1, val2) =>{
+        const definedistrict= (val1, val2) =>{
+          
           try { 
-            setDmapid(val1)
-            setDcolorid(val2)
-            array.push(([Dmapid, parseInt(Dcolorid)]))
-            console.log(array)
+
+
+          
+            if (val2==100){
+                array.push(([val1, null]))
+              }
+            else {
+              array.push(([val1, parseInt(val2)]))
+            }
             
+              
           }
+            
           catch {
             console.log("Cant recieve id's on time")
           }
           
          }
-         
+
          
     return (
       
@@ -466,9 +489,9 @@ function DrawMap(){
                     <LayersControl.Overlay name = 'ColorLayer'>
                     
                     {allda && (coloractiveid == 1 || coloractiveid==0) && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
-                  setselectedmapunitid(e.layer.feature.properties.dguid);
-                  definedistrict(selectedmapunitid, colid)
-                  console.log("selected map unit id is ", selectedmapunitid)
+                    {console.log(e.layer.feature.properties.dguid)}
+                    setselectedmapunitid(e.layer.feature.properties.dguid);
+                    
                   }}} />}
                     </LayersControl.Overlay>
                     <LayersControl.Overlay name = 'COI Layer'>
@@ -480,7 +503,7 @@ function DrawMap(){
                   {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
                   {/* {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />} */}
                   
-                  {localStorage.setItem('mapid', selectedmapunitid)}
+                  
                   {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 
                 </MapContainer>
