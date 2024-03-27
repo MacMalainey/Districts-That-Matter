@@ -37,13 +37,15 @@ def _interpret_z_score(z_score):
 
 class Processor:
     _data: gpd.GeoDataFrame
-    _clusters: pd.DataFrame
+    _clusters: gpd.GeoDataFrame
+    _seed: int
 
     _ratios_labels: list[str]
     _reported_labels: list[str]
     _coi_aggregations: dict[str, Any]
 
     def __init__(self, data: pd.DataFrame, schema: dict[str, list[str]]):
+        self._seed = None
         self._ratios_labels = []
         self._reported_labels = []
         self._coi_aggregations = {
@@ -77,15 +79,16 @@ class Processor:
         self._data = gpd.GeoDataFrame(data, crs="EPSG:4326", geometry="geometry")
         self._data.fillna(self._data[self._ratios_labels].mean(), inplace=True)
 
-    def cluster(self, cached=True):
-        if cached and self._clusters is not None:
+    def cluster(self, seed, n):
+        if self._seed != seed and self._clusters is not None:
             return self._clusters
+        self._seed = seed
 
-        np.random.seed(0)
+        np.random.seed(self._seed)
 
         # Compute model
         knn_weights = KNN.from_dataframe(self._data, k=4)
-        model = AgglomerativeClustering(linkage="ward", n_clusters=10, connectivity=knn_weights.sparse, compute_distances=True)
+        model = AgglomerativeClustering(linkage="ward", n_clusters=n, connectivity=knn_weights.sparse, compute_distances=True)
         model.fit(self._data[self._ratios_labels])
         self._data["COI"] = model.labels_
 
@@ -122,9 +125,6 @@ class Processor:
                     'z_score': z_scores[attribute],
                     'ratio': row[attribute],
                     'total': row[attribute.removesuffix('_ratio')],
-                    'neighbor_mean': neighbor_means[attribute],
-                    'neighbor_var': neighbor_vars[attribute], 
-                    'neighbor_vals': neighbor_rows[attribute].to_list(),
                     'interpretation': _interpret_z_score(z_scores[attribute])
                 }
             self._clusters.at[index, 'explanation'] = explaination_dict
