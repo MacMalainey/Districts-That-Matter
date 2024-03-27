@@ -11,8 +11,8 @@ import Inspect from './Inspect';
 import DataLayer from './DataLayer';
 import Evaluation from './Evaluation';
 import axios, { all } from 'axios';
-let testdistrict = []
-function Sidebar({DGUID}) {
+
+function Sidebar() {
     
     // const [selectpaint, setselectpaint] = useState(false)
     // const [selectcursor, setselectcursor] = useState(false)
@@ -21,9 +21,10 @@ function Sidebar({DGUID}) {
     const [cursor, setcursor] = useState(false)
     const [eraser, seteraser] = useState(false)
     const[id,setid] = useState(null)
+    const [district, setdistrict] = useState(null)
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
-    
+    // const testdistrict = localStorage.getItem('defineddistricts');
     const submit = () => {
         
         window.location.reload();
@@ -91,16 +92,17 @@ function Sidebar({DGUID}) {
           }
          
     // this function is saving the map units for a district
-    useEffect(()=>{
-        testdistrict = localStorage.getItem('defineddistricts');
-    },[])
-
+    
+          useEffect(()=>{
+            setdistrict(localStorage.getItem('defineddistricts'))
+            
+          },[district])
     const DefinedDistrict = async () => {
 
         
         
-       
-            const testar = JSON.parse(testdistrict)
+            
+            const testar = JSON.parse(localStorage.getItem('defineddistricts'))
             
             const testing = [["2021S051235191288",40],["2021S051235191287",40],["2021S051235191290",40],["2021S051235191038",40],["2021S051235191104",40],["2021S051235191290",null],["2021S051235190747",47],["2021S051235190433",47]]
             console.log("testing returned array", testar)

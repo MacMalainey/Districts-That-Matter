@@ -1,6 +1,7 @@
 import React from 'react'
 
 function DataLayer() {
+  const explanation = localStorage.getItem('explanation')
   return (
     <div>
       <h2>Painted Districts</h2>
@@ -19,6 +20,7 @@ function DataLayer() {
     <option value="age">Age</option>
     <option value="income">Income</option>
     </select>
+    <p>{explanation}</p>
       
       
     </div>

@@ -7,6 +7,7 @@ import L from 'leaflet';
 import './Map.css';
 import axios, { all } from 'axios';
 import Sidebar from "./Sidebar";
+import { eventWrapper } from "@testing-library/user-event/dist/utils";
 
 // FR1: Map Render
 // FR2: Map Fetch
@@ -23,6 +24,7 @@ function DrawMap(){
     const [selectedmapunit, setselectedmapunit] = useState(null);
     const [selectedmapunitid, setselectedmapunitid] = useState(null);
     const [allda, setallda] = useState(null)
+    const [coida, setcoida] = useState(null)
     const[dguid, setdguid] = useState(15)
     const coloractiveid = localStorage.getItem('coloractive')
     const colid = localStorage.getItem('colorid')
@@ -32,7 +34,7 @@ function DrawMap(){
     const[state, setstate] = useState(false);
     const[Dmapid, setDmapid] = useState()
     const[Dcolorid, setDcolorid] = useState()
-    
+    const[selectedCOI, setselectedCOI] = useState(null)
     
     const colormapunit = (mapunit) => {
       if (coloractiveid == 1 && mapunit == selectedmapunit) {
@@ -423,6 +425,7 @@ function DrawMap(){
           const response = await axios.get('http://127.0.0.1:5000/api/units/all');
           const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
           setallda(Alldata);
+          // console.log(Alldata)
         }
         catch {
           console.log('Response data not appropriately handled:');
@@ -433,6 +436,40 @@ function DrawMap(){
         
         
       }, [])
+// COI data coordinate collection
+// covers FR 13, FR 14, FR 15
+      useEffect(()=>{
+
+        const COIData = async () => {
+          try {
+            const response = await axios.get('http://127.0.0.1:5000/api/cois/all');
+            const coidata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
+            
+               setcoida(response.data);
+              // console.log(response.data)
+            
+
+          }
+          catch {
+            console.log('Response data not appropriately handled:');
+          }
+        }
+  
+         COIData();
+          
+          
+        }, [coida])
+// handler explaination for each selected id, store in local storage
+      useEffect(()=>{
+         console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
+        for (const reason in selectedCOI){
+          for (const items in selectedCOI.reason){
+            console.log("items of a reason is:", items)
+          }
+          console.log("reason one is:", reason)
+        }
+        localStorage.setItem('explanation', selectedCOI)
+      }, [selectedCOI])
 //  this gets the mapid only after its set
       useEffect(()=>{
         if (selectedmapunitid !=null){
@@ -483,19 +520,21 @@ function DrawMap(){
                   />
                    <LayersControl postition='topright'>
                     <LayersControl.BaseLayer name='Baselayer' checked='Baselayer'>
-                    {allda  &&  <GeoJSON data = {allda} style={{ fillColor: 'transparent', color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunitid(e.layer.feature.properties.dguid)} }} />}
+                    {allda  &&  <GeoJSON data = {allda} style={{ fillColor: 'transparent', color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunitid(e.layer.feature.id)} }} />}
 
                     </LayersControl.BaseLayer>
                     <LayersControl.Overlay name = 'ColorLayer'>
                     
                     {allda && (coloractiveid == 1 || coloractiveid==0) && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
-                    {console.log(e.layer.feature.properties.dguid)}
-                    setselectedmapunitid(e.layer.feature.properties.dguid);
+                    {console.log(e.layer.feature.id)}
+                    setselectedmapunitid(e.layer.feature.id);
                     
                   }}} />}
                     </LayersControl.Overlay>
                     <LayersControl.Overlay name = 'COI Layer'>
-                    {allda && (coloractiveid == 0 || coloractiveid==1) && <GeoJSON data = {allda} style={{fillColor: 'yellow',color:'black',weight: 2,fillOpacity: 0.6,}} />}
+                    {coida && (coloractiveid == 0 || coloractiveid==1) && <GeoJSON data = {coida} style={{fillColor: 'red',color:'black',weight: 2,fillOpacity: 0.6,}} eventHandlers = {{click: (e) => 
+                    {console.log("coi region selected", e.layer.feature.properties.explanation)
+                    setselectedCOI(e.layer.feature.properties.explanation)}}} />}
                     </LayersControl.Overlay>
                     </LayersControl>                             
                   
