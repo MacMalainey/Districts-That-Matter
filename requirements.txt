@@ -2,6 +2,12 @@
 flask
 geojson
 flask-cors
+numpy
+libpysal
+panda
+geopandas
+matplotlib
+scikit-learn
 # Requirements for the database init script
 lxml
 spatialite
