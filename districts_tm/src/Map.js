@@ -461,10 +461,10 @@ function DrawMap(){
         }, [coida])
 // handler explaination for each selected id, store in local storage
       useEffect(()=>{
-         console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
+        //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
         for (const reason in selectedCOI){
           for (const items in selectedCOI.reason){
-            console.log("items of a reason is:", items)
+            console.log("interpretation of this item is:", items)
           }
           console.log("reason one is:", reason)
         }
