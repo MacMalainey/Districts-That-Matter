@@ -42,6 +42,11 @@ def api_units_all():
 def api_units_demographics(dguid):
     return queries.query_munit_demographics_one(get_db(), dguid)
 
+@app.route("/api/cois/all")
+def api_cois_all():
+    seed = request.args.get('seed', 0, int)
+    return processor.cluster(seed, n=100).to_json()
+
 @app.route("/api/districts")
 def api_districts():
     return queries.query_districts(get_db())
