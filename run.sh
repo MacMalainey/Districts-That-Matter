@@ -1,10 +1,2 @@
-#!/usr/bin/env bash
-
-BASEDIR=$(dirname "$0")
-cd $BASEDIR
-if [[ -z "${VIRTUAL_ENV}" ]]; then
-	source ./.venv/bin/activate
-fi
-
-cd server
-python3 -m flask --app main run
+docker build -t dtm_app .
+docker run -p 127.0.0.1:5000:5000 dtm_app

@@ -14,4 +14,5 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 	source ./.venv/bin/activate
 fi
 
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r parser/requirements.txt
+python3 -m pip install -r server/requirements.txt
