@@ -24,10 +24,13 @@ function Sidebar() {
     const [district, setdistrict] = useState(null)
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
+
+    const[districtnum, setdistrictnum] = useState(null)
+
     // const testdistrict = localStorage.getItem('defineddistricts');
     const submit = () => {
         
-        window.location.reload();
+        localStorage.setItem('TotalDistricts', districtnum)
     }
     const colordata = () =>{
         alert('data sent')
@@ -120,7 +123,7 @@ function Sidebar() {
     
         <div className = 'sidebar'>
 
-            <input type='text' placeholder='Update District Number'/> 
+            <input type='text' placeholder='Update District Number' value={districtnum} onChange={(e)=>setdistrictnum(e.target.value)}/> 
             <button type='submit' onClick={submit}>submit</button> 
             <button type='submit' onClick={DefinedDistrict}>Save</button> <br></br>
            
