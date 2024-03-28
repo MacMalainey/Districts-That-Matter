@@ -114,6 +114,7 @@ function Sidebar() {
            
           }
             
+        
    
   return (
     
@@ -122,7 +123,7 @@ function Sidebar() {
             <input type='text' placeholder='Update District Number'/> 
             <button type='submit' onClick={submit}>submit</button> 
             <button type='submit' onClick={DefinedDistrict}>Save</button> <br></br>
-            
+           
            
             
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 

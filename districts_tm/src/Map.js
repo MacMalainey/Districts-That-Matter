@@ -15,6 +15,7 @@ import { eventWrapper } from "@testing-library/user-event/dist/utils";
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
 let array = [];
+let COIarray = [];
 localStorage.setItem('coloractive', '')
 localStorage.setItem('mapid','')
 localStorage.setItem('colorid','')
@@ -35,7 +36,9 @@ function DrawMap(){
     const[Dmapid, setDmapid] = useState()
     const[Dcolorid, setDcolorid] = useState()
     const[selectedCOI, setselectedCOI] = useState(null)
+
     
+
     const colormapunit = (mapunit) => {
       if (coloractiveid == 1 && mapunit == selectedmapunit) {
         if (colid == 11) {
@@ -460,15 +463,30 @@ function DrawMap(){
           
         }, [coida])
 // handler explaination for each selected id, store in local storage
+  
+
       useEffect(()=>{
-        //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
-        for (const reason in selectedCOI){
-          for (const items in selectedCOI.reason){
-            console.log("interpretation of this item is:", items)
+        const handleCOI = () => {
+        try{
+          for (const reason in selectedCOI){
+            const ite = selectedCOI[reason]
+            // console.log("interpretation of {} this item is", reason, ite.interpretation)
+            COIarray.push([reason, ite.interpretation])
+            localStorage.setItem('COIexp', JSON.stringify(COIarray))
+            
           }
-          console.log("reason one is:", reason)
         }
-        localStorage.setItem('explanation', selectedCOI)
+        
+        catch{
+          console.log("Error with COI explanation parsing......")
+        }
+          
+        COIarray=[]
+        }
+        //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
+        handleCOI();
+        
+        
       }, [selectedCOI])
 //  this gets the mapid only after its set
       useEffect(()=>{
@@ -529,19 +547,21 @@ function DrawMap(){
                     {console.log(e.layer.feature.id)}
                     setselectedmapunitid(e.layer.feature.id);
                     
+                    
+                    
                   }}} />}
                     </LayersControl.Overlay>
                     <LayersControl.Overlay name = 'COI Layer'>
                     {coida && (coloractiveid == 0 || coloractiveid==1) && <GeoJSON data = {coida} style={{fillColor: 'red',color:'black',weight: 2,fillOpacity: 0.6,}} eventHandlers = {{click: (e) => 
-                    {console.log("coi region selected", e.layer.feature.properties.explanation)
-                    setselectedCOI(e.layer.feature.properties.explanation)}}} />}
+                    {setselectedCOI(e.layer.feature.properties.explanation);
+                    console.log("coi region selected", e.layer.feature.properties.explanation);
+                    }}} />}
                     </LayersControl.Overlay>
                     </LayersControl>                             
                   
                   
                   {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
                   {/* {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />} */}
-                  
                   
                   {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 
