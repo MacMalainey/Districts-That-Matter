@@ -24,7 +24,9 @@ function Sidebar() {
     const [district, setdistrict] = useState(null)
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
+
     const[districtnum, setdistrictnum] = useState(null)
+
     // const testdistrict = localStorage.getItem('defineddistricts');
     const submit = () => {
         
