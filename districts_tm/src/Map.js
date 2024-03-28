@@ -481,7 +481,7 @@ function DrawMap(){
           console.log("Error with COI explanation parsing......")
         }
           
-        COIarray=[]
+        COIarray=[] // clear array after storage, otherwise it will append to the existing array. 
         }
         //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
         handleCOI();
