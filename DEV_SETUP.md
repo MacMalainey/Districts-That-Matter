@@ -1,12 +1,25 @@
-# Districts-That-Matter
+# Development Setup
+
+Below are the steps required to begin running the project locally for development.
+
+**THIS IS NOT TO BE USED FOR DEMOING**
 
 ## Requirements
 
-This project requires access to a Linux system that has Docker and a web browser installed
+The project will only work on a Linux system that satisfies the following:
+- Python 3.10+
+- Pip for Python 3.10+ (version must match version of Python)
+- Node 18+
+- SQLite3
+- Spatialite
 
-### Installing Docker
+### Installing requirements
 
-If you don't already have Docker installed (check by running `docker -v` in your terminal) you can install the desktop client [here](https://www.docker.com/products/docker-desktop/) and then verify it's installation using `docker -v`.
+To install the requirements on an Ubuntu system run:
+```bash
+sudo apt install python3 python3-pip python3-venv libsqlite3-mod-spatialite spatialite-bin
+sudo snap install node --classic
+```
 
 ### Downloading Data
 
@@ -44,10 +57,8 @@ This project relies on census data downloaded from Stats Canada. **THE DATA FILE
 
 Once the requirements are satisfied and the data has been downloaded and extracted into the proper location - you can run the project.
 
+### Run
+
 ```bash
-# DO NOT RUN 'parser/run.sh' or 'server/run.sh'
-# On first execution this will build the application - this will take a while
 ./run.sh
 ```
-
-Once the script finishes open your web browser to [127.0.0.1:5000](http://127.0.0.1:5000)

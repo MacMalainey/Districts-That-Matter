@@ -84,7 +84,7 @@ class Processor:
         self._data.fillna(self._data[self._ratios_labels].mean(), inplace=True)
 
     def cluster(self, seed, n):
-        if self._seed != seed and self._clusters is not None:
+        if self._seed == seed and self._clusters is not None:
             return self._clusters
         self._seed = seed
 

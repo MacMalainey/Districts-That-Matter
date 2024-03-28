@@ -1,18 +1,22 @@
 import json
+from os import environ
 
-from flask import Flask, g
+from flask import Flask, g, send_file
 from flask_cors import CORS
-
-import spatialite
 
 from .processor import Processor
 from . import queries
 
-import matplotlib.pyplot as plt
+import spatialite
+
 
 schema: dict[str, list[str]]
 
-with open("../.local/dtmTORO_schema.json") as schema_file:
+_SCHEMA_PATH = environ["DTM_SERVER_SCHEMA"]
+_DATABASE_PATH = environ["DTM_SERVER_DATABASE"]
+_STATIC_PATH = environ["DTM_SERVER_STATIC_DIR"]
+
+with open(_SCHEMA_PATH) as schema_file:
     schema = json.load(schema_file)
 
 def get_db():
@@ -27,10 +31,7 @@ def get_db():
     '''
     if 'db' not in g:
         # TODO fix to use app config
-        g.db = spatialite.connect(
-            "../.local/dtmTORO.db"
-            # current_app.config['DATABASE'],
-        )
+        g.db = spatialite.connect(_DATABASE_PATH)
 
     return g.db
 
@@ -46,14 +47,22 @@ def _on_teardown(e=None):
         db.close()
 
 def _init_processor():
-    db = spatialite.connect("../.local/dtmTORO.db")
+    db = spatialite.connect(_DATABASE_PATH)
     data = queries.query_munits(db)
     p = Processor(data, schema)
     p._districts = queries.query_districts_dataframe(db)
     db.close()
     return p
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path='',
+    static_folder=_STATIC_PATH
+)
 CORS(app)
 processor = _init_processor()
 app.teardown_appcontext(_on_teardown)
+
+@app.route("/")
+def hello_world():
+    return send_file(_STATIC_PATH+"/index.html")
