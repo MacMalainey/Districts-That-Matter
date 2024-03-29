@@ -33,10 +33,10 @@ function Sidebar() {
     const colordata = () =>{
         alert('data sent')
     }
-    const handletab = (tab, idvalue) => {
+    const handletab = (tab) => {
         setselecttab(tab)
-        setid(idvalue)
-        DemoData()
+        // setid(idvalue)
+       
         
       }
 
@@ -64,34 +64,10 @@ function Sidebar() {
         
         localStorage.setItem('colorid', colorid)
     }
-    useEffect(()=>{
-        
-        
-        
-  
-         DemoData();
-         
-          
-          
-        }, [])
+    
     // this function will get demographic data for a defined dguid of a map unit
-    const DemoData = async () => {
-            try {
-              const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
-              const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
-              setdemodata(Alldata)
-              console.log('http://127.0.0.1:5000/api/units/' + id + '/demographics')
-              for (const k in Alldata){
-                  console.log("The {} has value {}", k, Alldata[k])
-                  localStorage.setItem(k,Alldata[k])
-                  
-              }
-            }
-            catch {
-              console.log('Response data not appropriately handled:');
-            }
-          }
-         
+    
+    
     // this function is saving the map units for a district
     
           useEffect(()=>{
@@ -184,7 +160,7 @@ function Sidebar() {
             
             {/* <SketchPicker/> */}
             
-            <button onClick={() => handletab('Inspect', localStorage.getItem('mapid'))} style={{fontSize:'20px', padding:'10px', width:'150px'}}>Inspect</button>
+            <button onClick={() => handletab('Inspect')} style={{fontSize:'20px', padding:'10px', width:'150px'}}>Inspect</button>
             <button onClick={() => handletab('DataLayer')} style={{fontSize: '20px', padding: '10px', width:'150px'}}>Data Layer</button>
             <button onClick={() => handletab('Evaluation')} style={{fontSize: '20px', padding: '10px', width:'150px'}}>Evaluation</button>
             {selecttab === 'Inspect' && <Inspect MUid = {id}/>}

@@ -12,7 +12,7 @@ function Evaluation() {
   const [selectTP, setselectTP] = useState(false)
   const [selectDD, setselectDD] = useState(false)
   const [selectpop, setselectpop] = useState(false)
-  
+  const [selectcharact, setselectcharact] = useState(null)
   useEffect(()=>{
     const handlepopulation = async () =>{
       const response = await axios.get('http://127.0.0.1:5000/api/units/totals')
@@ -29,40 +29,44 @@ function Evaluation() {
       const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
       const inspectDD = response.data
       for (const k in inspectDD){
-        
-        for (const j in inspectDD[k]){
-          inspectdata.push([k,j,inspectDD[k][j]])
+        const temp = inspectDD[k]
+        for (const j in temp){
+          inspectdata.push([k,j,temp[j]])
         }
           // console.log(j, inspectDD[k][j])
           // const val = inspectDD[k]
           // inspectdata.push([k,val])
-        
-          
-          
 
-        
-       
-        
       }
       
       console.log(inspectdata)
     }
     handledistrictdemo();
-   
+   inspectdata = []
   }, [])
   
-  const handleinspectDD = (pop) => {
-    const filteredinspect = inspectdata.filter((arr)=>arr[1]===pop)
-    console.log(filteredinspect)
-    return <p>Population 
-       <input type='checkbox' value={selectpop} onChange={() => setselectpop(!selectpop)}></input>
-       {selectpop && <ul>
+ 
+
+  const handleinspectChar = () => {
+    const filteredinspectcharact = inspectdata.filter((arr)=>arr[1]===selectcharact)
+    return <p> Inspect Characteristics:  
+      <select value={selectcharact} onChange={(e)=>setselectcharact(e.target.value)}>
+    <option style={{fontStyle:'italic'}}> select...</option>
+  
+    {inspectdata.map((charact,indexvalue) =>(
+      <option key={indexvalue} value={charact[1]}>{charact[1]}</option>
+    ))}
+
+    
+    </select>
+       
+       {selectcharact && <ul>
         
-        {filteredinspect.map((charact,indexvalue)=>(<li key={indexvalue}>
+        {filteredinspectcharact.map((charact,indexvalue)=>(<li key={indexvalue}>
           <table>
             <thead>
               <tr>
-                District {charact[0]} : {charact[1]} is {charact[2]}
+                District {charact[0]} : {charact[1]} has value {charact[2]}
               </tr>
               
             </thead>
@@ -86,7 +90,7 @@ function Evaluation() {
       </p>}
       <label>Compare District's</label>
       <input type='checkbox' value={selectDD} onChange={() =>setselectDD(!selectDD)}></input>
-      {selectDD && <br></br> && handleinspectDD('population')}
+      {selectDD && <br></br> && handleinspectChar()}
       
     </div>
   )

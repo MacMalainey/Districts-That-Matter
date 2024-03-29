@@ -15,6 +15,7 @@ import { eventWrapper } from "@testing-library/user-event/dist/utils";
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
 let array = [];
+
 let COIarray = [];
 localStorage.setItem('coloractive', '')
 localStorage.setItem('mapid','')
@@ -428,6 +429,7 @@ function DrawMap(){
           const response = await axios.get('http://127.0.0.1:5000/api/units/all');
           const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
           setallda(Alldata);
+          
           // console.log(Alldata)
         }
         catch {
