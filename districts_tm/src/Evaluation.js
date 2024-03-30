@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
 import { Chart } from 'chart.js';
+import './Evaluation.css';
 let inspectdata = []
 function Evaluation() {
   // implemented FR 6 and FR7 
@@ -80,8 +81,12 @@ function Evaluation() {
     
   }
   
+  
+
   return (
     <div>
+      
+      
       <label>Show Total Population</label>
       <input type='checkbox' value={selectTP} onChange={() =>setselectTP(!selectTP)}></input>
       {/* <p> {localStorage.getItem('population')}</p> */}

@@ -20,6 +20,7 @@ let COIarray = [];
 localStorage.setItem('coloractive', '')
 localStorage.setItem('mapid','')
 localStorage.setItem('colorid','')
+let COIotherarray = [];
 function DrawMap(){
   
     const center = [ 43.65107, - 79.347015];
@@ -37,7 +38,7 @@ function DrawMap(){
     const[Dmapid, setDmapid] = useState()
     const[Dcolorid, setDcolorid] = useState()
     const[selectedCOI, setselectedCOI] = useState(null)
-
+    const[selectedCOIdata, setselectedCOIdata] = useState(null)
     
 
     const colormapunit = (mapunit) => {
@@ -449,7 +450,10 @@ function DrawMap(){
           try {
             const response = await axios.get('http://127.0.0.1:5000/api/cois/all');
             const coidata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
-            
+            // console.log("COI data, lets check",coidata)
+            // for (const tes in coidata){
+            //   console.log("testing COI info:", tes)
+            // }
                setcoida(response.data);
               // console.log(response.data)
             
@@ -487,6 +491,34 @@ function DrawMap(){
         }
         //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
         handleCOI();
+        
+        
+      }, [selectedCOI])
+// handle COI data for selected COI, except explanation, which is handled separately. 
+      useEffect(()=>{
+        const handleCOIother = () => {
+        try{
+          for (const tempdata in selectedCOIdata){
+            // console.log(tempdata,selectedCOIdata)
+            const tempval = selectedCOIdata[tempdata]
+            // console.log("interpretation of {} this item is", reason, ite.interpretation)
+            // COIotherarray.push([tempdata, tempval])
+            COIotherarray.push([tempdata,tempval])
+            console.log("COIotherarray:", COIotherarray)
+            localStorage.setItem('COIotherarray', JSON.stringify(COIotherarray))
+            // localStorage.setItem('COIexp', JSON.stringify(COIarray))
+            
+          }
+        }
+        
+        catch{
+          console.log("Error with COI explanation parsing......")
+        }
+          
+        COIarray=[] // clear array after storage, otherwise it will append to the existing array. 
+        }
+        //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
+        handleCOIother();
         
         
       }, [selectedCOI])
@@ -556,6 +588,8 @@ function DrawMap(){
                     <LayersControl.Overlay name = 'COI Layer'>
                     {coida && (coloractiveid == 0 || coloractiveid==1) && <GeoJSON data = {coida} style={{fillColor: 'red',color:'black',weight: 2,fillOpacity: 0.6,}} eventHandlers = {{click: (e) => 
                     {setselectedCOI(e.layer.feature.properties.explanation);
+                      setselectedCOIdata(e.layer.feature.properties)
+                      console.log("COI data is: new test", e.layer.feature.properties)
                     console.log("coi region selected", e.layer.feature.properties.explanation);
                     }}} />}
                     </LayersControl.Overlay>
