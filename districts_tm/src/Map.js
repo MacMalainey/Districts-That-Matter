@@ -678,11 +678,7 @@ function DrawMap(){
                     
                   }}} />}
                     </LayersControl.Overlay>
-                    
 
-                    
-                    
-                    
                     
                     </LayersControl>                             
                   

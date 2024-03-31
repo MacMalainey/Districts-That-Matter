@@ -70,6 +70,8 @@ function Evaluation() {
         const temp = inspectDD[k]
         for (const j in temp){
           inspectdata.push([k,j,temp[j]])
+          
+          
         }
           // console.log(j, inspectDD[k][j])
           // const val = inspectDD[k]
