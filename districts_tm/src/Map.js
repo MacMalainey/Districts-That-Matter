@@ -15,8 +15,8 @@ import { eventWrapper } from "@testing-library/user-event/dist/utils";
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
 let array = [];
-
 let COIarray = [];
+let Visualarray = [];
 localStorage.setItem('coloractive', '')
 localStorage.setItem('mapid','')
 localStorage.setItem('colorid','')
@@ -39,10 +39,13 @@ function DrawMap(){
     const[Dcolorid, setDcolorid] = useState()
     const[selectedCOI, setselectedCOI] = useState(null)
     const[selectedCOIdata, setselectedCOIdata] = useState(null)
-    
-
+    const [vsda, setvsda] = useState(null)
+    const[gradient, setgradient] = useState(null)
+    const showonmap = localStorage.getItem('showonmap')
     const colormapunit = (mapunit) => {
+      // console.log(mapunit)
       if (coloractiveid == 1 && mapunit == selectedmapunit) {
+        
         if (colid == 11) {
           return {
             fillColor: '#ff1a1a',
@@ -423,6 +426,34 @@ function DrawMap(){
     };
 
     
+
+    useEffect(()=>{
+      const handletest = async () =>{
+        try{
+          const response = await axios.get('http://127.0.0.1:5000/api/units/all?include=ages')
+          setgradient(response.data)
+          
+          
+          // for (const temp in testage[0]){
+          //   console.log(testage[0][temp])
+          // }
+        }
+        catch{
+          console.log("Error in Data retrival process....")
+        }
+        
+        // console.log(testage)
+        // testage.push([testage])
+        // settotalpop("this is just a test, Harsh:", testage)
+        // console.log("test Harsh", testage)
+  
+      }
+      handletest();
+    }, [])
+
+
+
+
     useEffect(()=>{
 
       const MapData = async () => {
@@ -430,7 +461,7 @@ function DrawMap(){
           const response = await axios.get('http://127.0.0.1:5000/api/units/all');
           const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
           setallda(Alldata);
-          
+          // console.log("original mapda:", Alldata)
           // console.log(Alldata)
         }
         catch {
@@ -557,6 +588,67 @@ function DrawMap(){
           
          }
 
+
+  const gradientmapunit = (gradient) => {
+
+    // console.log("Demag kharab", gradient)
+
+    const testage = gradient.properties['ages_0_to_4']
+    const  testrc = gradient.properties['rc_ages']
+    const result = (testage / testrc) * 100
+    console.log(result)
+    if(result < 5){
+        return {
+                fillColor: 'lightgrey',
+                color: 'lightgrey'  ,
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+    }
+    else if (result > 5.1 && result < 8.1){
+      return {
+        fillColor: 'grey',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else {
+      return {
+        fillColor: '484848',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    
+
+  
+    
+    
+        
+            // for (const t in testage){
+            //   const num = testage[t].properties['ages_0_to_4']
+            //   const tot = testage[t].properties['rc_ages']
+            //   const newval = (num/tot) * 100
+            //    console.log(testage[t].id, 'ages_0_to_4',newval)
+            //    TTT.push([testage[t].id, 'ages_0_to_4',newval])
+            //   const newTTT = TTT.filter(chk => chk[2] >= 5)
+            //   console.log("filter", newTTT)
+            //   //  testage.push([testage[t].id, testage[t].properties['age_0_to_4'][0]])
+            // }
+          
+          
+            
+              
+          
+        
+            }
+        
+
          
     return (
       
@@ -586,19 +678,24 @@ function DrawMap(){
                   }}} />}
                     </LayersControl.Overlay>
                     <LayersControl.Overlay name = 'COI Layer'>
-                    {coida && (coloractiveid == 0 || coloractiveid==1) && <GeoJSON data = {coida} style={{fillColor: 'red',color:'black',weight: 2,fillOpacity: 0.6,}} eventHandlers = {{click: (e) => 
+                    {coida && (coloractiveid == 0 || coloractiveid==1) && <GeoJSON data = {coida} style={{fillColor: 'red',color:'black',weight: 2,fillOpacity: 0.6}} eventHandlers = {{click: (e) => 
                     {setselectedCOI(e.layer.feature.properties.explanation);
                       setselectedCOIdata(e.layer.feature.properties)
                       console.log("COI data is: new test", e.layer.feature.properties)
                     console.log("coi region selected", e.layer.feature.properties.explanation);
                     }}} />}
                     </LayersControl.Overlay>
+
+                    
+                    
+                    
+                    
                     </LayersControl>                             
                   
                   
                   {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
                   {/* {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />} */}
-                  
+                  {gradient && showonmap ==1 && <GeoJSON data = {gradient} style={gradientmapunit}/>}
                   {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 
                 </MapContainer>

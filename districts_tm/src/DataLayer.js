@@ -1,28 +1,42 @@
-import React from 'react'
-
+import React, { useEffect, useState } from 'react'
+import axios, { all } from 'axios';
+localStorage.setItem('showonmap', '')
 function DataLayer() {
-  
+  const[showVO, setshowVO] = useState(false)
   const explanation = JSON.parse(localStorage.getItem('COIexp'))
+  const [VOcharact, setVOcharact] = useState(null)
+  const [showonmap, setshowonmap] = useState(false)
+
+ //total population: 5032425
  
     
   return (
     <div>
-      <h2>Painted Districts</h2>
-      <input type='checkbox'></input>
-      <label>Show Painted Districts</label>
-      <input type='checkbox'></input>
-      <label>Show Demographic Integration</label> <br></br>
+      
 
-      <h2>Boundary Information</h2>
-      <input type='checkbox'></input>
-      <label>Show County Boundaries</label> <br></br>
+      <h2>Demographic Review</h2>
+      <label>View Visual Overlay</label>
+      <input type='checkbox' value={showVO} onChange={()=>setshowVO(!showVO)}></input> 
+      
+      {showVO && <p><label>Select a Characteristic</label><select value={VOcharact} onChange={(e) => setVOcharact(e.target.value)}>
+        <option value='--'>--</option>
+        <option value='age_0_to_4'>age_0_to_4</option>
+        
+        
+      </select>
+      {VOcharact && <input type='checkbox' value={showonmap} onChange={() =>setshowonmap(!showonmap) }></input>}
+      {console.log(showonmap)}
+      {showonmap && localStorage.setItem('showonmap', 1) }
+      {!showonmap && localStorage.setItem('showonmap', 0) }
+      {console.log(showonmap, localStorage.getItem('showonmap'))}
+      
+      </p>}
+      
+      
       
     
 
-    <select>
-    <option value="age">Age</option>
-    <option value="income">Income</option>
-    </select>
+   
     
     <p>
       <h4>Explanation</h4>

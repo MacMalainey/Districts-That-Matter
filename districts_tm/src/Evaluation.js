@@ -4,6 +4,7 @@ import { click } from '@testing-library/user-event/dist/click';
 import { Chart } from 'chart.js';
 import './Evaluation.css';
 let inspectdata = []
+let TTT= []
 function Evaluation() {
   // implemented FR 6 and FR7 
   // district number is taken as user input and we recalculate population range per district
@@ -14,6 +15,42 @@ function Evaluation() {
   const [selectDD, setselectDD] = useState(false)
   const [selectpop, setselectpop] = useState(false)
   const [selectcharact, setselectcharact] = useState(null)
+
+  useEffect(()=>{
+    const handletest = async () =>{
+      try{
+        const response = await axios.get('http://127.0.0.1:5000/api/units/all?include=ages')
+        const testage = response.data.features
+      
+          for (const t in testage){
+            const num = testage[t].properties['ages_0_to_4']
+            const tot = testage[t].properties['rc_ages']
+            const newval = (num/tot) * 100
+             console.log(testage[t].id, 'ages_0_to_4',newval)
+             TTT.push([testage[t].id, 'ages_0_to_4',newval])
+            const newTTT = TTT.filter(chk => chk[2] >= 5)
+            console.log("filter", newTTT)
+            //  testage.push([testage[t].id, testage[t].properties['age_0_to_4'][0]])
+          }
+        
+        
+        // for (const temp in testage[0]){
+        //   console.log(testage[0][temp])
+        // }
+      }
+      catch{
+        console.log("Error in Data retrival process....")
+      }
+      
+      // console.log(testage)
+      // testage.push([testage])
+      // settotalpop("this is just a test, Harsh:", testage)
+      // console.log("test Harsh", testage)
+
+    }
+    handletest();
+  }, [])
+  
   useEffect(()=>{
     const handlepopulation = async () =>{
       const response = await axios.get('http://127.0.0.1:5000/api/units/totals')

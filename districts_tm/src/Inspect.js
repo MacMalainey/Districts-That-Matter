@@ -128,8 +128,10 @@ function Inspect() {
 
   return (
     <div>
+    <h3><em>Demographic Data </em></h3>
       <label>Map Units</label>
       <input type='checkbox' value={inspectmap} onChange={()=>setinspectmap(!inspectmap)}></input>
+
       <label> COI District</label>
       <input type='checkbox' value={inspectCOI} onChange={()=>setinspectCOI(!inspectCOI)}></input>
       {inspectmap && showdataformap()}
