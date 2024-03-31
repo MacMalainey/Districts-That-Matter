@@ -41,6 +41,9 @@ function DrawMap(){
     const[selectedCOIdata, setselectedCOIdata] = useState(null)
     const [vsda, setvsda] = useState(null)
     const[gradient, setgradient] = useState(null)
+    const [VOincome, setVOincome] = useState(null)
+    const[VOvisibleM, setVOvisibleM] = useState(null) 
+    const[VObirthplace, setVObirthplace] = useState(null)
     const showonmap = localStorage.getItem('showonmap')
     const showCOIonmap = localStorage.getItem('showcoionmap')
     const colormapunit = (mapunit) => {
@@ -426,7 +429,7 @@ function DrawMap(){
 
     };
 
-    
+    // gradient for ages
 
     useEffect(()=>{
       const handletest = async () =>{
@@ -452,6 +455,104 @@ function DrawMap(){
       handletest();
     }, [])
 
+    //gradient for income
+    useEffect(()=>{
+      const handleincome = async () =>{
+        try{
+          const response = await axios.get('http://127.0.0.1:5000/api/units/all?include=income')
+          setVOincome(response.data)
+          
+          
+          // for (const temp in testage[0]){
+          //   console.log(testage[0][temp])
+          // }
+        }
+        catch{
+          console.log("Error in Data retrival process....")
+        }
+        
+        // console.log(testage)
+        // testage.push([testage])
+        // settotalpop("this is just a test, Harsh:", testage)
+        // console.log("test Harsh", testage)
+  
+      }
+      handleincome();
+    }, [])
+
+    // visible minority 
+    useEffect(()=>{
+      const handlevisibleM = async () =>{
+        try{
+          const response = await axios.get('http://127.0.0.1:5000/api/units/all?include=visible_minority')
+          setVOvisibleM(response.data)
+          
+          
+          // for (const temp in testage[0]){
+          //   console.log(testage[0][temp])
+          // }
+        }
+        catch{
+          console.log("Error in Data retrival process....")
+        }
+        
+        // console.log(testage)
+        // testage.push([testage])
+        // settotalpop("this is just a test, Harsh:", testage)
+        // console.log("test Harsh", testage)
+  
+      }
+      handlevisibleM();
+    }, [])
+
+    useEffect(()=>{
+      const handlebirthplace = async () =>{
+        try{
+          const response = await axios.get('http://127.0.0.1:5000/api/units/all?include=birthplace')
+          setVObirthplace(response.data)
+          
+          
+          // for (const temp in testage[0]){
+          //   console.log(testage[0][temp])
+          // }
+        }
+        catch{
+          console.log("Error in Data retrival process....")
+        }
+        
+        // console.log(testage)
+        // testage.push([testage])
+        // settotalpop("this is just a test, Harsh:", testage)
+        // console.log("test Harsh", testage)
+  
+      }
+      handlebirthplace();
+    }, [])
+
+    // population 
+    // useEffect(()=>{
+    //   const handleVOpop = async () =>{
+    //     try{
+    //       const response = await axios.get('http://127.0.0.1:5000/api/units/all')
+    //       setVOpop(response.data)
+          
+          
+    //       // for (const temp in testage[0]){
+    //       //   console.log(testage[0][temp])
+    //       // }
+    //     }
+    //     catch{
+    //       console.log("Error in Data retrival process....")
+    //     }
+        
+    //     // console.log(testage)
+    //     // testage.push([testage])
+    //     // settotalpop("this is just a test, Harsh:", testage)
+    //     // console.log("test Harsh", testage)
+  
+    //   }
+    //   handleVOpop();
+    // }, [])
 
 
 
@@ -462,6 +563,7 @@ function DrawMap(){
           const response = await axios.get('http://127.0.0.1:5000/api/units/all');
           const Alldata = response.data // storing the response data in a var which can be utilized. wrapped requirement.
           setallda(Alldata);
+          
           // console.log("original mapda:", Alldata)
           // console.log(Alldata)
         }
@@ -593,8 +695,8 @@ function DrawMap(){
   const gradientmapunit = (gradient) => {
 
     // console.log("Demag kharab", gradient)
-
-    const testage = gradient.properties['ages_0_to_4']
+    const getvalue = localStorage.getItem('selectedage')
+    const testage = gradient.properties[getvalue]
     const  testrc = gradient.properties['rc_ages']
     const result = (testage / testrc) * 100
     console.log(result)
@@ -625,31 +727,123 @@ function DrawMap(){
          
       };
     }
-    
-
-  
-    
-    
-        
-            // for (const t in testage){
-            //   const num = testage[t].properties['ages_0_to_4']
-            //   const tot = testage[t].properties['rc_ages']
-            //   const newval = (num/tot) * 100
-            //    console.log(testage[t].id, 'ages_0_to_4',newval)
-            //    TTT.push([testage[t].id, 'ages_0_to_4',newval])
-            //   const newTTT = TTT.filter(chk => chk[2] >= 5)
-            //   console.log("filter", newTTT)
-            //   //  testage.push([testage[t].id, testage[t].properties['age_0_to_4'][0]])
-            // }
-          
-          
-            
-              
-          
-        
+           
             }
         
+        const gradientincomemapunit = (VOincome) => {
 
+              // console.log("Demag kharab part 2", VOincome)
+              const getvalue = localStorage.getItem('selectedage')
+              const testincome = VOincome.properties[getvalue]
+              const  testrc = VOincome.properties['rc_income']
+              const result = (testincome / testrc) * 100
+              console.log(result)
+              if(result < 2){
+                  return {
+                          fillColor: 'lightgrey',
+                          color: 'lightgrey'  ,
+                          weight: 0.5, 
+                          fillOpacity: 0.3,
+                           
+                        };
+              }
+              else if (result > 2.1 && result < 4.1){
+                return {
+                  fillColor: 'grey',
+                  color: 'lightgrey',
+                  weight: 0.5, 
+                  fillOpacity: 0.3,
+                   
+                };
+              }
+              else {
+                return {
+                  fillColor: '484848',
+                  color: 'lightgrey',
+                  weight: 0.5, 
+                  fillOpacity: 0.3,
+                   
+                };
+              }
+                     
+        }
+
+        const gradientvisibleMmapunit = (VOvisibleM) => {
+
+          // console.log("Demag kharab part 2", VOincome)
+          const getvalue = localStorage.getItem('selectedage')
+          const testvisibleM = VOvisibleM.properties[getvalue]
+          const  testrc = VOvisibleM.properties['rc_visible_minority']
+          const result = (testvisibleM / testrc) * 100
+          console.log(result)
+          if(result < 2){
+              return {
+                      fillColor: 'lightgrey',
+                      color: 'lightgrey'  ,
+                      weight: 0.5, 
+                      fillOpacity: 0.3,
+                       
+                    };
+          }
+          else if (result > 2.1 && result < 4.1){
+            return {
+              fillColor: 'grey',
+              color: 'lightgrey',
+              weight: 0.5, 
+              fillOpacity: 0.3,
+               
+            };
+          }
+          else {
+            return {
+              fillColor: '484848',
+              color: 'lightgrey',
+              weight: 0.5, 
+              fillOpacity: 0.3,
+               
+            };
+          }
+                 
+    }   
+
+
+    const gradientbirthplacemapunit = (VObirthplace) => {
+
+      // console.log("Demag kharab part 2", VOincome)
+      const getvalue = localStorage.getItem('selectedage')
+      const testbirthplace = VObirthplace.properties[getvalue]
+      const  testrc = VObirthplace.properties['rc_birthplace']
+      const result = (testbirthplace / testrc) * 100
+      console.log(result)
+      if(result < 40){
+          return {
+                  fillColor: 'lightgrey',
+                  color: 'lightgrey'  ,
+                  weight: 0.5, 
+                  fillOpacity: 0.3,
+                   
+                };
+      }
+      else if (result > 40.1 && result < 60){
+        return {
+          fillColor: 'grey',
+          color: 'lightgrey',
+          weight: 0.5, 
+          fillOpacity: 0.3,
+           
+        };
+      }
+      else {
+        return {
+          fillColor: '484848',
+          color: 'lightgrey',
+          weight: 0.5, 
+          fillOpacity: 0.3,
+           
+        };
+      }
+             
+}   
          
     return (
       
@@ -693,6 +887,9 @@ function DrawMap(){
                     }}} />}
                   
                   {gradient && showonmap ==1 && <GeoJSON data = {gradient} style={gradientmapunit}/>}
+                  {VOincome && showonmap ==1 && <GeoJSON data = {VOincome} style={gradientincomemapunit}/>}
+                  {VOvisibleM && showonmap ==1 && <GeoJSON data = {VOvisibleM} style={gradientvisibleMmapunit}/>}
+                  {VObirthplace && showonmap ==1 && <GeoJSON data = {VObirthplace} style={gradientbirthplacemapunit}/>}
                   {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 
                 </MapContainer>
