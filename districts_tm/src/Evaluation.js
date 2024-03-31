@@ -64,6 +64,7 @@ function Evaluation() {
 
   useEffect(()=>{
     const handledistrictdemo = async () =>{
+      
       const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
       const inspectDD = response.data
       for (const k in inspectDD){
@@ -79,7 +80,7 @@ function Evaluation() {
 
       }
       
-      console.log(inspectdata)
+      console.log("Harsh testing, inspect",inspectdata)
     }
     handledistrictdemo();
    inspectdata = []
