@@ -24,21 +24,25 @@ function Sidebar() {
     const [district, setdistrict] = useState(null)
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
-
     const[districtnum, setdistrictnum] = useState(null)
-
+    const [totalpop, settotalpop] = useState(false)
+    const[lower, setlower] = useState(null)
+    const[upper, setupper] = useState(null)
     // const testdistrict = localStorage.getItem('defineddistricts');
     const submit = () => {
         
-        localStorage.setItem('TotalDistricts', districtnum)
+        // localStorage.setItem('TotalDistricts', districtnum)
+        const num = Math.floor(totalpop/districtnum)
+       setlower(Math.floor(num - num * 0.25))
+       setupper(Math.floor(num + num * 0.25))
     }
     const colordata = () =>{
         alert('data sent')
     }
-    const handletab = (tab, idvalue) => {
+    const handletab = (tab) => {
         setselecttab(tab)
-        setid(idvalue)
-        DemoData()
+        // setid(idvalue)
+       
         
       }
 
@@ -66,34 +70,10 @@ function Sidebar() {
         
         localStorage.setItem('colorid', colorid)
     }
-    useEffect(()=>{
-        
-        
-        
-  
-         DemoData();
-         
-          
-          
-        }, [])
+    
     // this function will get demographic data for a defined dguid of a map unit
-    const DemoData = async () => {
-            try {
-              const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
-              const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
-              setdemodata(Alldata)
-              console.log('http://127.0.0.1:5000/api/units/' + id + '/demographics')
-              for (const k in Alldata){
-                  console.log("The {} has value {}", k, Alldata[k])
-                  localStorage.setItem(k,Alldata[k])
-                  
-              }
-            }
-            catch {
-              console.log('Response data not appropriately handled:');
-            }
-          }
-         
+    
+    
     // this function is saving the map units for a district
     
           useEffect(()=>{
@@ -117,7 +97,15 @@ function Sidebar() {
            
           }
             
+    useEffect(()=>{
+            const handlepopulation = async () =>{
+              const response = await axios.get('http://127.0.0.1:5000/api/units/totals')
+              const population = response.data.total_population 
+              settotalpop(population)
         
+            }
+            handlepopulation();
+          }, [])
    
   return (
     
@@ -128,7 +116,16 @@ function Sidebar() {
             <button type='submit' onClick={DefinedDistrict}>Save</button> <br></br>
            
            
-            
+            {totalpop && <p>
+               
+                <label style={{marginRight:'3px'}}><strong> Total Population is: </strong> <em> 5032425 </em></label> 
+                <br></br>
+              
+                <label> <strong> District range is between: </strong> <em> {lower} </em>and <em> {upper} </em> </label> 
+                
+                
+                
+            </p> } 
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 
             
             <FaRegHandPaper className="hand-cursor"  onClick={handlecursor}/>
@@ -186,7 +183,7 @@ function Sidebar() {
             
             {/* <SketchPicker/> */}
             
-            <button onClick={() => handletab('Inspect', localStorage.getItem('mapid'))} style={{fontSize:'20px', padding:'10px', width:'150px'}}>Inspect</button>
+            <button onClick={() => handletab('Inspect')} style={{fontSize:'20px', padding:'10px', width:'150px'}}>Inspect</button>
             <button onClick={() => handletab('DataLayer')} style={{fontSize: '20px', padding: '10px', width:'150px'}}>Data Layer</button>
             <button onClick={() => handletab('Evaluation')} style={{fontSize: '20px', padding: '10px', width:'150px'}}>Evaluation</button>
             {selecttab === 'Inspect' && <Inspect MUid = {id}/>}

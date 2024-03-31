@@ -1,40 +1,79 @@
-import React from 'react'
-
+import React, { useEffect, useState } from 'react'
+import axios, { all } from 'axios';
+localStorage.setItem('showonmap', '')
+localStorage.setItem('showcoionmap', '')
+localStorage.setItem('gradientstore', '')
+let gradientstore = []
 function DataLayer() {
-  
-  const explanation = JSON.parse(localStorage.getItem('COIexp'))
- 
+  const[showVO, setshowVO] = useState(false)
+  // const explanation = JSON.parse(localStorage.getItem('COIexp'))
+  const [VOcharact, setVOcharact] = useState(null)
+  const [showonmap, setshowonmap] = useState(false)
+ const [showcoionmap, setshowcoionmap] = useState(false)
+ //total population: 5032425
+   
+  //  for (const k in GS){
+  //   gradientstore.push(['charact', GS])
+  //  }
+  useEffect(()=>{
     
+    const handlegradientstore = async () =>{
+      gradientstore = []
+      const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
+      const inspectDD = response.data
+      
+      if(gradientstore.length != 137) {
+        for (const k in inspectDD){
+          for (const i in inspectDD[k]){
+            gradientstore.push(['charact', i])
+          }
+          
+          break
+  
+  
+        }
+
+      }
+      
+      
+    
+      console.log(gradientstore)
+      
+    }
+    handlegradientstore();
+    
+  }, [])
+ 
+
   return (
     <div>
-      <h2>Painted Districts</h2>
-      <input type='checkbox'></input>
-      <label>Show Painted Districts</label>
-      <input type='checkbox'></input>
-      <label>Show Demographic Integration</label> <br></br>
+      
+      
 
-      <h2>Boundary Information</h2>
-      <input type='checkbox'></input>
-      <label>Show County Boundaries</label> <br></br>
-      
-    
+      <h2>Demographic Review</h2>
+      <label>Show COI </label>
+      <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
+      {showcoionmap && localStorage.setItem('showcoionmap', 1)}
+      {!showcoionmap && localStorage.setItem('showcoionmap', 0)}
 
-    <select>
-    <option value="age">Age</option>
-    <option value="income">Income</option>
-    </select>
-    
-    <p>
-      <h4>Explanation</h4>
-      <ul>
-        {explanation.map((charact,indexvalue)=>(<li key={indexvalue}>
-          <p><strong>{charact[0]}</strong> : <em> {charact[1]}</em></p>
-        </li>))}
+      <label>View Visual Overlay</label>
+      <input type='checkbox' value={showVO} onChange={()=>setshowVO(!showVO)}></input> 
       
-      </ul>
+      {showVO && <p><label>Select a Characteristic: </label><select value={VOcharact} onChange={(e) => setVOcharact(e.target.value)}>
+      <option value='--'>--</option>
+          {gradientstore.map((charact, index) => 
+          <option key={index}>{charact[1]}</option>
+          )}
+
+      </select>
+      {localStorage.setItem('selectedage', VOcharact)}
+      {VOcharact && <input type='checkbox' value={showonmap} onChange={() =>setshowonmap(!showonmap) }></input>}
+      {console.log(showonmap)}
+      {showonmap && localStorage.setItem('showonmap', 1) }
+      {!showonmap && localStorage.setItem('showonmap', 0) }
       
-    </p>
-    
+      
+      </p>}
       
       
     </div>
