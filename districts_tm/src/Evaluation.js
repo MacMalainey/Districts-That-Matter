@@ -51,15 +51,15 @@ function Evaluation() {
     handletest();
   }, [])
   
-  useEffect(()=>{
-    const handlepopulation = async () =>{
-      const response = await axios.get('http://127.0.0.1:5000/api/units/totals')
-      const population = response.data.total_population 
-      settotalpop(population)
+  // useEffect(()=>{
+  //   const handlepopulation = async () =>{
+  //     const response = await axios.get('http://127.0.0.1:5000/api/units/totals')
+  //     const population = response.data.total_population 
+  //     settotalpop(population)
 
-    }
-    handlepopulation();
-  }, [totalpop])
+  //   }
+  //   handlepopulation();
+  // }, [totalpop])
   
 
   useEffect(()=>{

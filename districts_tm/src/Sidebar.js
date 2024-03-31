@@ -25,10 +25,16 @@ function Sidebar() {
     const[demodata, setdemodata] = useState(null)
     const temp = localStorage.getItem('mapid')
     const[districtnum, setdistrictnum] = useState(null)
+    const [totalpop, settotalpop] = useState(false)
+    const[lower, setlower] = useState(null)
+    const[upper, setupper] = useState(null)
     // const testdistrict = localStorage.getItem('defineddistricts');
     const submit = () => {
         
-        localStorage.setItem('TotalDistricts', districtnum)
+        // localStorage.setItem('TotalDistricts', districtnum)
+        const num = Math.floor(totalpop/districtnum)
+       setlower(Math.floor(num - num * 0.25))
+       setupper(Math.floor(num + num * 0.25))
     }
     const colordata = () =>{
         alert('data sent')
@@ -91,7 +97,15 @@ function Sidebar() {
            
           }
             
+    useEffect(()=>{
+            const handlepopulation = async () =>{
+              const response = await axios.get('http://127.0.0.1:5000/api/units/totals')
+              const population = response.data.total_population 
+              settotalpop(population)
         
+            }
+            handlepopulation();
+          }, [])
    
   return (
     
@@ -102,7 +116,16 @@ function Sidebar() {
             <button type='submit' onClick={DefinedDistrict}>Save</button> <br></br>
            
            
-            
+            {totalpop && <p>
+               
+                <label style={{marginRight:'3px'}}><strong> Total Population is: </strong> <em> 5032425 </em></label> 
+                <br></br>
+              
+                <label> <strong> District range is between: </strong> <em> {lower} </em>and <em> {upper} </em> </label> 
+                
+                
+                
+            </p> } 
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 
             
             <FaRegHandPaper className="hand-cursor"  onClick={handlecursor}/>
