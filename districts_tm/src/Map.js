@@ -42,6 +42,7 @@ function DrawMap(){
     const [vsda, setvsda] = useState(null)
     const[gradient, setgradient] = useState(null)
     const showonmap = localStorage.getItem('showonmap')
+    const showCOIonmap = localStorage.getItem('showcoionmap')
     const colormapunit = (mapunit) => {
       // console.log(mapunit)
       if (coloractiveid == 1 && mapunit == selectedmapunit) {
@@ -677,14 +678,7 @@ function DrawMap(){
                     
                   }}} />}
                     </LayersControl.Overlay>
-                    <LayersControl.Overlay name = 'COI Layer'>
-                    {coida && (coloractiveid == 0 || coloractiveid==1) && <GeoJSON data = {coida} style={{fillColor: 'red',color:'black',weight: 2,fillOpacity: 0.6}} eventHandlers = {{click: (e) => 
-                    {setselectedCOI(e.layer.feature.properties.explanation);
-                      setselectedCOIdata(e.layer.feature.properties)
-                      console.log("COI data is: new test", e.layer.feature.properties)
-                    console.log("coi region selected", e.layer.feature.properties.explanation);
-                    }}} />}
-                    </LayersControl.Overlay>
+                    
 
                     
                     
@@ -695,6 +689,13 @@ function DrawMap(){
                   
                   {/* {allda && <GeoJSON data = {allda} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature.properties.dguid)}}} />} */}
                   {/* {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />} */}
+                  {coida && showCOIonmap==1 && <GeoJSON data = {coida} style={{fillColor: 'red',color:'black',weight: 2,fillOpacity: 0.6}} eventHandlers = {{click: (e) => 
+                    {setselectedCOI(e.layer.feature.properties.explanation);
+                      setselectedCOIdata(e.layer.feature.properties)
+                      console.log("COI data is: new test", e.layer.feature.properties)
+                    console.log("coi region selected", e.layer.feature.properties.explanation);
+                    }}} />}
+                  
                   {gradient && showonmap ==1 && <GeoJSON data = {gradient} style={gradientmapunit}/>}
                   {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 

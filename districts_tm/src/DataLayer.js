@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import axios, { all } from 'axios';
 localStorage.setItem('showonmap', '')
+localStorage.setItem('showcoionmap', '')
+
 function DataLayer() {
   const[showVO, setshowVO] = useState(false)
   const explanation = JSON.parse(localStorage.getItem('COIexp'))
   const [VOcharact, setVOcharact] = useState(null)
   const [showonmap, setshowonmap] = useState(false)
-
+ const [showcoionmap, setshowcoionmap] = useState(false)
  //total population: 5032425
  
     
@@ -15,6 +17,11 @@ function DataLayer() {
       
 
       <h2>Demographic Review</h2>
+      <label>Show COI </label>
+      <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
+      {showcoionmap && localStorage.setItem('showcoionmap', 1)}
+      {!showcoionmap && localStorage.setItem('showcoionmap', 0)}
+
       <label>View Visual Overlay</label>
       <input type='checkbox' value={showVO} onChange={()=>setshowVO(!showVO)}></input> 
       
