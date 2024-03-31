@@ -6,7 +6,7 @@ localStorage.setItem('gradientstore', '')
 let gradientstore = []
 function DataLayer() {
   const[showVO, setshowVO] = useState(false)
-  const explanation = JSON.parse(localStorage.getItem('COIexp'))
+  // const explanation = JSON.parse(localStorage.getItem('COIexp'))
   const [VOcharact, setVOcharact] = useState(null)
   const [showonmap, setshowonmap] = useState(false)
  const [showcoionmap, setshowcoionmap] = useState(false)
@@ -74,24 +74,6 @@ function DataLayer() {
       
       
       </p>}
-      
-      
-      
-    
-
-   
-    
-    <p>
-      <h4>Explanation</h4>
-      <ul>
-        {explanation.map((charact,indexvalue)=>(<li key={indexvalue}>
-          <p><strong>{charact[0]}</strong> : <em> {charact[1]}</em></p>
-        </li>))}
-      
-      </ul>
-      
-    </p>
-    
       
       
     </div>

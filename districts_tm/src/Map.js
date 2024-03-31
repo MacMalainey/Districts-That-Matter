@@ -1,13 +1,14 @@
 import { Draw } from "leaflet"
 import React, {useEffect, useState} from "react"
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Polyline, GeoJSON, LayersControl} from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, GeoJSON, LayersControl, Marker, Popup} from 'react-leaflet';
 import TestPoly from "./TestGeo";
 import L from 'leaflet';
 import './Map.css';
 import axios, { all } from 'axios';
 import Sidebar from "./Sidebar";
 import { eventWrapper } from "@testing-library/user-event/dist/utils";
+import { BsBox } from "react-icons/bs";
 
 // FR1: Map Render
 // FR2: Map Fetch
@@ -20,6 +21,7 @@ let Visualarray = [];
 localStorage.setItem('coloractive', '')
 localStorage.setItem('mapid','')
 localStorage.setItem('colorid','')
+localStorage.setItem('COIexp', '')
 let COIotherarray = [];
 function DrawMap(){
   
@@ -605,33 +607,38 @@ function DrawMap(){
 // handler explaination for each selected id, store in local storage
   
 
-      useEffect(()=>{
-        const handleCOI = () => {
-        try{
-          for (const reason in selectedCOI){
-            const ite = selectedCOI[reason]
-            // console.log("interpretation of {} this item is", reason, ite.interpretation)
-            COIarray.push([reason, ite.interpretation])
-            localStorage.setItem('COIexp', JSON.stringify(COIarray))
+      // useEffect(()=>{
+      //   const handleCOI = () => {
+      //   try{
+         
+      //     for (const reason in selectedCOI){
+      //       const ite = selectedCOI[reason]
+      //       // console.log("interpretation of {} this item is", reason, ite.interpretation)
+      //       COIarray.push([reason, ite.interpretation])
+      //       localStorage.setItem('COIexp', JSON.stringify(COIarray))
             
-          }
-        }
-        
-        catch{
-          console.log("Error with COI explanation parsing......")
-        }
+      //     }
+      //   }
+      
+      //   catch{
+      //     console.log("Error with COI explanation parsing......")
+      //   }
           
-        COIarray=[] // clear array after storage, otherwise it will append to the existing array. 
-        }
-        //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
-        handleCOI();
+      //   COIarray=[] // clear array after storage, otherwise it will append to the existing array. 
+      //   }
+      //   //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
+      //   handleCOI();
         
         
-      }, [selectedCOI])
+      // }, [])
 // handle COI data for selected COI, except explanation, which is handled separately. 
       useEffect(()=>{
         const handleCOIother = () => {
+          COIotherarray=[]
         try{
+          if(COIotherarray.length!=132){
+
+          
           for (const tempdata in selectedCOIdata){
             // console.log(tempdata,selectedCOIdata)
             const tempval = selectedCOIdata[tempdata]
@@ -644,7 +651,7 @@ function DrawMap(){
             
           }
         }
-        
+      }
         catch{
           console.log("Error with COI explanation parsing......")
         }
@@ -655,7 +662,7 @@ function DrawMap(){
         handleCOIother();
         
         
-      }, [selectedCOI])
+      }, [selectedCOIdata])
 //  this gets the mapid only after its set
       useEffect(()=>{
         if (selectedmapunitid !=null){
@@ -844,7 +851,8 @@ function DrawMap(){
       }
              
 }   
-         
+        
+
     return (
       
         <div className="map">  
@@ -881,10 +889,41 @@ function DrawMap(){
                   {/* {allda && eraseractiveid==1 && coloractiveid == 0 && <GeoJSON data = {allda} style={decolormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature)}}} />} */}
                   {coida && showCOIonmap==1 && <GeoJSON data = {coida} style={{fillColor: 'red',color:'black',weight: 2,fillOpacity: 0.6}} eventHandlers = {{click: (e) => 
                     {setselectedCOI(e.layer.feature.properties.explanation);
+                      
+                      
                       setselectedCOIdata(e.layer.feature.properties)
-                      console.log("COI data is: new test", e.layer.feature.properties)
-                    console.log("coi region selected", e.layer.feature.properties.explanation);
-                    }}} />}
+                      COIarray = []
+                      for (const reason in selectedCOI){
+                        const ite = selectedCOI[reason]
+                        // console.log("interpretation of {} this item is", reason, ite.interpretation)
+                        COIarray.push([reason, ite.interpretation])
+                       
+                        
+                      }
+                    //   console.log("COI data is: new test", e.layer.feature.properties)
+                    // console.log("coi region selected", e.layer.feature.properties.explanation);
+                   
+                    
+                  
+                    }}} 
+                    
+                    >
+                      <Popup>
+                      <p> 
+                        <h4>Explanation</h4>
+                        <p> 
+                          <ul>
+                          {COIarray.map((charact,indexvalue) =>(
+                           <li key={indexvalue} ><strong>{charact[0]}</strong> : {charact[1]}</li>
+                        ))}
+
+                          </ul>
+                        
+                        </p>
+                        
+                      </p>
+                    </Popup>
+                    </GeoJSON>}
                   
                   {gradient && showonmap ==1 && <GeoJSON data = {gradient} style={gradientmapunit}/>}
                   {VOincome && showonmap ==1 && <GeoJSON data = {VOincome} style={gradientincomemapunit}/>}

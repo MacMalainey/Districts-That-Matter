@@ -129,8 +129,8 @@ function Evaluation() {
       <label>Show Total Population</label>
       <input type='checkbox' value={selectTP} onChange={() =>setselectTP(!selectTP)}></input>
       {/* <p> {localStorage.getItem('population')}</p> */}
-      {selectTP && <p>total population is {totalpop} <br></br>
-      updated total population per district is: {Math.floor(totalpop/totaldistrict)}
+      {selectTP && <p>total population is  <br></br>
+      
       </p>}
       <label>Compare District's</label>
       <input type='checkbox' value={selectDD} onChange={() =>setselectDD(!selectDD)}></input>
