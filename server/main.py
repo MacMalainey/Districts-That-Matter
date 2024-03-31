@@ -2,11 +2,6 @@ from . import queries, get_db, app, schema, processor
 
 from flask import request
 
-
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
-
 ###################
 ## API ENDPOINTS ##
 ###################

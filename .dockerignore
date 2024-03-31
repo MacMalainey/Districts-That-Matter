@@ -1,0 +1,6 @@
+*/__pycache__
+parser/reference
+districts_tm/build
+districts_tm/node_modules
+.local/dtmTORO*
+*/run.sh
