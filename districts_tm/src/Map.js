@@ -46,6 +46,7 @@ function DrawMap(){
     const [VOincome, setVOincome] = useState(null)
     const[VOvisibleM, setVOvisibleM] = useState(null) 
     const[VObirthplace, setVObirthplace] = useState(null)
+    const[VOpop, setVOpop] = useState(null)
     const showonmap = localStorage.getItem('showonmap')
     const showCOIonmap = localStorage.getItem('showcoionmap')
     const colormapunit = (mapunit) => {
@@ -532,29 +533,29 @@ function DrawMap(){
     }, [])
 
     // population 
-    // useEffect(()=>{
-    //   const handleVOpop = async () =>{
-    //     try{
-    //       const response = await axios.get('http://127.0.0.1:5000/api/units/all')
-    //       setVOpop(response.data)
+    useEffect(()=>{
+      const handleVOpop = async () =>{
+        try{
+          const response = await axios.get('http://127.0.0.1:5000/api/units/all')
+          setVOpop(response.data)
           
           
-    //       // for (const temp in testage[0]){
-    //       //   console.log(testage[0][temp])
-    //       // }
-    //     }
-    //     catch{
-    //       console.log("Error in Data retrival process....")
-    //     }
+          // for (const temp in testage[0]){
+          //   console.log(testage[0][temp])
+          // }
+        }
+        catch{
+          console.log("Error in Data retrival process....")
+        }
         
-    //     // console.log(testage)
-    //     // testage.push([testage])
-    //     // settotalpop("this is just a test, Harsh:", testage)
-    //     // console.log("test Harsh", testage)
+        // console.log(testage)
+        // testage.push([testage])
+        // settotalpop("this is just a test, Harsh:", testage)
+        // console.log("test Harsh", testage)
   
-    //   }
-    //   handleVOpop();
-    // }, [])
+      }
+      handleVOpop();
+    }, [])
 
 
 
@@ -709,7 +710,7 @@ function DrawMap(){
     console.log(result)
     if(result < 5){
         return {
-                fillColor: 'lightgrey',
+                fillColor: '#CCCCCC',
                 color: 'lightgrey'  ,
                 weight: 0.5, 
                 fillOpacity: 0.3,
@@ -718,7 +719,7 @@ function DrawMap(){
     }
     else if (result > 5.1 && result < 8.1){
       return {
-        fillColor: 'grey',
+        fillColor: '#999999',
         color: 'lightgrey',
         weight: 0.5, 
         fillOpacity: 0.3,
@@ -727,7 +728,7 @@ function DrawMap(){
     }
     else {
       return {
-        fillColor: '484848',
+        fillColor: '#333333',
         color: 'lightgrey',
         weight: 0.5, 
         fillOpacity: 0.3,
@@ -747,7 +748,7 @@ function DrawMap(){
               console.log(result)
               if(result < 2){
                   return {
-                          fillColor: 'lightgrey',
+                          fillColor: '#CCCCCC',
                           color: 'lightgrey'  ,
                           weight: 0.5, 
                           fillOpacity: 0.3,
@@ -756,7 +757,7 @@ function DrawMap(){
               }
               else if (result > 2.1 && result < 4.1){
                 return {
-                  fillColor: 'grey',
+                  fillColor: '#999999',
                   color: 'lightgrey',
                   weight: 0.5, 
                   fillOpacity: 0.3,
@@ -765,7 +766,7 @@ function DrawMap(){
               }
               else {
                 return {
-                  fillColor: '484848',
+                  fillColor: '#333333',
                   color: 'lightgrey',
                   weight: 0.5, 
                   fillOpacity: 0.3,
@@ -785,7 +786,7 @@ function DrawMap(){
           console.log(result)
           if(result < 2){
               return {
-                      fillColor: 'lightgrey',
+                      fillColor: '#CCCCCC',
                       color: 'lightgrey'  ,
                       weight: 0.5, 
                       fillOpacity: 0.3,
@@ -794,7 +795,7 @@ function DrawMap(){
           }
           else if (result > 2.1 && result < 4.1){
             return {
-              fillColor: 'grey',
+              fillColor: '#999999',
               color: 'lightgrey',
               weight: 0.5, 
               fillOpacity: 0.3,
@@ -803,7 +804,7 @@ function DrawMap(){
           }
           else {
             return {
-              fillColor: '484848',
+              fillColor: '#333333',
               color: 'lightgrey',
               weight: 0.5, 
               fillOpacity: 0.3,
@@ -824,7 +825,7 @@ function DrawMap(){
       console.log(result)
       if(result < 40){
           return {
-                  fillColor: 'lightgrey',
+                  fillColor: '#CCCCCC',
                   color: 'lightgrey'  ,
                   weight: 0.5, 
                   fillOpacity: 0.3,
@@ -833,7 +834,7 @@ function DrawMap(){
       }
       else if (result > 40.1 && result < 60){
         return {
-          fillColor: 'grey',
+          fillColor: '#999999',
           color: 'lightgrey',
           weight: 0.5, 
           fillOpacity: 0.3,
@@ -842,7 +843,7 @@ function DrawMap(){
       }
       else {
         return {
-          fillColor: '484848',
+          fillColor: '#333333',
           color: 'lightgrey',
           weight: 0.5, 
           fillOpacity: 0.3,
@@ -850,6 +851,55 @@ function DrawMap(){
         };
       }
              
+}   
+
+
+const gradientpopulationmapunit = (VOpop) => {
+
+  // console.log("Demag kharab part 2", VOincome)
+  const getvalue = localStorage.getItem('selectedage')
+  const testpop = VOpop.properties[getvalue]
+  // console.log("pop count", testpop)
+  const  testrc_pop = 29669 
+  const result = (testpop / testrc_pop) * 100
+  // console.log(result)
+  if(result < 30){
+      return {
+              fillColor: '#CCCCCC',
+              color: 'lightgrey'  ,
+              weight: 0.5, 
+              fillOpacity: 0.3,
+               
+            };
+  }
+  else if (result > 30.1 && result < 60){
+    return {
+      fillColor: '#999999',
+      color: 'lightgrey',
+      weight: 0.5, 
+      fillOpacity: 0.3,
+       
+    };
+  }
+  else if (result > 60.1 && result < 80){
+    return {
+      fillColor: '#666666',
+      color: 'lightgrey',
+      weight: 0.5, 
+      fillOpacity: 0.3,
+       
+    };
+  }
+  else {
+    return {
+      fillColor: '#333333',
+      color: 'lightgrey',
+      weight: 0.5, 
+      fillOpacity: 0.3,
+       
+    };
+  }
+         
 }   
         
 
@@ -929,6 +979,7 @@ function DrawMap(){
                   {VOincome && showonmap ==1 && <GeoJSON data = {VOincome} style={gradientincomemapunit}/>}
                   {VOvisibleM && showonmap ==1 && <GeoJSON data = {VOvisibleM} style={gradientvisibleMmapunit}/>}
                   {VObirthplace && showonmap ==1 && <GeoJSON data = {VObirthplace} style={gradientbirthplacemapunit}/>}
+                  {VOpop && showonmap ==1 && <GeoJSON data = {VOpop} style={gradientpopulationmapunit}/>}
                   {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 
                 </MapContainer>
