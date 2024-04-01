@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-BASEDIR=$(dirname "$0")
-cd "$BASEDIR"
+SCRIPTDIR=$(dirname "$0")
+cd "$SCRIPTDIR/.."
+BASEDIR=$(pwd)
 CENSUS_DATA=".local/98-401-X2021006_English_CSV_data_Ontario.csv"
 BOUNDARY_DATA=".local/lda_000a21a_e.shp"
 
@@ -18,7 +19,7 @@ if [[ ! -f "$BOUNDARY_DATA" ]]; then
 fi
 
 if [[ -f ".local/dtmTORO.db" ]]; then
-	echo "Database ($BASEDIR/.local/dtmTORO.db) already exists!"
+	echo "Database ($BASEDIR/../.local/dtmTORO.db) already exists!"
 	echo "To perform a fresh install please remove the file and rerun"
 	exit 1
 fi
@@ -41,5 +42,5 @@ spatialite -bail -silent -batch ".local/dtmTORO.db" "" || fatal
 python3 parser/main.py "$CENSUS_DATA" --schema "parser/characteristics.csv" --filter "parser/GTA_CSD_LIST.txt" --output ".local/dtmTORO.db" || fatal
 echo "Loading boundary data..."
 spatialite -bail -silent -batch ".local/dtmTORO.db" < "parser/load_boundary.sql" || fatal
-echo "Database initialized!!! Execute run.sh to start the server!"
+echo "Database initialized!!!"
 

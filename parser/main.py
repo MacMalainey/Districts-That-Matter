@@ -4,11 +4,9 @@ Utility script for parsing 2021 Canada census data and inserting it into a "Dist
 import argparse
 from pathlib import Path
 import typing
-import os
 
 import csv
 import json
-from lxml import etree
 
 import spatialite
 
