@@ -17,6 +17,40 @@ function Evaluation() {
   const [selectcharact, setselectcharact] = useState(null)
   const [secondcharact, setsecondcharact] = useState(null)
   
+  // useEffect(()=>{
+  //   const handlepopulation = async () =>{
+  //     const response = await axios.get('http://127.0.0.1:5000/api/units/totals')
+  //     const population = response.data.total_population 
+  //     settotalpop(population)
+
+  //   }
+  //   handlepopulation();
+  // }, [totalpop])
+  
+
+  useEffect(()=>{
+    const handledistrictdemo = async () =>{
+      
+      const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
+      const inspectDD = response.data
+      for (const k in inspectDD){
+        const temp = inspectDD[k]
+        for (const j in temp){
+          inspectdata.push([k,j,temp[j]])
+          
+          
+        }
+          // console.log(j, inspectDD[k][j])
+          // const val = inspectDD[k]
+          // inspectdata.push([k,val])
+
+      }
+      
+      console.log("Harsh testing, inspect",inspectdata)
+    }
+    handledistrictdemo();
+   inspectdata = []
+  }, [])
   
 
   useEffect(()=>{
