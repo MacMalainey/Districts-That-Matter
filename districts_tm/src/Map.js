@@ -9,13 +9,14 @@ import axios, { all } from 'axios';
 import Sidebar from "./Sidebar";
 import { eventWrapper } from "@testing-library/user-event/dist/utils";
 import { BsBox } from "react-icons/bs";
+import {colors} from './config';
 
 // FR1: Map Render
 // FR2: Map Fetch
 // FR3: Map.Units.Render
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
-let array = [];
+let changes = {};
 let COIarray = [];
 let Visualarray = [];
 localStorage.setItem('coloractive', '')
@@ -50,386 +51,16 @@ function DrawMap(){
     const showonmap = localStorage.getItem('showonmap')
     const showCOIonmap = localStorage.getItem('showcoionmap')
     const colormapunit = (mapunit) => {
-      // console.log(mapunit)
-      if (coloractiveid == 1 && mapunit == selectedmapunit) {
-        
-        if (colid == 11) {
-          return {
-            fillColor: '#ff1a1a',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-          
-        }
-        else if (colid==12) {
-          return {
-            fillColor: '#ff8080',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==13) {
-          return {
-            fillColor: '#ffb3b3',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==14) {
-          return {
-            fillColor: '#ffe6e6', 
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==15) {
-          return {
-            fillColor: '#ff0000',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==16) {
-          return {
-            fillColor: '#b30000',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==17) {
-          return {
-            fillColor: '#4d0000',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==18) {
-          return {
-            fillColor: '#ff8000', 
-            
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==19) {
-          return {
-            fillColor: '#ffbf00',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==20) {
-          return {
-            fillColor: '#ffff00',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==21) {
-          return {
-            fillColor: '#bfff00',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==22) {
-          return {
-            fillColor: '#bfff00',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==23) {
-          return {
-            fillColor: '#40ff00',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==24) {
-          return {
-            fillColor: '#00ff00',
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==25) {
-          return {
-            fillColor: '#00ff40',
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==26) {
-          return {
-            fillColor: '#00ff80',
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==27) {
-          return {
-            fillColor: '#00ffbf',
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==28) {
-          return {
-            fillColor: '#00ffff',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==29) {
-          return {
-            fillColor: '#00bfff', 
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==30) {
-          return {
-            fillColor: '#0080ff', 
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==31) {
-          return {
-            fillColor: '#0040ff',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==32) {
-          return {
-            fillColor: '#0000ff', 
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==33) {
-          return {
-            fillColor: '#4000ff',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==34) {
-          return {
-            fillColor: '#8000ff', 
-            
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==35) {
-          return {
-            fillColor: '#bf00ff',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==36) {
-          return {
-            fillColor: '#ff00ff',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==37) {
-          return {
-            fillColor: '#ff00bf',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==38) {
-          return {
-            fillColor: '#ff0080', 
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==39) {
-          return {
-            fillColor: '#ff0040',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==40) {
-          return {
-            fillColor: '#996680',
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==41) {
-          return {
-            fillColor: '#80c4b7',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==42) {
-          return {
-            fillColor: '#eeeeee', 
-            
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==43) {
-          return {
-            fillColor: '#feffba',  
-            
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==44) {
-          return {
-            fillColor: '#c90076',  
-            weight: 0.5, 
-            
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==45) {
-          return {
-            fillColor: '#073763', 
-            
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==46) {
-          return {
-            fillColor: '#669999',
-              
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==47) {
-          return {
-            fillColor: '#ffa500',
-             
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==48) {
-          return {
-            fillColor: '#476b6b', 
-            
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==49) {
-          return {
-            fillColor: '#854442', 
-            
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==50) {
-          return {
-            fillColor: '#f24e70',
-            color: 'grey',  
-            weight: 0.5, 
-            fillOpacity: 0.6,
-             
-          };
-        }
-        else if (colid==100){
-          return {
-            fillColor: '#c2dcff',
-            weight: 2, 
-            fillOpacity: 0.6,
-            
-            
-          }
-        }
-        
-        
-        
-        
+      const base = {
+        fillOpacity: 0,
+        weight: 0
+      };
+      const did = changes[mapunit.id];
+      if (did != undefined || did != null) {
+        base['fillOpacity'] = 0.6;
+        base['fillColor'] = colors[did - 11]
       }
- 
-
+      return base
     };
 
     // gradient for ages
@@ -684,10 +315,11 @@ function DrawMap(){
 
           
             if (val2==100){
-                array.push(([val1, null]))
+
+                changes[val1] = null
               }
             else {
-              array.push(([val1, parseInt(val2)]))
+              changes[val1] = parseInt(val2)
             }
             
               
@@ -980,7 +612,7 @@ const gradientpopulationmapunit = (VOpop) => {
                   {VOvisibleM && showonmap ==1 && <GeoJSON data = {VOvisibleM} style={gradientvisibleMmapunit}/>}
                   {VObirthplace && showonmap ==1 && <GeoJSON data = {VObirthplace} style={gradientbirthplacemapunit}/>}
                   {VOpop && showonmap ==1 && <GeoJSON data = {VOpop} style={gradientpopulationmapunit}/>}
-                  {localStorage.setItem('defineddistricts', JSON.stringify(array))}
+                  {localStorage.setItem('defineddistricts', JSON.stringify(changes))}
                 
                 </MapContainer>
 
