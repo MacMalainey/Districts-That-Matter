@@ -920,16 +920,7 @@ const gradientpopulationmapunit = (VOpop) => {
                     {allda  &&  <GeoJSON data = {allda} style={{ fillColor: 'transparent', color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunitid(e.layer.feature.id)} }} />}
 
                     </LayersControl.BaseLayer>
-                    <LayersControl.Overlay name = 'ColorLayer'>
-                    
-                    {allda && (coloractiveid == 1 || coloractiveid==0) && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
-                    {console.log(e.layer.feature.id)}
-                    setselectedmapunitid(e.layer.feature.id);
-                    
-                    
-                    
-                  }}} />}
-                    </LayersControl.Overlay>
+    
 
                     
                     </LayersControl>                             
@@ -950,8 +941,7 @@ const gradientpopulationmapunit = (VOpop) => {
                        
                         
                       }
-                    //   console.log("COI data is: new test", e.layer.feature.properties)
-                    // console.log("coi region selected", e.layer.feature.properties.explanation);
+        
                    
                     
                   
@@ -974,7 +964,13 @@ const gradientpopulationmapunit = (VOpop) => {
                       </p>
                     </Popup>
                     </GeoJSON>}
-                  
+                    {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
+                    {console.log(e.layer.feature.id)}
+                    setselectedmapunitid(e.layer.feature.id);
+                    
+                    
+                    
+                  }}} />}
                   {gradient && showonmap ==1 && <GeoJSON data = {gradient} style={gradientmapunit}/>}
                   {VOincome && showonmap ==1 && <GeoJSON data = {VOincome} style={gradientincomemapunit}/>}
                   {VOvisibleM && showonmap ==1 && <GeoJSON data = {VOvisibleM} style={gradientvisibleMmapunit}/>}

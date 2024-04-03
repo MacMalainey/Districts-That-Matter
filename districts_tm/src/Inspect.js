@@ -9,36 +9,48 @@ function Inspect() {
     const[id,setid] = useState(null)
     const[inspectmap, setinspectmap] = useState(false)
     const[inspectCOI,setinspectCOI]= useState(false)
+    const [,setrefresh]= useState(false)
     const[COIcharact, setCOIcharact] = useState(null)
     const COIotherarray = JSON.parse(localStorage.getItem('COIotherarray'))
-
+    const[newdata, setnewdata] = useState([])
     useEffect(()=>{
+        setid(localStorage.getItem('mapid'))
+        if (id){
+            DemoData()
+            
+        }
+    })
+
+   
         const DemoData = async () => {
-            setid(localStorage.getItem('mapid'))
+            
             try {
+              mapdemoarray = []
               const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
               const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
             //   setdemodata(Alldata)
-              console.log('http://127.0.0.1:5000/api/units/' + id + '/demographics')
+              
                     for (const k in Alldata){
                         mapdemoarray.push([id, k, Alldata[k]])
                         console.log("this is map data for an id", mapdemoarray)
                     }
-
+                    console.log("array has changed too", id, mapdemoarray)
+                    setnewdata(mapdemoarray)
             }
+        
             catch {
               console.log('Response data not appropriately handled:');
             }
           }
-         DemoData();
-         mapdemoarray = []
+         
+         
 
-    })
+   
 
         const handlemapdemo = () => {
-            const filteredmaparray = mapdemoarray.filter((val) => val[1].startsWith(charact) && val[2]!==0)
+            const filteredmaparray = newdata.filter((val) => val[1].startsWith(charact) && val[2]!==0)
             return <p>
-                    {charact && <ul>
+                    {newdata && <ul>
                         {filteredmaparray.map((charact,indexvalue)=>(<li key={indexvalue}>
             <table>
                 <thead>

@@ -204,7 +204,7 @@ function Evaluation() {
               <th></th>
               <th></th>
               <th>{secondcharact}</th>
-              <th>Progress</th>
+              
             </tr >
 
        
@@ -219,7 +219,7 @@ function Evaluation() {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><progress max={5000} value={charact[2]} > </progress></td>
+                
               </tr>
 
         ))}
