@@ -9,10 +9,11 @@ function Inspect() {
     const[id,setid] = useState(null)
     const[inspectmap, setinspectmap] = useState(false)
     const[inspectCOI,setinspectCOI]= useState(false)
-    const [,setrefresh]= useState(false)
     const[COIcharact, setCOIcharact] = useState(null)
     const COIotherarray = JSON.parse(localStorage.getItem('COIotherarray'))
     const[newdata, setnewdata] = useState([])
+    const [showcoionmap, setshowcoionmap] = useState(false)
+    const[newcoidata, setnewcoidata] = useState([])
     useEffect(()=>{
         setid(localStorage.getItem('mapid'))
         if (id){
@@ -92,11 +93,16 @@ function Inspect() {
             </p>
         }
 
+        useEffect(()=>{
+            setnewcoidata(COIotherarray)
+        })
+
+
         const handlecoidemo = () => {
             
-            const filteredmaparray = COIotherarray.filter((par) => par[0].startsWith(COIcharact) && !par[0].includes('ratio') && par[1]!==0)
+            const filteredmaparray = newcoidata.filter((par) => par[0].startsWith(COIcharact) && !par[0].includes('ratio') && par[1]!==0)
             return <p>
-                    {COIcharact && <ul>
+                    {newcoidata && <ul>
                         {filteredmaparray.map((charact,indexvalue)=>(<li key={indexvalue}>
             <table>
                 <thead>
@@ -143,9 +149,15 @@ function Inspect() {
     <h3><em>Demographic Data </em></h3>
       <label>Map Units</label>
       <input type='checkbox' value={inspectmap} onChange={()=>setinspectmap(!inspectmap)}></input>
-
-      <label> COI District</label>
+      <label>Show COI on Map</label>
+      <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
+      {showcoionmap && localStorage.setItem('showcoionmap', 1)}
+      {!showcoionmap && localStorage.setItem('showcoionmap', 0)}
+      {showcoionmap&& <p>
+        <label> COI District</label>
       <input type='checkbox' value={inspectCOI} onChange={()=>setinspectCOI(!inspectCOI)}></input>
+        </p>}
+      
       {inspectmap && showdataformap()}
       
       
