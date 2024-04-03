@@ -11,6 +11,7 @@ function Inspect() {
     const[inspectCOI,setinspectCOI]= useState(false)
     const[COIcharact, setCOIcharact] = useState(null)
     const COIotherarray = JSON.parse(localStorage.getItem('COIotherarray'))
+
     const[newdata, setnewdata] = useState([])
     const [showcoionmap, setshowcoionmap] = useState(false)
     const[newcoidata, setnewcoidata] = useState([])
@@ -31,18 +32,22 @@ function Inspect() {
               const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
             //   setdemodata(Alldata)
               
+
                     for (const k in Alldata){
                         mapdemoarray.push([id, k, Alldata[k]])
                         console.log("this is map data for an id", mapdemoarray)
                     }
+
                     console.log("array has changed too", id, mapdemoarray)
                     setnewdata(mapdemoarray)
             }
         
+
             catch {
               console.log('Response data not appropriately handled:');
             }
           }
+
          
          
 
@@ -52,6 +57,7 @@ function Inspect() {
             const filteredmaparray = newdata.filter((val) => val[1].startsWith(charact) && val[2]!==0)
             return <p>
                     {newdata && <ul>
+
                         {filteredmaparray.map((charact,indexvalue)=>(<li key={indexvalue}>
             <table>
                 <thead>
@@ -89,6 +95,7 @@ function Inspect() {
             <option value = 'rc'> RC </option>
       </select>
 
+
             {charact && handlemapdemo()}
             </p>
         }
@@ -121,6 +128,7 @@ function Inspect() {
             
         }
 
+
         const showdataforCOI = () => {
             return <p> 
                     <label>Select a COI Characteristic : </label>
@@ -149,6 +157,7 @@ function Inspect() {
     <h3><em>Demographic Data </em></h3>
       <label>Map Units</label>
       <input type='checkbox' value={inspectmap} onChange={()=>setinspectmap(!inspectmap)}></input>
+
       <label>Show COI on Map</label>
       <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
       {showcoionmap && localStorage.setItem('showcoionmap', 1)}
@@ -160,6 +169,7 @@ function Inspect() {
       
       {inspectmap && showdataformap()}
       
+
       
     {inspectCOI && showdataforCOI()}
     

@@ -17,6 +17,7 @@ function Evaluation() {
   const [selectcharact, setselectcharact] = useState(null)
   const [secondcharact, setsecondcharact] = useState(null)
   
+
   
 
   useEffect(()=>{
@@ -39,6 +40,8 @@ function Evaluation() {
       console.log("Harsh testing, inspect",inspectdata)
     }
     handledistrictdemo();
+
+ 
    
   }, [])
   
@@ -204,7 +207,9 @@ function Evaluation() {
               <th></th>
               <th></th>
               <th>{secondcharact}</th>
+
               
+
             </tr >
 
        
@@ -219,7 +224,7 @@ function Evaluation() {
                 <td></td>
                 <td></td>
                 <td></td>
-                
+
               </tr>
 
         ))}
@@ -244,6 +249,7 @@ function Evaluation() {
     </p>
     
   }
+
   
   const handlepopulation = () => {
     const filteredinspectcharact = inspectdata.filter((arr)=>arr[1]==='population')
@@ -377,6 +383,7 @@ function Evaluation() {
     <select value={secondcharact} onChange={(e)=>setsecondcharact(e.target.value)}>
     <option style={{fontStyle:'italic'}}> select...</option>
   
+
     {inspectdata.map((charact,indexvalue) =>(
       <option key={indexvalue} value={charact[1]}>{charact[1]}</option>
     ))} */}

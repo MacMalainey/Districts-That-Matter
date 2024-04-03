@@ -606,6 +606,7 @@ function DrawMap(){
           
         }, [coida])
 
+
 // handle COI data for selected COI, except explanation, which is handled separately. 
       useEffect(()=>{
         const handleCOIother = () => {
@@ -682,15 +683,18 @@ function DrawMap(){
     const  testrc = gradient.properties['rc_ages']
     const result = (testage / testrc) * 100
     console.log(result)
+
     if(result < 14.9){
         return {
                 fillColor: '#D3D3D3',
+
                 color: 'lightgrey'  ,
                 weight: 0.5, 
                 fillOpacity: 0.3,
                  
               };
     }
+
     else if (result > 15 && result < 29.9){
       return {
         fillColor: '#C0C0C0',
@@ -1047,6 +1051,7 @@ else {
          
 }   
 
+
     return (
       
         <div className="map">  
@@ -1067,6 +1072,7 @@ else {
     
 
                     
+
                     </LayersControl>                             
                   
                   
@@ -1085,6 +1091,7 @@ else {
                        
                         
                       }
+
         
                    
                     
@@ -1115,6 +1122,7 @@ else {
                     
                     
                   }}} />}
+
                   {gradient && showonmap ==1 && <GeoJSON data = {gradient} style={gradientmapunit}/>}
                   {VOincome && showonmap ==1 && <GeoJSON data = {VOincome} style={gradientincomemapunit}/>}
                   {VOvisibleM && showonmap ==1 && <GeoJSON data = {VOvisibleM} style={gradientvisibleMmapunit}/>}
