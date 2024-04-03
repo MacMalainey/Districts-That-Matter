@@ -56,11 +56,15 @@ function DrawMap(){
         weight: 0
       };
       const did = changes[mapunit.id];
-      if (did != undefined || did != null) {
-        base['fillOpacity'] = 0.6;
-        base['fillColor'] = colors[did - 11]
-      }
-      return base
+      
+        if (did != undefined || did != null) {
+          base['fillOpacity'] = 0.6;
+          base['fillColor'] = colors[did - 11]
+        }
+        return base
+
+      
+      
     };
 
     // gradient for ages
@@ -235,7 +239,7 @@ function DrawMap(){
          COIData();
           
           
-        }, [coida])
+        }, [])
 
 
 // handle COI data for selected COI, except explanation, which is handled separately. 

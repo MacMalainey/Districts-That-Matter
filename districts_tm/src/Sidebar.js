@@ -92,7 +92,7 @@ function Sidebar() {
             }
             
 
-
+            console.log("Harsh testing districts:", array)
             await axios.post('http://127.0.0.1:5000/api/districts/update', testar).catch(error =>{console.log(error)});
 
         
