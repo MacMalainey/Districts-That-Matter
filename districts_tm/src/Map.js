@@ -54,7 +54,7 @@ function DrawMap(){
     const colormapunit = (mapunit) => {
       const base = {
         fillOpacity: 0,
-        weight: 0
+        weight: 0.5
       };
       
       const did = changes[mapunit.id];
@@ -70,7 +70,7 @@ function DrawMap(){
 
       const handledistrict = async () =>{
         try{
-          const response = await axios.get('http://127.0.0.1:5000/api/district')
+          const response = await axios.get('http://127.0.0.1:5000/api/districts')
           changes = response.data
           setChanges(changes)
           
@@ -781,6 +781,11 @@ else {
                     </GeoJSON>}
                     {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
                     {console.log(e.layer.feature.id)}
+                    let cid = localStorage.getItem('colorid')
+                    if (cid == 100) {
+                      cid = null
+                    }
+                    changes[e.layer.feature.id] = cid
                     setselectedmapunitid(e.layer.feature.id);
                     
                     
