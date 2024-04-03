@@ -46,6 +46,7 @@ function DrawMap(){
     const [VOincome, setVOincome] = useState(null)
     const[VOvisibleM, setVOvisibleM] = useState(null) 
     const[VObirthplace, setVObirthplace] = useState(null)
+    const[VOpop, setVOpop] = useState(null)
     const showonmap = localStorage.getItem('showonmap')
     const showCOIonmap = localStorage.getItem('showcoionmap')
     const colormapunit = (mapunit) => {
@@ -532,29 +533,29 @@ function DrawMap(){
     }, [])
 
     // population 
-    // useEffect(()=>{
-    //   const handleVOpop = async () =>{
-    //     try{
-    //       const response = await axios.get('http://127.0.0.1:5000/api/units/all')
-    //       setVOpop(response.data)
+    useEffect(()=>{
+      const handleVOpop = async () =>{
+        try{
+          const response = await axios.get('http://127.0.0.1:5000/api/units/all')
+          setVOpop(response.data)
           
           
-    //       // for (const temp in testage[0]){
-    //       //   console.log(testage[0][temp])
-    //       // }
-    //     }
-    //     catch{
-    //       console.log("Error in Data retrival process....")
-    //     }
+          // for (const temp in testage[0]){
+          //   console.log(testage[0][temp])
+          // }
+        }
+        catch{
+          console.log("Error in Data retrival process....")
+        }
         
-    //     // console.log(testage)
-    //     // testage.push([testage])
-    //     // settotalpop("this is just a test, Harsh:", testage)
-    //     // console.log("test Harsh", testage)
+        // console.log(testage)
+        // testage.push([testage])
+        // settotalpop("this is just a test, Harsh:", testage)
+        // console.log("test Harsh", testage)
   
-    //   }
-    //   handleVOpop();
-    // }, [])
+      }
+      handleVOpop();
+    }, [])
 
 
 
@@ -604,33 +605,7 @@ function DrawMap(){
           
           
         }, [coida])
-// handler explaination for each selected id, store in local storage
-  
 
-      // useEffect(()=>{
-      //   const handleCOI = () => {
-      //   try{
-         
-      //     for (const reason in selectedCOI){
-      //       const ite = selectedCOI[reason]
-      //       // console.log("interpretation of {} this item is", reason, ite.interpretation)
-      //       COIarray.push([reason, ite.interpretation])
-      //       localStorage.setItem('COIexp', JSON.stringify(COIarray))
-            
-      //     }
-      //   }
-      
-      //   catch{
-      //     console.log("Error with COI explanation parsing......")
-      //   }
-          
-      //   COIarray=[] // clear array after storage, otherwise it will append to the existing array. 
-      //   }
-      //   //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
-      //   handleCOI();
-        
-        
-      // }, [])
 // handle COI data for selected COI, except explanation, which is handled separately. 
       useEffect(()=>{
         const handleCOIother = () => {
@@ -707,18 +682,54 @@ function DrawMap(){
     const  testrc = gradient.properties['rc_ages']
     const result = (testage / testrc) * 100
     console.log(result)
-    if(result < 5){
+    if(result < 14.9){
         return {
-                fillColor: 'lightgrey',
+                fillColor: '#D3D3D3',
                 color: 'lightgrey'  ,
                 weight: 0.5, 
                 fillOpacity: 0.3,
                  
               };
     }
-    else if (result > 5.1 && result < 8.1){
+    else if (result > 15 && result < 29.9){
       return {
-        fillColor: 'grey',
+        fillColor: '#C0C0C0',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 30 && result < 44.9){
+      return {
+        fillColor: '#DCDCDC',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 45 && result < 59.9){
+      return {
+        fillColor: '#808080',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 60 && result < 74.9){
+      return {
+        fillColor: '#696969',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 75 && result < 89.9){
+      return {
+        fillColor: '#A9A9A9',
         color: 'lightgrey',
         weight: 0.5, 
         fillOpacity: 0.3,
@@ -727,7 +738,7 @@ function DrawMap(){
     }
     else {
       return {
-        fillColor: '484848',
+        fillColor: '#444444',
         color: 'lightgrey',
         weight: 0.5, 
         fillOpacity: 0.3,
@@ -745,33 +756,69 @@ function DrawMap(){
               const  testrc = VOincome.properties['rc_income']
               const result = (testincome / testrc) * 100
               console.log(result)
-              if(result < 2){
-                  return {
-                          fillColor: 'lightgrey',
-                          color: 'lightgrey'  ,
-                          weight: 0.5, 
-                          fillOpacity: 0.3,
-                           
-                        };
-              }
-              else if (result > 2.1 && result < 4.1){
+              if(result < 14.9){
                 return {
-                  fillColor: 'grey',
-                  color: 'lightgrey',
-                  weight: 0.5, 
-                  fillOpacity: 0.3,
-                   
-                };
-              }
-              else {
-                return {
-                  fillColor: '484848',
-                  color: 'lightgrey',
-                  weight: 0.5, 
-                  fillOpacity: 0.3,
-                   
-                };
-              }
+                        fillColor: '#D3D3D3',
+                        color: 'lightgrey'  ,
+                        weight: 0.5, 
+                        fillOpacity: 0.3,
+                         
+                      };
+            }
+            else if (result > 15 && result < 29.9){
+              return {
+                fillColor: '#C0C0C0',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else if (result > 30 && result < 44.9){
+              return {
+                fillColor: '#DCDCDC',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else if (result > 45 && result < 59.9){
+              return {
+                fillColor: '#808080',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else if (result > 60 && result < 74.9){
+              return {
+                fillColor: '#696969',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else if (result > 75 && result < 89.9){
+              return {
+                fillColor: '#A9A9A9',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else {
+              return {
+                fillColor: '#444444',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
                      
         }
 
@@ -783,33 +830,69 @@ function DrawMap(){
           const  testrc = VOvisibleM.properties['rc_visible_minority']
           const result = (testvisibleM / testrc) * 100
           console.log(result)
-          if(result < 2){
-              return {
-                      fillColor: 'lightgrey',
-                      color: 'lightgrey'  ,
-                      weight: 0.5, 
-                      fillOpacity: 0.3,
-                       
-                    };
-          }
-          else if (result > 2.1 && result < 4.1){
+          if(result < 14.9){
             return {
-              fillColor: 'grey',
-              color: 'lightgrey',
-              weight: 0.5, 
-              fillOpacity: 0.3,
-               
-            };
-          }
-          else {
-            return {
-              fillColor: '484848',
-              color: 'lightgrey',
-              weight: 0.5, 
-              fillOpacity: 0.3,
-               
-            };
-          }
+                    fillColor: '#D3D3D3',
+                    color: 'lightgrey'  ,
+                    weight: 0.5, 
+                    fillOpacity: 0.3,
+                     
+                  };
+        }
+        else if (result > 15 && result < 29.9){
+          return {
+            fillColor: '#C0C0C0',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else if (result > 30 && result < 44.9){
+          return {
+            fillColor: '#DCDCDC',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else if (result > 45 && result < 59.9){
+          return {
+            fillColor: '#808080',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else if (result > 60 && result < 74.9){
+          return {
+            fillColor: '#696969',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else if (result > 75 && result < 89.9){
+          return {
+            fillColor: '#A9A9A9',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else {
+          return {
+            fillColor: '#444444',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
                  
     }   
 
@@ -822,36 +905,147 @@ function DrawMap(){
       const  testrc = VObirthplace.properties['rc_birthplace']
       const result = (testbirthplace / testrc) * 100
       console.log(result)
-      if(result < 40){
-          return {
-                  fillColor: 'lightgrey',
-                  color: 'lightgrey'  ,
-                  weight: 0.5, 
-                  fillOpacity: 0.3,
-                   
-                };
-      }
-      else if (result > 40.1 && result < 60){
+      if(result < 14.9){
         return {
-          fillColor: 'grey',
-          color: 'lightgrey',
-          weight: 0.5, 
-          fillOpacity: 0.3,
-           
-        };
-      }
-      else {
-        return {
-          fillColor: '484848',
-          color: 'lightgrey',
-          weight: 0.5, 
-          fillOpacity: 0.3,
-           
-        };
-      }
+                fillColor: '#D3D3D3',
+                color: 'lightgrey'  ,
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+    }
+    else if (result > 15 && result < 29.9){
+      return {
+        fillColor: '#C0C0C0',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 30 && result < 44.9){
+      return {
+        fillColor: '#DCDCDC',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 45 && result < 59.9){
+      return {
+        fillColor: '#808080',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 60 && result < 74.9){
+      return {
+        fillColor: '#696969',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 75 && result < 89.9){
+      return {
+        fillColor: '#A9A9A9',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else {
+      return {
+        fillColor: '#444444',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
              
 }   
-        
+
+
+const gradientpopulationmapunit = (VOpop) => {
+
+  // console.log("Demag kharab part 2", VOincome)
+  const getvalue = localStorage.getItem('selectedage')
+  const testpop = VOpop.properties[getvalue]
+  // console.log("pop count", testpop)
+  const  testrc_pop = 29669 
+  const result = (testpop / testrc_pop) * 100
+  // console.log(result)
+  if(result < 14.9){
+    return {
+            fillColor: '#D3D3D3',
+            color: 'lightgrey'  ,
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+}
+else if (result > 15 && result < 29.9){
+  return {
+    fillColor: '#C0C0C0',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else if (result > 30 && result < 44.9){
+  return {
+    fillColor: '#DCDCDC',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else if (result > 45 && result < 59.9){
+  return {
+    fillColor: '#808080',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else if (result > 60 && result < 74.9){
+  return {
+    fillColor: '#696969',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else if (result > 75 && result < 89.9){
+  return {
+    fillColor: '#A9A9A9',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else {
+  return {
+    fillColor: '#444444',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+         
+}   
 
     return (
       
@@ -870,16 +1064,7 @@ function DrawMap(){
                     {allda  &&  <GeoJSON data = {allda} style={{ fillColor: 'transparent', color: 'grey', weight: 0.5}} eventHandlers={{click: (e) =>{setselectedmapunitid(e.layer.feature.id)} }} />}
 
                     </LayersControl.BaseLayer>
-                    <LayersControl.Overlay name = 'ColorLayer'>
-                    
-                    {allda && (coloractiveid == 1 || coloractiveid==0) && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
-                    {console.log(e.layer.feature.id)}
-                    setselectedmapunitid(e.layer.feature.id);
-                    
-                    
-                    
-                  }}} />}
-                    </LayersControl.Overlay>
+    
 
                     
                     </LayersControl>                             
@@ -900,8 +1085,7 @@ function DrawMap(){
                        
                         
                       }
-                    //   console.log("COI data is: new test", e.layer.feature.properties)
-                    // console.log("coi region selected", e.layer.feature.properties.explanation);
+        
                    
                     
                   
@@ -924,11 +1108,18 @@ function DrawMap(){
                       </p>
                     </Popup>
                     </GeoJSON>}
-                  
+                    {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
+                    {console.log(e.layer.feature.id)}
+                    setselectedmapunitid(e.layer.feature.id);
+                    
+                    
+                    
+                  }}} />}
                   {gradient && showonmap ==1 && <GeoJSON data = {gradient} style={gradientmapunit}/>}
                   {VOincome && showonmap ==1 && <GeoJSON data = {VOincome} style={gradientincomemapunit}/>}
                   {VOvisibleM && showonmap ==1 && <GeoJSON data = {VOvisibleM} style={gradientvisibleMmapunit}/>}
                   {VObirthplace && showonmap ==1 && <GeoJSON data = {VObirthplace} style={gradientbirthplacemapunit}/>}
+                  {VOpop && showonmap ==1 && <GeoJSON data = {VOpop} style={gradientpopulationmapunit}/>}
                   {localStorage.setItem('defineddistricts', JSON.stringify(array))}
                 
                 </MapContainer>

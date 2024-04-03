@@ -87,13 +87,9 @@ function Sidebar() {
             
             const testar = JSON.parse(localStorage.getItem('defineddistricts'))
             
-            const testing = [["2021S051235191288",40],["2021S051235191287",40],["2021S051235191290",40],["2021S051235191038",40],["2021S051235191104",40],["2021S051235191290",null],["2021S051235190747",47],["2021S051235190433",47]]
-            console.log("testing returned array", testar)
             await axios.post('http://127.0.0.1:5000/api/districts/update', testar).catch(error =>{console.log(error)});
         
-        
-            
-           
+
            
           }
             
@@ -134,46 +130,46 @@ function Sidebar() {
              <br></br>
             {colorpalette && (
                 <>
-            <button style={{background:'#ff1a1a', borderRadius: 10,height:'35px', color:'#ff1a1a'}} onClick={() => sendid(11)}>One</button>
-            <button style={{background:'#ff8080', borderRadius: 10, height:'35px', color:'#ff8080'}} onClick={() => sendid(12)}>One</button>
-            <button style={{background:'#ffb3b3', borderRadius:10,height:'35px', color:'#ffb3b3'}} onClick={() => sendid(13)}>One</button> 
-            <button style={{background:'#ffe6e6', borderRadius:10, height:'35px', color:'#ffe6e6'}} onClick={() => sendid(14)}>One</button>
-            <button style={{background :'#ff0000', borderRadius: 10, height:'35px', color: '#ff0000'}} onClick={ () => sendid(15)}>One</button>
-            <button style={{background:'#b30000', borderRadius:10, height:'35px', color:'#b30000'}} onClick={() => sendid(16)}>One</button> 
-            <button style={{background:'#4d0000', borderRadius:10, height:'35px', color:'#4d0000'}} onClick={() => sendid(17)}>One</button> 
-            <button style={{background:'#ff8000', borderRadius:10, height:'35px', color:'#ff8000'}} onClick={() => sendid(18)}>One</button> 
-            <button style={{background:'#ffbf00', borderRadius:10, height:'35px', color:'#ffbf00'}} onClick={() => sendid(19)}>One</button> 
-            <button style={{background:'#ffff00', borderRadius:10, height:'35px', color:'#ffff00'}} onClick={() => sendid(20)}>One</button> <br></br>
-            <button style={{background :'#bfff00', borderRadius: 10, height:'35px', color: '#bfff00'}} onClick={ () => sendid(21)}>One</button>
-            <button style={{background:'#80ff00', borderRadius: 10, height:'35px', color:'#80ff00'}} onClick={() => sendid(22)}>One</button>
-            <button style={{background:'#40ff00', borderRadius: 10, height:'35px', color:'#40ff00'}} onClick={() => sendid(23)}>One</button>
-            <button style={{background:'#00ff00', borderRadius:10, height:'35px', color:'#00ff00'}} onClick={() => sendid(24)}>One</button> 
-            <button style={{background:'#00ff40', borderRadius:10, height:'35px', color:'#00ff40'}} onClick={() => sendid(25)}>One</button>
-            <button style={{background:'#00ff80	', borderRadius:10, height:'35px', color:'#00ff80	'}} onClick={() => sendid(26)}>One</button> 
-            <button style={{background:'#00ffbf', borderRadius:10, height:'35px', color:'#00ffbf'}} onClick={() => sendid(27)}>One</button> 
-            <button style={{background:'#00ffff', borderRadius:10, height:'35px', color:'#00ffff'}} onClick={() => sendid(28)}>One</button> 
-            <button style={{background:'#00bfff', borderRadius:10, height:'35px', color:'#00bfff'}} onClick={() => sendid(29)}>One</button> 
-            <button style={{background:'#0080ff', borderRadius:10, height:'35px', color:'#0080ff'}} onClick={() => sendid(30)}>One</button> <br></br>
-            <button style={{background :'#0040ff', borderRadius: 10, height:'35px', color: '#0040ff'}} onClick={ () => sendid(31)}>One</button>
-            <button style={{background:'#0000ff', borderRadius: 10, height:'35px', color:'#0000ff'}} onClick={() => sendid(32)}>One</button>
-            <button style={{background:'#4000ff', borderRadius: 10, height:'35px', color:'#4000ff'}} onClick={() => sendid(33)}>One</button>
-            <button style={{background:'#8000ff', borderRadius:10, height:'35px', color:'#8000ff'}} onClick={() => sendid(34)}>One</button> 
-            <button style={{background:'#bf00ff', borderRadius:10, height:'35px', color:'#bf00ff'}} onClick={() => sendid(35)}>One</button> 
-            <button style={{background:'#ff00ff', borderRadius:10, height:'35px', color:'#ff00ff'}} onClick={() => sendid(36)}>One</button> 
-            <button style={{background:'#ff00bf', borderRadius:10, height:'35px', color:'#ff00bf'}} onClick={() => sendid(37)}>One</button> 
-            <button style={{background:'#ff0080', borderRadius:10, height:'35px', color:'#ff0080'}} onClick={() => sendid(38)}>One</button> 
-            <button style={{background:'#ff0040', borderRadius:10, height:'35px', color:'#ff0040'}} onClick={() => sendid(39)}>One</button> 
-            <button style={{background:'#996680', borderRadius:10, height:'35px', color:'#996680'}} onClick={() => sendid(40)}>One</button> <br></br>
-            <button style={{background :'#80c4b7', borderRadius: 10, height:'35px', color: '#80c4b7'}} onClick={ () => sendid(41)}>One</button>
-            <button style={{background:'#eeeeee', borderRadius: 10, height:'35px', color:'#eeeeee'}} onClick={() => sendid(42)}>One</button>
-            <button style={{background:'#feffba', borderRadius: 10, height:'35px', color:'#feffba'}} onClick={() => sendid(43)}>One</button>
-            <button style={{background:'#c90076', borderRadius:10, height:'35px', color:'#c90076'}} onClick={() => sendid(44)}>One</button> 
-            <button style={{background:'#073763', borderRadius:10, height:'35px', color:'#073763'}} onClick={() => sendid(45)}>One</button> 
-            <button style={{background:'#669999', borderRadius:10, height:'35px', color:'#669999'}} onClick={() => sendid(46)}>One</button> 
-            <button style={{background:'#ffa500', borderRadius:10, height:'35px', color:'#ffa500'}} onClick={() => sendid(47)}>One</button> 
-            <button style={{background:'#476b6b', borderRadius:10, height:'35px', color:'#476b6b'}} onClick={() => sendid(48)}>One</button> 
-            <button style={{background:'#854442', borderRadius:10, height:'35px', color:'#854442'}} onClick={() => sendid(49)}>One</button> 
-            <button style={{background:'#f24e70', borderRadius:10, height:'35px', color:'#f24e70'}} onClick={() => sendid(50)}>One</button> <br></br>
+            <button style={{background:'#ff1a1a', width:'35px', borderRadius: 10,height:'35px', color:'black'}} onClick={() => sendid(11)}>11</button>
+            <button style={{background:'#ff8080', width:'35px', borderRadius: 10, height:'35px', color:'black'}} onClick={() => sendid(12)}>12</button>
+            <button style={{background:'#ffb3b3',width:'35px', borderRadius:10,height:'35px', color:'black'}} onClick={() => sendid(13)}>13</button> 
+            <button style={{background:'#ffe6e6',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(14)}>14</button>
+            <button style={{background :'#ff0000',width:'35px', borderRadius: 10, height:'35px', color: 'black'}} onClick={ () => sendid(15)}>15</button>
+            <button style={{background:'#b30000', width:'35px',borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(16)}>16</button> 
+            <button style={{background:'#4d0000',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(17)}>17</button> 
+            <button style={{background:'#ff8000',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(18)}>18</button> 
+            <button style={{background:'#ffbf00',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(19)}>19</button> 
+            <button style={{background:'#ffff00',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(20)}>20</button> <br></br>
+            <button style={{background :'#bfff00',width:'35px', borderRadius: 10, height:'35px', color: 'black'}} onClick={ () => sendid(21)}>21</button>
+            <button style={{background:'#80ff00',width:'35px', borderRadius: 10, height:'35px', color:'black'}} onClick={() => sendid(22)}>22</button>
+            <button style={{background:'#40ff00',width:'35px', borderRadius: 10, height:'35px', color:'black'}} onClick={() => sendid(23)}>23</button>
+            <button style={{background:'#00ff00',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(24)}>24</button> 
+            <button style={{background:'#00ff40',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(25)}>25</button>
+            <button style={{background:'#00ff80',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(26)}>26</button> 
+            <button style={{background:'#00ffbf',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(27)}>27</button> 
+            <button style={{background:'#00ffff',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(28)}>28</button> 
+            <button style={{background:'#00bfff',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(29)}>29</button> 
+            <button style={{background:'#0080ff',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(30)}>30</button> <br></br>
+            <button style={{background :'#0040ff',width:'35px', borderRadius: 10, height:'35px', color: 'black'}} onClick={ () => sendid(31)}>31</button>
+            <button style={{background:'#0000ff',width:'35px', borderRadius: 10, height:'35px', color:'black'}} onClick={() => sendid(32)}>32</button>
+            <button style={{background:'#4000ff',width:'35px', borderRadius: 10, height:'35px', color:'black'}} onClick={() => sendid(33)}>33</button>
+            <button style={{background:'#8000ff',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(34)}>34</button> 
+            <button style={{background:'#bf00ff',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(35)}>35</button> 
+            <button style={{background:'#ff00ff',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(36)}>36</button> 
+            <button style={{background:'#ff00bf',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(37)}>37</button> 
+            <button style={{background:'#ff0080',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(38)}>38</button> 
+            <button style={{background:'#ff0040',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(39)}>39</button> 
+            <button style={{background:'#996680',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(40)}>40</button> <br></br>
+            <button style={{background :'#80c4b7',width:'35px', borderRadius: 10, height:'35px', color: 'black'}} onClick={ () => sendid(41)}>41</button>
+            <button style={{background:'#eeeeee', width:'35px',borderRadius: 10, height:'35px', color:'black'}} onClick={() => sendid(42)}>42</button>
+            <button style={{background:'#feffba',width:'35px', borderRadius: 10, height:'35px', color:'black'}} onClick={() => sendid(43)}>43</button>
+            <button style={{background:'#c90076',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(44)}>44</button> 
+            <button style={{background:'#073763',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(45)}>45</button> 
+            <button style={{background:'#669999',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(46)}>46</button> 
+            <button style={{background:'#ffa500',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(47)}>47</button> 
+            <button style={{background:'#476b6b',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(48)}>48</button> 
+            <button style={{background:'#854442',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(49)}>49</button> 
+            <button style={{background:'#f24e70',width:'35px', borderRadius:10, height:'35px', color:'black'}} onClick={() => sendid(50)}>50</button> <br></br>
 
                 </>
           

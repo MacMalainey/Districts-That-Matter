@@ -11,34 +11,47 @@ function Inspect() {
     const[inspectCOI,setinspectCOI]= useState(false)
     const[COIcharact, setCOIcharact] = useState(null)
     const COIotherarray = JSON.parse(localStorage.getItem('COIotherarray'))
-
+    const[newdata, setnewdata] = useState([])
+    const [showcoionmap, setshowcoionmap] = useState(false)
+    const[newcoidata, setnewcoidata] = useState([])
     useEffect(()=>{
+        setid(localStorage.getItem('mapid'))
+        if (id){
+            DemoData()
+            
+        }
+    })
+
+   
         const DemoData = async () => {
-            setid(localStorage.getItem('mapid'))
+            
             try {
+              mapdemoarray = []
               const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
               const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
             //   setdemodata(Alldata)
-              console.log('http://127.0.0.1:5000/api/units/' + id + '/demographics')
+              
                     for (const k in Alldata){
                         mapdemoarray.push([id, k, Alldata[k]])
                         console.log("this is map data for an id", mapdemoarray)
                     }
-
+                    console.log("array has changed too", id, mapdemoarray)
+                    setnewdata(mapdemoarray)
             }
+        
             catch {
               console.log('Response data not appropriately handled:');
             }
           }
-         DemoData();
-         mapdemoarray = []
+         
+         
 
-    })
+   
 
         const handlemapdemo = () => {
-            const filteredmaparray = mapdemoarray.filter((val) => val[1].startsWith(charact) && val[2]!==0)
+            const filteredmaparray = newdata.filter((val) => val[1].startsWith(charact) && val[2]!==0)
             return <p>
-                    {charact && <ul>
+                    {newdata && <ul>
                         {filteredmaparray.map((charact,indexvalue)=>(<li key={indexvalue}>
             <table>
                 <thead>
@@ -80,11 +93,16 @@ function Inspect() {
             </p>
         }
 
+        useEffect(()=>{
+            setnewcoidata(COIotherarray)
+        })
+
+
         const handlecoidemo = () => {
             
-            const filteredmaparray = COIotherarray.filter((par) => par[0].startsWith(COIcharact) && !par[0].includes('ratio') && par[1]!==0)
+            const filteredmaparray = newcoidata.filter((par) => par[0].startsWith(COIcharact) && !par[0].includes('ratio') && par[1]!==0)
             return <p>
-                    {COIcharact && <ul>
+                    {newcoidata && <ul>
                         {filteredmaparray.map((charact,indexvalue)=>(<li key={indexvalue}>
             <table>
                 <thead>
@@ -131,9 +149,15 @@ function Inspect() {
     <h3><em>Demographic Data </em></h3>
       <label>Map Units</label>
       <input type='checkbox' value={inspectmap} onChange={()=>setinspectmap(!inspectmap)}></input>
-
-      <label> COI District</label>
+      <label>Show COI on Map</label>
+      <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
+      {showcoionmap && localStorage.setItem('showcoionmap', 1)}
+      {!showcoionmap && localStorage.setItem('showcoionmap', 0)}
+      {showcoionmap&& <p>
+        <label> COI District</label>
       <input type='checkbox' value={inspectCOI} onChange={()=>setinspectCOI(!inspectCOI)}></input>
+        </p>}
+      
       {inspectmap && showdataformap()}
       
       
