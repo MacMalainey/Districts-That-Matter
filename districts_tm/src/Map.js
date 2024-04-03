@@ -16,7 +16,6 @@ import {colors} from './config';
 // FR3: Map.Units.Render
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
-let changes = {};
 let COIarray = [];
 let Visualarray = [];
 localStorage.setItem('coloractive', '')
@@ -27,6 +26,7 @@ let COIotherarray = [];
 function DrawMap(){
   
     const center = [ 43.65107, - 79.347015];
+    const [changes, setChanges] = useState({});
     const [selectedmapunit, setselectedmapunit] = useState(null);
     const [selectedmapunitid, setselectedmapunitid] = useState(null);
     const [allda, setallda] = useState(null)
@@ -48,6 +48,7 @@ function DrawMap(){
     const[VOvisibleM, setVOvisibleM] = useState(null) 
     const[VObirthplace, setVObirthplace] = useState(null)
     const[VOpop, setVOpop] = useState(null)
+    const[discol, setdiscol] = useState(null)
     const showonmap = localStorage.getItem('showonmap')
     const showCOIonmap = localStorage.getItem('showcoionmap')
     const colormapunit = (mapunit) => {
@@ -55,17 +56,43 @@ function DrawMap(){
         fillOpacity: 0,
         weight: 0
       };
-      const did = changes[mapunit.id];
       
+      const did = changes[mapunit.id];
         if (did != undefined || did != null) {
           base['fillOpacity'] = 0.6;
           base['fillColor'] = colors[did - 11]
         }
         return base
 
-      
-      
     };
+
+    useEffect(()=>{
+
+      const handledistrict = async () =>{
+        try{
+          const response = await axios.get('http://127.0.0.1:5000/api/district')
+          changes = response.data
+          setChanges(changes)
+          
+          // for (const temp in testage[0]){
+          //   console.log(testage[0][temp])
+          // }
+        }
+        catch{
+          console.log("Error in Data retrival process....")
+        }
+        
+        // console.log(testage)
+        // testage.push([testage])
+        // settotalpop("this is just a test, Harsh:", testage)
+        // console.log("test Harsh", testage)
+  
+      }
+      handledistrict()
+    })
+    // load saved districts
+
+
 
     // gradient for ages
 
@@ -288,6 +315,7 @@ function DrawMap(){
       // this function checks for dguids and color id, if the id is non 100, it sends both values otherwise it sends a null as in erase 
       
         const definedistrict= (val1, val2) =>{
+          console.log("hello us", val1)
           
           try { 
 
@@ -300,7 +328,7 @@ function DrawMap(){
             else {
               changes[val1] = parseInt(val2)
             }
-            
+            setChanges(changes)
               
           }
             

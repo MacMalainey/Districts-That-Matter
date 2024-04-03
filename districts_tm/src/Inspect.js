@@ -21,7 +21,7 @@ function Inspect() {
             DemoData()
             
         }
-    })
+    },[])
 
    
         const DemoData = async () => {

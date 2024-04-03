@@ -28,6 +28,7 @@ function Sidebar() {
     const [totalpop, settotalpop] = useState(false)
     const[lower, setlower] = useState(null)
     const[upper, setupper] = useState(null)
+   
     // const testdistrict = localStorage.getItem('defineddistricts');
     const submit = () => {
         
@@ -79,21 +80,19 @@ function Sidebar() {
           useEffect(()=>{
             setdistrict(localStorage.getItem('defineddistricts'))
             
-          },[district])
+          })
     const DefinedDistrict = async () => {
 
-        
-        
-            
             const testar = JSON.parse(localStorage.getItem('defineddistricts'))
+            // console.log("hola",testar)
             let array = []
             for (let item in testar) {
                 array.push([item, testar[item]])
             }
             
 
-            console.log("Harsh testing districts:", array)
-            await axios.post('http://127.0.0.1:5000/api/districts/update', testar).catch(error =>{console.log(error)});
+            // console.log("Harsh testing districts:", array)
+            await axios.post('http://127.0.0.1:5000/api/districts/update', array).catch(error =>{console.log(error)});
 
         
 
