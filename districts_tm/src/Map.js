@@ -604,7 +604,7 @@ function DrawMap(){
          COIData();
           
           
-        }, [coida])
+        }, [])
 
 // handle COI data for selected COI, except explanation, which is handled separately. 
       useEffect(()=>{

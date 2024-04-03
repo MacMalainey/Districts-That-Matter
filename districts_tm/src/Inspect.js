@@ -14,36 +14,44 @@ function Inspect() {
     const[newdata, setnewdata] = useState([])
     const [showcoionmap, setshowcoionmap] = useState(false)
     const[newcoidata, setnewcoidata] = useState([])
+    
     useEffect(()=>{
         setid(localStorage.getItem('mapid'))
-        if (id){
+        if(id){
             DemoData()
-            
         }
-    })
+
+    },[])
 
    
-        const DemoData = async () => {
+    const DemoData = async () => {
             
-            try {
-              mapdemoarray = []
-              const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
-              const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
-            //   setdemodata(Alldata)
-              
-                    for (const k in Alldata){
-                        mapdemoarray.push([id, k, Alldata[k]])
-                        console.log("this is map data for an id", mapdemoarray)
-                    }
-                    console.log("array has changed too", id, mapdemoarray)
-                    setnewdata(mapdemoarray)
-            }
+        try {
+            
+          mapdemoarray = []
+          const response = await axios.get('http://127.0.0.1:5000/api/units/' + id + '/demographics');
+          const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
+        //   setdemodata(Alldata)
+          
+                for (const k in Alldata){
+                    mapdemoarray.push([id, k, Alldata[k]])
+                    console.log("this is map data for an id", mapdemoarray)
+                }
+                setnewdata(mapdemoarray)
+        }
+    
+        catch {
+          console.log('Response data not appropriately handled:');
+        }
+      }
+      
+     
         
-            catch {
-              console.log('Response data not appropriately handled:');
-            }
-          }
-         
+      
+    
+
+  
+        
          
 
    
