@@ -86,8 +86,15 @@ function Sidebar() {
         
             
             const testar = JSON.parse(localStorage.getItem('defineddistricts'))
+            let array = []
+            for (let item in testar) {
+                array.push([item, testar[item]])
+            }
             
+
+
             await axios.post('http://127.0.0.1:5000/api/districts/update', testar).catch(error =>{console.log(error)});
+
         
 
            
