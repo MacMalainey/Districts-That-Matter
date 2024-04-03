@@ -17,40 +17,7 @@ function Evaluation() {
   const [selectcharact, setselectcharact] = useState(null)
   const [secondcharact, setsecondcharact] = useState(null)
   
-  // useEffect(()=>{
-  //   const handlepopulation = async () =>{
-  //     const response = await axios.get('http://127.0.0.1:5000/api/units/totals')
-  //     const population = response.data.total_population 
-  //     settotalpop(population)
 
-  //   }
-  //   handlepopulation();
-  // }, [totalpop])
-  
-
-  useEffect(()=>{
-    const handledistrictdemo = async () =>{
-      
-      const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
-      const inspectDD = response.data
-      for (const k in inspectDD){
-        const temp = inspectDD[k]
-        for (const j in temp){
-          inspectdata.push([k,j,temp[j]])
-          
-          
-        }
-          // console.log(j, inspectDD[k][j])
-          // const val = inspectDD[k]
-          // inspectdata.push([k,val])
-
-      }
-      
-      console.log("Harsh testing, inspect",inspectdata)
-    }
-    handledistrictdemo();
-   inspectdata = []
-  }, [])
   
 
   useEffect(()=>{
@@ -73,6 +40,8 @@ function Evaluation() {
       console.log("Harsh testing, inspect",inspectdata)
     }
     handledistrictdemo();
+
+ 
    
   }, [])
   
@@ -238,7 +207,9 @@ function Evaluation() {
               <th></th>
               <th></th>
               <th>{secondcharact}</th>
-              <th>Progress</th>
+
+              
+
             </tr >
 
        
@@ -253,7 +224,7 @@ function Evaluation() {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><progress max={5000} value={charact[2]} > </progress></td>
+
               </tr>
 
         ))}
@@ -278,6 +249,7 @@ function Evaluation() {
     </p>
     
   }
+
   
   const handlepopulation = () => {
     const filteredinspectcharact = inspectdata.filter((arr)=>arr[1]==='population')
@@ -411,6 +383,7 @@ function Evaluation() {
     <select value={secondcharact} onChange={(e)=>setsecondcharact(e.target.value)}>
     <option style={{fontStyle:'italic'}}> select...</option>
   
+
     {inspectdata.map((charact,indexvalue) =>(
       <option key={indexvalue} value={charact[1]}>{charact[1]}</option>
     ))} */}

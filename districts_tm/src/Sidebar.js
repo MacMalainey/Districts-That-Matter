@@ -91,13 +91,12 @@ function Sidebar() {
                 array.push([item, testar[item]])
             }
             
-            const testing = [["2021S051235191288",40],["2021S051235191287",40],["2021S051235191290",40],["2021S051235191038",40],["2021S051235191104",40],["2021S051235191290",null],["2021S051235190747",47],["2021S051235190433",47]]
-            console.log("testing returned array", testar)
-            await axios.post('http://127.0.0.1:5000/api/districts/update', array).catch(error =>{console.log(error)});
+
+
+            await axios.post('http://127.0.0.1:5000/api/districts/update', testar).catch(error =>{console.log(error)});
+
         
-        
-            
-           
+
            
           }
             
