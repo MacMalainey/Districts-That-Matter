@@ -9,7 +9,10 @@ function DataLayer() {
   // const explanation = JSON.parse(localStorage.getItem('COIexp'))
   const [VOcharact, setVOcharact] = useState(null)
   const [showonmap, setshowonmap] = useState(false)
- const [showcoionmap, setshowcoionmap] = useState(false)
+
+//  const [showcoionmap, setshowcoionmap] = useState(false)
+
+
  //total population: 5032425
    
   //  for (const k in GS){
@@ -51,10 +54,12 @@ function DataLayer() {
       
 
       <h2>Demographic Review</h2>
-      <label>Show COI </label>
+
+      {/* <label>Show COI </label>
       <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
       {showcoionmap && localStorage.setItem('showcoionmap', 1)}
-      {!showcoionmap && localStorage.setItem('showcoionmap', 0)}
+      {!showcoionmap && localStorage.setItem('showcoionmap', 0)} */}
+
 
       <label>View Visual Overlay</label>
       <input type='checkbox' value={showVO} onChange={()=>setshowVO(!showVO)}></input> 
