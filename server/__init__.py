@@ -47,6 +47,11 @@ def _on_teardown(e=None):
         db.close()
 
 def _init_processor():
+    """
+    Initializes the data processor
+
+    Fulfills FR4, FR9, FR10, FR12, FR13, FR15, FR21, FR22, FR24
+    """
     db = spatialite.connect(_DATABASE_PATH)
     data = queries.query_munits(db)
     p = Processor(data, schema)
@@ -54,6 +59,8 @@ def _init_processor():
     db.close()
     return p
 
+
+# Fulfills FR3, FR4, FR9, FR10, FR12, FR13, FR15, FR19, FR21, FR22, FR24
 app = Flask(
     __name__,
     static_url_path='',
@@ -65,4 +72,5 @@ app.teardown_appcontext(_on_teardown)
 
 @app.route("/")
 def hello_world():
+    # Fulfills FR1, FR4
     return send_file(_STATIC_PATH+"/index.html")

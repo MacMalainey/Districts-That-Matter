@@ -28,6 +28,11 @@ def query_districts_dataframe(db: spatialite.Connection) -> pd.DataFrame:
     )
 
 def insert_districts(db: spatialite.Connection, districts: list[tuple[str, int | None]]):
+    """
+    Saves district information to the database
+
+    Fulfills FR19
+    """
     cur = db.cursor()
     cur.executemany("INSERT OR REPLACE INTO districts(dguid, id) VALUES (?, ?)", districts)
     db.commit()

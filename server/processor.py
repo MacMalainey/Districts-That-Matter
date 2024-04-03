@@ -8,6 +8,11 @@ from libpysal.weights import Queen, KNN
 from sklearn.cluster import AgglomerativeClustering
 
 def _interpret_z_score(z_score):
+    """
+    Interprets the z-score of a characteristi to give a rudimentary explanation
+
+    Fulfills FR15
+    """
     if z_score <= -7:
         return "Insanely Lower"
     elif z_score <= -5:
@@ -45,6 +50,11 @@ class Processor:
     _totals_aggregations: dict[str, str]
 
     def __init__(self, data: pd.DataFrame, schema: dict[str, list[str]]):
+        """
+        Initializes the data processor
+
+        Fulfills FR4, FR9, FR10, FR12, FR13, FR15, FR21, FR22, FR24
+        """
         self._seed = None
         self._ratios_labels = []
         self._reported_labels = ["population", "landarea"]
@@ -84,6 +94,11 @@ class Processor:
         self._data.fillna(self._data[self._ratios_labels].mean(), inplace=True)
 
     def cluster(self, seed, n):
+        """
+        Generates Communities of Interest
+
+        Fulfills FR13, FR15
+        """
         if self._seed == seed and self._clusters is not None:
             return self._clusters
         self._seed = seed
@@ -137,6 +152,11 @@ class Processor:
         return self._clusters
 
     def map_units_totals(self):
+        """
+        Returns the largest values across all map units and other important totals
+
+        Fulfills FR10, FR12
+        """
         total_series = pd.Series(
             data={
                 'total_population': self._data['population'].sum(),
@@ -147,15 +167,35 @@ class Processor:
         return self._data.agg(self._totals_aggregations).combine_first(total_series)
 
     def all_map_units(self, fields: list[str]):
+        """
+        Returns data for all the map units including a small set of characteristics
+
+        Fulfills FR4, FR10
+        """
         return self._data[fields]
 
     def single_map_unit(self, dguid: str):
+        """
+        Returns all the data for a specific map unit
+
+        Fulfills FR9, FR12
+        """
         return pd.DataFrame(self._data).loc[dguid, self._reported_labels]
     
     def districts(self):
+        """
+        Returns the list of all dguids with each map unit
+
+        Fulfills FR21
+        """
         return self._districts["district"]
     
     def districts_demographics(self):
+        """
+        Returns the list of all districts with the associated demographic data
+
+        Fulfills FR22, FR24
+        """
         data = pd.DataFrame(self._data[self._reported_labels]).assign(district=self._districts).groupby("district").sum()
         data.index = data.index.astype(int)
         return data.T
