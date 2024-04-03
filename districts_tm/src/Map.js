@@ -605,33 +605,7 @@ function DrawMap(){
           
           
         }, [coida])
-// handler explaination for each selected id, store in local storage
-  
 
-      // useEffect(()=>{
-      //   const handleCOI = () => {
-      //   try{
-         
-      //     for (const reason in selectedCOI){
-      //       const ite = selectedCOI[reason]
-      //       // console.log("interpretation of {} this item is", reason, ite.interpretation)
-      //       COIarray.push([reason, ite.interpretation])
-      //       localStorage.setItem('COIexp', JSON.stringify(COIarray))
-            
-      //     }
-      //   }
-      
-      //   catch{
-      //     console.log("Error with COI explanation parsing......")
-      //   }
-          
-      //   COIarray=[] // clear array after storage, otherwise it will append to the existing array. 
-      //   }
-      //   //  console.log("selected COI explanation is:", selectedCOI.generation_first.interpretation)
-      //   handleCOI();
-        
-        
-      // }, [])
 // handle COI data for selected COI, except explanation, which is handled separately. 
       useEffect(()=>{
         const handleCOIother = () => {
@@ -708,18 +682,54 @@ function DrawMap(){
     const  testrc = gradient.properties['rc_ages']
     const result = (testage / testrc) * 100
     console.log(result)
-    if(result < 5){
+    if(result < 14.9){
         return {
-                fillColor: '#CCCCCC',
+                fillColor: '#D3D3D3',
                 color: 'lightgrey'  ,
                 weight: 0.5, 
                 fillOpacity: 0.3,
                  
               };
     }
-    else if (result > 5.1 && result < 8.1){
+    else if (result > 15 && result < 29.9){
       return {
-        fillColor: '#999999',
+        fillColor: '#C0C0C0',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 30 && result < 44.9){
+      return {
+        fillColor: '#DCDCDC',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 45 && result < 59.9){
+      return {
+        fillColor: '#808080',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 60 && result < 74.9){
+      return {
+        fillColor: '#696969',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 75 && result < 89.9){
+      return {
+        fillColor: '#A9A9A9',
         color: 'lightgrey',
         weight: 0.5, 
         fillOpacity: 0.3,
@@ -728,7 +738,7 @@ function DrawMap(){
     }
     else {
       return {
-        fillColor: '#333333',
+        fillColor: '#444444',
         color: 'lightgrey',
         weight: 0.5, 
         fillOpacity: 0.3,
@@ -746,33 +756,69 @@ function DrawMap(){
               const  testrc = VOincome.properties['rc_income']
               const result = (testincome / testrc) * 100
               console.log(result)
-              if(result < 2){
-                  return {
-                          fillColor: '#CCCCCC',
-                          color: 'lightgrey'  ,
-                          weight: 0.5, 
-                          fillOpacity: 0.3,
-                           
-                        };
-              }
-              else if (result > 2.1 && result < 4.1){
+              if(result < 14.9){
                 return {
-                  fillColor: '#999999',
-                  color: 'lightgrey',
-                  weight: 0.5, 
-                  fillOpacity: 0.3,
-                   
-                };
-              }
-              else {
-                return {
-                  fillColor: '#333333',
-                  color: 'lightgrey',
-                  weight: 0.5, 
-                  fillOpacity: 0.3,
-                   
-                };
-              }
+                        fillColor: '#D3D3D3',
+                        color: 'lightgrey'  ,
+                        weight: 0.5, 
+                        fillOpacity: 0.3,
+                         
+                      };
+            }
+            else if (result > 15 && result < 29.9){
+              return {
+                fillColor: '#C0C0C0',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else if (result > 30 && result < 44.9){
+              return {
+                fillColor: '#DCDCDC',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else if (result > 45 && result < 59.9){
+              return {
+                fillColor: '#808080',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else if (result > 60 && result < 74.9){
+              return {
+                fillColor: '#696969',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else if (result > 75 && result < 89.9){
+              return {
+                fillColor: '#A9A9A9',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
+            else {
+              return {
+                fillColor: '#444444',
+                color: 'lightgrey',
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+            }
                      
         }
 
@@ -784,33 +830,69 @@ function DrawMap(){
           const  testrc = VOvisibleM.properties['rc_visible_minority']
           const result = (testvisibleM / testrc) * 100
           console.log(result)
-          if(result < 2){
-              return {
-                      fillColor: '#CCCCCC',
-                      color: 'lightgrey'  ,
-                      weight: 0.5, 
-                      fillOpacity: 0.3,
-                       
-                    };
-          }
-          else if (result > 2.1 && result < 4.1){
+          if(result < 14.9){
             return {
-              fillColor: '#999999',
-              color: 'lightgrey',
-              weight: 0.5, 
-              fillOpacity: 0.3,
-               
-            };
-          }
-          else {
-            return {
-              fillColor: '#333333',
-              color: 'lightgrey',
-              weight: 0.5, 
-              fillOpacity: 0.3,
-               
-            };
-          }
+                    fillColor: '#D3D3D3',
+                    color: 'lightgrey'  ,
+                    weight: 0.5, 
+                    fillOpacity: 0.3,
+                     
+                  };
+        }
+        else if (result > 15 && result < 29.9){
+          return {
+            fillColor: '#C0C0C0',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else if (result > 30 && result < 44.9){
+          return {
+            fillColor: '#DCDCDC',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else if (result > 45 && result < 59.9){
+          return {
+            fillColor: '#808080',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else if (result > 60 && result < 74.9){
+          return {
+            fillColor: '#696969',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else if (result > 75 && result < 89.9){
+          return {
+            fillColor: '#A9A9A9',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
+        else {
+          return {
+            fillColor: '#444444',
+            color: 'lightgrey',
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+        }
                  
     }   
 
@@ -823,33 +905,69 @@ function DrawMap(){
       const  testrc = VObirthplace.properties['rc_birthplace']
       const result = (testbirthplace / testrc) * 100
       console.log(result)
-      if(result < 40){
-          return {
-                  fillColor: '#CCCCCC',
-                  color: 'lightgrey'  ,
-                  weight: 0.5, 
-                  fillOpacity: 0.3,
-                   
-                };
-      }
-      else if (result > 40.1 && result < 60){
+      if(result < 14.9){
         return {
-          fillColor: '#999999',
-          color: 'lightgrey',
-          weight: 0.5, 
-          fillOpacity: 0.3,
-           
-        };
-      }
-      else {
-        return {
-          fillColor: '#333333',
-          color: 'lightgrey',
-          weight: 0.5, 
-          fillOpacity: 0.3,
-           
-        };
-      }
+                fillColor: '#D3D3D3',
+                color: 'lightgrey'  ,
+                weight: 0.5, 
+                fillOpacity: 0.3,
+                 
+              };
+    }
+    else if (result > 15 && result < 29.9){
+      return {
+        fillColor: '#C0C0C0',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 30 && result < 44.9){
+      return {
+        fillColor: '#DCDCDC',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 45 && result < 59.9){
+      return {
+        fillColor: '#808080',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 60 && result < 74.9){
+      return {
+        fillColor: '#696969',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else if (result > 75 && result < 89.9){
+      return {
+        fillColor: '#A9A9A9',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
+    else {
+      return {
+        fillColor: '#444444',
+        color: 'lightgrey',
+        weight: 0.5, 
+        fillOpacity: 0.3,
+         
+      };
+    }
              
 }   
 
@@ -863,42 +981,69 @@ const gradientpopulationmapunit = (VOpop) => {
   const  testrc_pop = 29669 
   const result = (testpop / testrc_pop) * 100
   // console.log(result)
-  if(result < 30){
-      return {
-              fillColor: '#CCCCCC',
-              color: 'lightgrey'  ,
-              weight: 0.5, 
-              fillOpacity: 0.3,
-               
-            };
-  }
-  else if (result > 30.1 && result < 60){
+  if(result < 14.9){
     return {
-      fillColor: '#999999',
-      color: 'lightgrey',
-      weight: 0.5, 
-      fillOpacity: 0.3,
-       
-    };
-  }
-  else if (result > 60.1 && result < 80){
-    return {
-      fillColor: '#666666',
-      color: 'lightgrey',
-      weight: 0.5, 
-      fillOpacity: 0.3,
-       
-    };
-  }
-  else {
-    return {
-      fillColor: '#333333',
-      color: 'lightgrey',
-      weight: 0.5, 
-      fillOpacity: 0.3,
-       
-    };
-  }
+            fillColor: '#D3D3D3',
+            color: 'lightgrey'  ,
+            weight: 0.5, 
+            fillOpacity: 0.3,
+             
+          };
+}
+else if (result > 15 && result < 29.9){
+  return {
+    fillColor: '#C0C0C0',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else if (result > 30 && result < 44.9){
+  return {
+    fillColor: '#DCDCDC',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else if (result > 45 && result < 59.9){
+  return {
+    fillColor: '#808080',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else if (result > 60 && result < 74.9){
+  return {
+    fillColor: '#696969',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else if (result > 75 && result < 89.9){
+  return {
+    fillColor: '#A9A9A9',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
+else {
+  return {
+    fillColor: '#444444',
+    color: 'lightgrey',
+    weight: 0.5, 
+    fillOpacity: 0.3,
+     
+  };
+}
          
 }   
         
