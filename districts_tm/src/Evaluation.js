@@ -392,7 +392,7 @@ function Evaluation() {
     {/* </select> */}
        
        {<p>
-        <table> 
+        <table style={{ marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
         <tr>
               <th> DN  </th> 
               <th></th>
@@ -404,13 +404,15 @@ function Evaluation() {
               <th></th>
               <th>{secondcharact}</th>
               <th>Analysis</th>
+              <th> Min Pop</th>
+              <th> Max Pop</th>
             </tr >
 
        
         
         {addcolor.map((charact,indexvalue)=>(
 
-              <tr key={indexvalue}>
+              <tr  key={indexvalue}>
                 <td style={{background: charact[3],width:'35px', borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
                 <td></td>
                 <td></td>
@@ -418,7 +420,11 @@ function Evaluation() {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><progress   max={125810} value={charact[2]} > </progress></td>
+                <td ><progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')} %`, height:'25px' }}  max={localStorage.getItem('upper')} value={charact[2]} >  </progress>
+                <span> {Math.floor(charact[2] / localStorage.getItem('upper') * 100)}%</span>
+                </td>
+                <td> {localStorage.getItem('lower')}</td>
+                <td> {localStorage.getItem('upper')}</td>
               </tr>
 
         ))}
@@ -434,7 +440,7 @@ function Evaluation() {
   
 
   return (
-    <div>
+    <div className='eval'>
       
       
       <label>Show Total Population</label>
