@@ -18,6 +18,7 @@ import {colors} from './config';
 // FR5: Map.Navigate
 let COIarray = [];
 let Visualarray = [];
+
 localStorage.setItem('coloractive', '')
 localStorage.setItem('mapid','')
 localStorage.setItem('colorid','')
@@ -52,28 +53,39 @@ function DrawMap(){
     const showonmap = localStorage.getItem('showonmap')
     const showCOIonmap = localStorage.getItem('showcoionmap')
     const colormapunit = (mapunit) => {
+      // const Dict = {"2021S051235190822":25,"2021S051235190821":25,"2021S051235190747":33,"2021S051235191295":33,"2021S051235204733":33,"2021S051235191287":11,"2021S051235190181":11,"2021S051235190192":11,"2021S051235190182":11}
+      // setChanges(Dict)
+
       const base = {
         fillOpacity: 0,
         weight: 0.5
       };
       
       const did = changes[mapunit.id];
+          
+
+      
+      
         if (did != undefined || did != null) {
           base['fillOpacity'] = 0.6;
           base['fillColor'] = colors[did - 11]
         }
         return base
 
+      
+
     };
+
+  
 
     useEffect(()=>{
 
       const handledistrict = async () =>{
         try{
           const response = await axios.get('http://127.0.0.1:5000/api/districts')
-          changes = response.data
-          setChanges(changes)
-          
+          const loaddis = response.data
+          setChanges(loaddis)
+          // console.log("saved changes", Changes)
           // for (const temp in testage[0]){
           //   console.log(testage[0][temp])
           // }
@@ -89,7 +101,7 @@ function DrawMap(){
   
       }
       handledistrict()
-    })
+    },{})
     // load saved districts
 
 
@@ -779,6 +791,7 @@ else {
                       </p>
                     </Popup>
                     </GeoJSON>}
+                    
                     {allda && coloractiveid == 1 && <GeoJSON data = {allda} style={colormapunit} eventHandlers={{click: (e) =>{setselectedmapunit(e.layer.feature);
                     {console.log(e.layer.feature.id)}
                     let cid = localStorage.getItem('colorid')
