@@ -15,15 +15,15 @@ function Inspect() {
     const[newdata, setnewdata] = useState([])
     const [showcoionmap, setshowcoionmap] = useState(false)
     const[newcoidata, setnewcoidata] = useState([])
+    const currenttab = localStorage.getItem('currenttab')
+   
     useEffect(()=>{
         setid(localStorage.getItem('mapid'))
-        if (id){
-            DemoData()
-            
-        }
-    },[])
+    })
 
-   
+    useEffect(()=>{
+        
+
         const DemoData = async () => {
             
             try {
@@ -32,22 +32,30 @@ function Inspect() {
               const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
             //   setdemodata(Alldata)
               
-
+    
                     for (const k in Alldata){
                         mapdemoarray.push([id, k, Alldata[k]])
                         console.log("this is map data for an id", mapdemoarray)
                     }
-
+    
                     console.log("array has changed too", id, mapdemoarray)
                     setnewdata(mapdemoarray)
             }
         
-
+    
             catch {
               console.log('Response data not appropriately handled:');
             }
           }
+          if(id && currenttab==1 && inspectmap==true){
+            DemoData()
+          }
 
+    }, [id])
+        
+            
+   
+        
          
          
 

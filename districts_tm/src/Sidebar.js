@@ -11,7 +11,7 @@ import Inspect from './Inspect';
 import DataLayer from './DataLayer';
 import Evaluation from './Evaluation';
 import axios, { all } from 'axios';
-
+localStorage.setItem('currenttab',0)
 function Sidebar() {
     
     // const [selectpaint, setselectpaint] = useState(false)
@@ -28,7 +28,7 @@ function Sidebar() {
     const [totalpop, settotalpop] = useState(false)
     const[lower, setlower] = useState(null)
     const[upper, setupper] = useState(null)
-   
+
     // const testdistrict = localStorage.getItem('defineddistricts');
     const submit = () => {
         
@@ -42,6 +42,7 @@ function Sidebar() {
     }
     const handletab = (tab) => {
         setselecttab(tab)
+        localStorage.setItem('currenttab', 1)
         // setid(idvalue)
        
         
