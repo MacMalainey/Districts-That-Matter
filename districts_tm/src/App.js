@@ -4,6 +4,7 @@ import React, { useEffect, useState, createContext } from 'react';
 import DrawMap from './Map';
 import Sidebar from './Sidebar';
 import axios from 'axios';
+import { MAP_MODE_HAND } from './config';
 
 // import DataLayer from './DataLayer';
 // import Inspect from './Inspect';
@@ -14,6 +15,7 @@ export const COIContext = createContext(null);
 export const SchemaContext = createContext(null);
 export const DistrictsContext = createContext(null);
 export const GradientSelectContext = createContext(null);
+export const MapModeContext = createContext(null);
 
 async function MapUnitsAllApi(onUpdate, category) {
   const response = await axios.get('http://127.0.0.1:5000/api/units/all', {
@@ -41,6 +43,7 @@ function App() {
   const [mapUnitData, setMapUnitData] = useState(null);
   const [districtData, setDistrictData] = useState(null);
   const [gradientSelect, setGradientSelect] = useState(null);
+  const [mapMode, setMapMode] = useState(MAP_MODE_HAND);
 
   useEffect(() => {
     MapUnitsAllApi(setMapUnitData)
@@ -58,7 +61,7 @@ function App() {
     <div className='container'>
       <MapUnitsAllContext.Provider value={mapUnitData}>
         <COIContext.Provider value={COIData}>
-          <DistrictsContext.Provider value={{data: districtData, callback: (data) => {setDistrictData(data)}}}>
+          <DistrictsContext.Provider value={{data: districtData, callback: setDistrictData}}>
             <GradientSelectContext.Provider value={{
                 data: gradientSelect,
                 callback: (data) => {
@@ -68,8 +71,10 @@ function App() {
                   setGradientSelect(data);
                 }
               }}>
-              <DrawMap/>
-              <Sidebar/>
+                <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
+                  <DrawMap/>
+                  <Sidebar/>
+                </MapModeContext.Provider>
             </GradientSelectContext.Provider>
           </DistrictsContext.Provider>
         </COIContext.Provider>

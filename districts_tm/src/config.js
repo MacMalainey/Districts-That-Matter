@@ -40,3 +40,7 @@ export const colors = [
     '#854442',
     '#f24e70',
 ];
+
+export const MAP_MODE_HAND = "hand";
+export const MAP_MODE_PAINT = "paint";
+export const MAP_MODE_ERASE = "erase";
