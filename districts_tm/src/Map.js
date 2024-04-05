@@ -49,7 +49,7 @@ function DrawMap() {
   const [selectedCOI, setselectedCOI] = useState(null)
   const [selectedCOIdata, setselectedCOIdata] = useState(null)
 
-  const [showCOIonmap, setshowCOIonmap] = useState(null)
+  const showCOIonmap = localStorage.getItem('showcoionmap')
 
   let baseStyle = { fillColor: 'transparent', color: 'grey', weight: 0.5 };
   if (gradientSelect != null) {
