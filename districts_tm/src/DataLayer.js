@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios, { all } from 'axios';
+import './DataLayer.css';
+
 localStorage.setItem('showonmap', '')
 localStorage.setItem('showcoionmap', '')
 localStorage.setItem('gradientstore', '')
@@ -44,7 +46,7 @@ function DataLayer() {
     }
     handlegradientstore();
     
-  }, [])
+  }, [gradientstore])
  
 
   return (
@@ -53,7 +55,9 @@ function DataLayer() {
       
 
       <h2>Demographic Review</h2>
+      
 
+      
       {/* <label>Show COI </label>
       <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
       {showcoionmap && localStorage.setItem('showcoionmap', 1)}

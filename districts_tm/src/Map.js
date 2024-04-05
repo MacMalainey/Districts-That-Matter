@@ -55,9 +55,11 @@ function DrawMap(){
     const[VOpop, setVOpop] = useState(null)
     const[discol, setdiscol] = useState(null)
     const[showonmap, setshowonmap] = useState(null)
+    
     useEffect(()=>{
-      setshowonmap(localStorage.getItem('showonmap'))
+        setshowonmap(localStorage.getItem('showonmap') )
     })
+    console.log("bhai why is it not working?",showonmap)
     const[showCOIonmap, setshowCOIonmap] = useState(null)
     useEffect(()=>{
       setshowCOIonmap(localStorage.getItem('showcoionmap'))

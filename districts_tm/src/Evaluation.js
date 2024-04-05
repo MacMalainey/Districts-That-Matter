@@ -18,22 +18,26 @@ function Evaluation() {
   const [secondcharact, setsecondcharact] = useState(null)
   
 
-  //test1
+  //test2
 
   useEffect(()=>{
     const handledistrictdemo = async () =>{
       inspectdata = []
       const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
       const inspectDD = response.data
-      for (const k in inspectDD){
-        const temp = inspectDD[k]
-        for (const j in temp){
-          inspectdata.push([k,j,temp[j]])
-          
-          
+      
+        for (const k in inspectDD){
+          const temp = inspectDD[k]
+          for (const j in temp){
+            inspectdata.push([k,j,temp[j]])
+            
+            
+          }
+           
         }
-         
-      }
+      
+      
+      
       
       
       
