@@ -292,7 +292,6 @@ const gradientbirthplacemapunit = (VObirthplace) => {
 
         };
     }
-
 }
 
 

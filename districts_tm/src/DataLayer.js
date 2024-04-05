@@ -9,11 +9,9 @@ localStorage.setItem('gradientstore', '')
 let gradientstore = []
 function DataLayer() {
   const[showVO, setshowVO] = useState(false)
-  // const explanation = JSON.parse(localStorage.getItem('COIexp'))
   const [VOcharact, setVOcharact] = useState(null)
   const [showonmap, setshowonmap] = useState(false)
   const {data: gradientSelect, callback: setGradientSelect} = useContext(GradientSelectContext)
-//  const [showcoionmap, setshowcoionmap] = useState(false)
 
 
  //total population: 5032425
