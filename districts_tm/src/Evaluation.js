@@ -18,7 +18,7 @@ function Evaluation() {
   const [secondcharact, setsecondcharact] = useState(null)
   
 
-  
+  //test
 
   useEffect(()=>{
     const handledistrictdemo = async () =>{
@@ -174,7 +174,7 @@ function Evaluation() {
       }
     })
     
-    return <p> Inspect upto two Characteristics:  
+    return <p> Compare a Characteristic:  
       <select value={selectcharact} onChange={(e)=>setselectcharact(e.target.value)}>
     <option style={{fontStyle:'italic'}}> select...</option>
   

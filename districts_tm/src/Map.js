@@ -33,7 +33,11 @@ function DrawMap(){
     const [allda, setallda] = useState(null)
     const [coida, setcoida] = useState(null)
     const[dguid, setdguid] = useState(15)
-    const coloractiveid = localStorage.getItem('coloractive')
+    const[coloractiveid, setcoloract] = useState(null)
+    useEffect(()=>{
+      setcoloract(localStorage.getItem('coloractive'))
+    })
+    // const coloractiveid = localStorage.getItem('coloractive')
     const colid = localStorage.getItem('colorid')
     const cursorid = localStorage.getItem('cursor')
     const eraseractiveid = localStorage.getItem('eraser')
@@ -50,8 +54,15 @@ function DrawMap(){
     const[VObirthplace, setVObirthplace] = useState(null)
     const[VOpop, setVOpop] = useState(null)
     const[discol, setdiscol] = useState(null)
-    const showonmap = localStorage.getItem('showonmap')
-    const showCOIonmap = localStorage.getItem('showcoionmap')
+    const[showonmap, setshowonmap] = useState(null)
+    useEffect(()=>{
+      setshowonmap(localStorage.getItem('showonmap'))
+    })
+    const[showCOIonmap, setshowCOIonmap] = useState(null)
+    useEffect(()=>{
+      setshowCOIonmap(localStorage.getItem('showcoionmap'))
+    })
+    
     const colormapunit = (mapunit) => {
       // const Dict = {"2021S051235190822":25,"2021S051235190821":25,"2021S051235190747":33,"2021S051235191295":33,"2021S051235204733":33,"2021S051235191287":11,"2021S051235190181":11,"2021S051235190192":11,"2021S051235190182":11}
       // setChanges(Dict)
