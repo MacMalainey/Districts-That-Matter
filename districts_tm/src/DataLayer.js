@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios, { all } from 'axios';
 import './DataLayer.css';
+import { GradientSelectContext } from './App';
 
 localStorage.setItem('showonmap', '')
 localStorage.setItem('showcoionmap', '')
@@ -11,6 +12,7 @@ function DataLayer() {
   // const explanation = JSON.parse(localStorage.getItem('COIexp'))
   const [VOcharact, setVOcharact] = useState(null)
   const [showonmap, setshowonmap] = useState(false)
+  const {data: gradientSelect, callback: setGradientSelect} = useContext(GradientSelectContext)
 //  const [showcoionmap, setshowcoionmap] = useState(false)
 
 
@@ -74,11 +76,18 @@ function DataLayer() {
           )}
 
       </select>
-      {localStorage.setItem('selectedage', VOcharact)}
-      {VOcharact && <input type='checkbox' value={showonmap} onChange={() =>setshowonmap(!showonmap) }></input>}
+      {/* {localStorage.setItem('selectedage', VOcharact)} */}
+      {VOcharact && <input type='checkbox' value={showonmap} onChange={() => {
+        let toShow = VOcharact;
+        if (showonmap == true)
+          toShow = null;
+        setshowonmap(!showonmap)
+        setGradientSelect(toShow) }}>
+        </input>
+        }
       
-      {showonmap && localStorage.setItem('showonmap', 1) }
-      {!showonmap && localStorage.setItem('showonmap', 0) }
+      {/* {showonmap && localStorage.setItem('showonmap', 1) }
+      {!showonmap && localStorage.setItem('showonmap', 0) } */}
       
       
       </p>}

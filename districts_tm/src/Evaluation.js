@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
-import { Chart } from 'chart.js';
 import './Evaluation.css';
 let inspectdata = []
 let TTT= []
