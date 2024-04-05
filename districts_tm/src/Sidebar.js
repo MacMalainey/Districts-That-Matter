@@ -41,8 +41,15 @@ function Sidebar() {
         alert('data sent')
     }
     const handletab = (tab) => {
+        if(tab === 'DataLayer') {
+            localStorage.setItem('currenttab', 2)
+        }
+        else if (tab ==='Inspect') {
+            localStorage.setItem('currenttab', 1)
+        }
+        
         setselecttab(tab)
-        localStorage.setItem('currenttab', 1)
+        
         // setid(idvalue)
        
         

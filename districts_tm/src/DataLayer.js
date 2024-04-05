@@ -9,7 +9,6 @@ function DataLayer() {
   // const explanation = JSON.parse(localStorage.getItem('COIexp'))
   const [VOcharact, setVOcharact] = useState(null)
   const [showonmap, setshowonmap] = useState(false)
-
 //  const [showcoionmap, setshowcoionmap] = useState(false)
 
 
