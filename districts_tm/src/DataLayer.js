@@ -32,7 +32,7 @@ function DataLayer() {
           }
           
           break
-  //
+  
   
         }
 
@@ -73,7 +73,7 @@ function DataLayer() {
       </select>
       {localStorage.setItem('selectedage', VOcharact)}
       {VOcharact && <input type='checkbox' value={showonmap} onChange={() =>setshowonmap(!showonmap) }></input>}
-      {console.log(showonmap)}
+      
       {showonmap && localStorage.setItem('showonmap', 1) }
       {!showonmap && localStorage.setItem('showonmap', 0) }
       
