@@ -18,7 +18,7 @@ import { ViewAges, ViewPopulation } from "./GradientViews";
 // FR3: Map.Units.Render
 // FR4: Map.Units.Fetch
 // FR5: Map.Navigate
-let COIarray = [];
+let COIarray = [];  
 
 localStorage.setItem('coloractive', '')
 localStorage.setItem('mapid', '')
