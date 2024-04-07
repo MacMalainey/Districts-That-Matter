@@ -11,7 +11,8 @@ import { eventWrapper } from "@testing-library/user-event/dist/utils";
 import { BsBox } from "react-icons/bs";
 import { MAP_MODE_ERASE, MAP_MODE_PAINT, colors } from './config';
 import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext } from "./App";
-import { ViewAges, ViewPopulation } from "./GradientViews";
+import { ViewAges, ViewPopulation, ViewIncome, ViewBirthplace, ViewVisibleM} from "./GradientViews";
+import { GrAid } from "react-icons/gr";
 
 // FR1: Map Render
 // FR2: Map Fetch
@@ -26,21 +27,38 @@ localStorage.setItem('colorid', '')
 localStorage.setItem('COIexp', '')
 let COIotherarray = [];
 function DrawMap() {
-    const mapData = useContext(MapUnitsAllContext);
+    const {data: mapData, category:category} = useContext(MapUnitsAllContext);
     const coiData = useContext(COIContext);
     const { data: districtData, callback: districtCallback } = useContext(DistrictsContext);
-    const { data: gradientSelect, callback: setGradientSelect } = useContext(GradientSelectContext);
+    const { data: gradientSelect, callback: setGradientSelect, category: expectedcategory} = useContext(GradientSelectContext);
     const { data: mapMode, callback: _ } = useContext(MapModeContext);
 
     const center = [43.65107, - 79.347015];
     const [selectedmapunitid, setselectedmapunitid] = useState(null);
     const [selectedCOI, setselectedCOI] = useState(null)
     const [selectedCOIdata, setselectedCOIdata] = useState(null)
-
     let baseStyle = { fillColor: 'transparent', color: 'grey', weight: 0.5 };
-    if (gradientSelect != null) {
-        baseStyle = (mapunit) => ViewPopulation(mapunit, gradientSelect)
+    
+    if(gradientSelect != null && (gradientSelect == "population" || gradientSelect == "landarea" || category == expectedcategory)) {
+      
+      if (gradientSelect == "population") {
+        baseStyle = (mapunit) => ViewPopulation(mapunit,gradientSelect)
+      }
+
+      else if (expectedcategory == "income") {
+        baseStyle = (mapunit) => ViewIncome(mapunit, gradientSelect)
+      }
+      else if (expectedcategory =="ages") {
+        baseStyle = (mapunit) => ViewAges(mapunit, gradientSelect)
+      }
+      else if (expectedcategory =="birthplace") {
+        baseStyle = (mapunit) => ViewBirthplace(mapunit, gradientSelect)
+      }
+      else if (expectedcategory =="visible") {
+        baseStyle = (mapunit) => ViewVisibleM(mapunit, gradientSelect)
+      }
     }
+    
 
     const colormapunit = (mapunit) => {
         const base = {

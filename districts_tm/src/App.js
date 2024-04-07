@@ -24,6 +24,7 @@ async function MapUnitsAllApi(onUpdate, category) {
     }
   })
   onUpdate(response.data)
+  
 }
 
 async function COIApi(onUpdate, category) {
@@ -33,10 +34,12 @@ async function COIApi(onUpdate, category) {
 
 async function DistrictsContextApi(onUpdate, category) {
   const response = await axios.get('http://127.0.0.1:5000/api/districts')
-  onUpdate(response.data)
+  onUpdate("App.js", response.data)
 }
 
 let category = null;
+
+let expectedCategory = null;
 
 function App() {
   const [COIData, setCOIData] = useState(null);
@@ -46,8 +49,9 @@ function App() {
   const [mapMode, setMapMode] = useState(MAP_MODE_HAND);
 
   useEffect(() => {
-    MapUnitsAllApi(setMapUnitData)
-  }, [category]);
+    MapUnitsAllApi(setMapUnitData, expectedCategory)
+    category = expectedCategory
+  }, [expectedCategory]);
 
   useEffect(() => {
     COIApi(setCOIData)
@@ -56,20 +60,23 @@ function App() {
   useEffect(() => {
     DistrictsContextApi(setDistrictData)
   }, []);
-
   return (
     <div className='container'>
-      <MapUnitsAllContext.Provider value={mapUnitData}>
+      <MapUnitsAllContext.Provider value={{data:mapUnitData, category:category}}>
         <COIContext.Provider value={COIData}>
           <DistrictsContext.Provider value={{data: districtData, callback: setDistrictData}}>
             <GradientSelectContext.Provider value={{
                 data: gradientSelect,
                 callback: (data) => {
-                  if (data != null && data != "population") {
-                    category = data.split('_')[0]
+                  if (data != null && data != "population" && data != "landarea") {
+                    expectedCategory = (data.split('_'))[0]
+                    
+
                   }
                   setGradientSelect(data);
-                }
+                  
+                },
+                category: expectedCategory
               }}>
                 <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
                   <DrawMap/>

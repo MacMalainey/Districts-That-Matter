@@ -2,8 +2,7 @@ export const ViewAges = (mapunit, value) => {
     const testage = mapunit.properties[value]
     const testrc = mapunit.properties['rc_ages']
     const result = (testage / testrc) * 100
-    console.log(result)
-
+   console.log("GV", mapunit)
     if (result < 14.9) {
         return {
             fillColor: '#D3D3D3',
@@ -72,14 +71,13 @@ export const ViewAges = (mapunit, value) => {
 
 }
 
-export const gradientincomemapunit = (VOincome) => {
+export const ViewIncome = (mapunit, value) => {
 
     // console.log("Demag kharab part 2", VOincome)
-    const getvalue = localStorage.getItem('selectedage')
-    const testincome = VOincome.properties[getvalue]
-    const testrc = VOincome.properties['rc_income']
+    const testincome = mapunit.properties[value]
+    const testrc = mapunit.properties['rc_income']
     const result = (testincome / testrc) * 100
-    console.log(result)
+    
     if (result < 14.9) {
         return {
             fillColor: '#D3D3D3',
@@ -146,14 +144,13 @@ export const gradientincomemapunit = (VOincome) => {
 
 }
 
-const gradientvisibleMmapunit = (VOvisibleM) => {
+export const ViewVisibleM = (mapunit, value) => {
 
     // console.log("Demag kharab part 2", VOincome)
-    const getvalue = localStorage.getItem('selectedage')
-    const testvisibleM = VOvisibleM.properties[getvalue]
-    const testrc = VOvisibleM.properties['rc_visible_minority']
+    const testvisibleM = mapunit.properties[value]
+    const testrc = mapunit.properties['rc_visible_minority']
     const result = (testvisibleM / testrc) * 100
-    console.log(result)
+    
     if (result < 14.9) {
         return {
             fillColor: '#D3D3D3',
@@ -221,14 +218,13 @@ const gradientvisibleMmapunit = (VOvisibleM) => {
 }
 
 
-const gradientbirthplacemapunit = (VObirthplace) => {
+export const ViewBirthplace = (mapunit, value) => {
 
     // console.log("Demag kharab part 2", VOincome)
-    const getvalue = localStorage.getItem('selectedage')
-    const testbirthplace = VObirthplace.properties[getvalue]
-    const testrc = VObirthplace.properties['rc_birthplace']
+    const testbirthplace = mapunit.properties[value]
+    const testrc = mapunit.properties['rc_birthplace']
     const result = (testbirthplace / testrc) * 100
-    console.log(result)
+    
     if (result < 14.9) {
         return {
             fillColor: '#D3D3D3',

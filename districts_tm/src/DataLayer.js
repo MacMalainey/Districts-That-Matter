@@ -41,7 +41,6 @@ function DataLayer() {
       
       
     
-      console.log(gradientstore)
       
     }
     handlegradientstore();
