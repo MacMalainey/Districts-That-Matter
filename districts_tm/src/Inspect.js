@@ -15,15 +15,17 @@ function Inspect() {
     const[newdata, setnewdata] = useState([])
     const [showcoionmap, setshowcoionmap] = useState(false)
     const[newcoidata, setnewcoidata] = useState([])
+    const currenttab = localStorage.getItem('currenttab')
+   // continuously render for the selected map id and set it
     useEffect(()=>{
         setid(localStorage.getItem('mapid'))
-        if (id){
-            DemoData()
-            
-        }
     })
 
-   
+    // check if id is there and tab is inspect
+    // run demodata with a get request. 
+    useEffect(()=>{
+        
+
         const DemoData = async () => {
             
             try {
@@ -32,22 +34,30 @@ function Inspect() {
               const Alldata = response.data // storing the response data in a var which can be utilized. wrapper requirement.
             //   setdemodata(Alldata)
               
-
+    
                     for (const k in Alldata){
                         mapdemoarray.push([id, k, Alldata[k]])
                         console.log("this is map data for an id", mapdemoarray)
                     }
-
+    
                     console.log("array has changed too", id, mapdemoarray)
                     setnewdata(mapdemoarray)
             }
         
-
+    
             catch {
               console.log('Response data not appropriately handled:');
             }
           }
+          if(id && currenttab==1 && inspectmap==true){
+            DemoData()
+          }
 
+    }, [id])
+        
+            
+   
+        
          
          
 
@@ -55,11 +65,11 @@ function Inspect() {
 
         const handlemapdemo = () => {
             const filteredmaparray = newdata.filter((val) => val[1].startsWith(charact) && val[2]!==0)
-            return <p>
-                    {newdata && <ul>
+            return <p >
+                    {newdata && <ul >
 
-                        {filteredmaparray.map((charact,indexvalue)=>(<li key={indexvalue}>
-            <table>
+                        {filteredmaparray.map((charact,indexvalue)=>(<li  key={indexvalue}>
+            <table >
                 <thead>
                 <tr>
                     {charact[1]} has value {charact[2]}

@@ -2,9 +2,25 @@
     flex: 0 0 30%; /* Sidebar takes 30% of the container */
     background-color: lightgrey; /* Example background color */
     /* Other styles for sidebar */
+    overflow-y: auto;
     
   }
 
+  .inspect{
+    overflow-y: auto;
+  }
+
+  .dl{
+    overflow-y: auto;
+  }
+  .eval{
+    overflow-y: auto;
+  }
+  .submit:hover{
+    background-color: lightgrey;
+  }
+
+  
 .paint-brush:hover{
   color:rebeccapurple;
   cursor:pointer

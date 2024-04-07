@@ -1,4 +1,4 @@
-import {React, useEffect, useState} from 'react'
+import {React, useContext, useEffect, useState} from 'react'
 import './Sidebar.css'; // Import your CSS file
 import {SketchPicker} from 'react-color'
 import { FaPaintBrush } from "react-icons/fa";
@@ -10,94 +10,58 @@ import { BsEraser } from "react-icons/bs";
 import Inspect from './Inspect';
 import DataLayer from './DataLayer';
 import Evaluation from './Evaluation';
-import axios, { all } from 'axios';
+import axios from 'axios';
+import { DistrictsContext, MapModeContext } from './App';
+import { MAP_MODE_ERASE, MAP_MODE_HAND, MAP_MODE_PAINT } from './config';
 
+localStorage.setItem('currenttab',0)
 function Sidebar() {
-    
-    // const [selectpaint, setselectpaint] = useState(false)
-    // const [selectcursor, setselectcursor] = useState(false)
+    const {data: mapMode, callback: setMapMode} = useContext(MapModeContext)
+    const {data: districtData, callback: _} = useContext(DistrictsContext)
     const [selecttab, setselecttab] = useState(null)
-    const [colorpalette, setcolorpalette] = useState(false)
-    const [cursor, setcursor] = useState(false)
-    const [eraser, seteraser] = useState(false)
     const[id,setid] = useState(null)
-    const [district, setdistrict] = useState(null)
-    const[demodata, setdemodata] = useState(null)
-    const temp = localStorage.getItem('mapid')
     const[districtnum, setdistrictnum] = useState(null)
     const [totalpop, settotalpop] = useState(false)
     const[lower, setlower] = useState(null)
     const[upper, setupper] = useState(null)
-    // const testdistrict = localStorage.getItem('defineddistricts');
+
     const submit = () => {
-        
-        // localStorage.setItem('TotalDistricts', districtnum)
         const num = Math.floor(totalpop/districtnum)
        setlower(Math.floor(num - num * 0.25))
        setupper(Math.floor(num + num * 0.25))
     }
-    const colordata = () =>{
-        alert('data sent')
-    }
     const handletab = (tab) => {
-        setselecttab(tab)
-        // setid(idvalue)
-       
+        if(tab === 'DataLayer') {
+            localStorage.setItem('currenttab', 2)
+        }
+        else if (tab ==='Inspect') {
+            localStorage.setItem('currenttab', 1)
+        }
         
-      }
+        setselecttab(tab)
+    }
 
     const handlepaint = () =>{
-        setcolorpalette(true)
-        localStorage.setItem('coloractive', 1)
-        localStorage.setItem('cursor', 0)
-        localStorage.setItem('eraser', 0)
+        setMapMode(MAP_MODE_PAINT)
     }
     const handlecursor = () => {
-        setcolorpalette(false)
-        setcursor(true)
-        localStorage.setItem('coloractive', 0)
-        localStorage.setItem('cursor', 1)
-        localStorage.setItem('eraser', 0)
+        setMapMode(MAP_MODE_HAND)
     }
     const handleeraser = () => {
-        seteraser(true)
-        setcolorpalette(false)
-        setcursor(false)
-        localStorage.setItem('coloractive', 0)
-        localStorage.setItem('eraser', 1)
+        setMapMode(MAP_MODE_ERASE)
     }
     const sendid = (colorid) => {
-        
         localStorage.setItem('colorid', colorid)
     }
     
-    // this function will get demographic data for a defined dguid of a map unit
-    
-    
     // this function is saving the map units for a district
-    
-          useEffect(()=>{
-            setdistrict(localStorage.getItem('defineddistricts'))
-            
-          },[district])
     const DefinedDistrict = async () => {
-
-        
-        
-            
-            const testar = JSON.parse(localStorage.getItem('defineddistricts'))
+            const testar = districtData
             let array = []
             for (let item in testar) {
                 array.push([item, testar[item]])
             }
-            
-
-
-            await axios.post('http://127.0.0.1:5000/api/districts/update', testar).catch(error =>{console.log(error)});
-
-        
-
-           
+            await axios.post('http://127.0.0.1:5000/api/districts/update', array).catch(error =>{console.log(error)});
           }
             
     useEffect(()=>{
@@ -112,30 +76,34 @@ function Sidebar() {
    
   return (
     
-        <div className = 'sidebar'>
-
-            <input type='text' placeholder='Update District Number' value={districtnum} onChange={(e)=>setdistrictnum(e.target.value)}/> 
-            <button type='submit' onClick={submit}>submit</button> 
-            <button type='submit' onClick={DefinedDistrict}>Save</button> <br></br>
+        <div className = 'sidebar' style={{marginTop:'2px', marginRight:'2px'}}>
+            <div style={{paddingTop: '4px', border: '1px solid black',  boxShadow: '10px 10px 5px #D8BFD8'}}>
+            <input style={{border: '1px solid #D8BFD8', fontSize: '14px',borderRadius:'10px'}} type='text' placeholder='Update District Number' value={districtnum} onChange={(e)=>setdistrictnum(e.target.value)}/> 
+            <button style={{marginLeft: '5px'}} className= 'submit' type='submit' onClick={submit}>Update</button> 
+            <button style={{marginLeft:'5px'}} type='submit' onClick={DefinedDistrict}>Save </button> <br></br>
            
            
             {totalpop && <p>
                
-                <label style={{marginRight:'3px'}}><strong> Total Population is: </strong> <em> 5032425 </em></label> 
-                <br></br>
+                <label style={{marginRight:'3px'}}><strong> Total Population is: </strong> <em style={{background:'darkgrey'}}> 5032425 </em></label> 
+                <br style={{marginBottom:'10px'}}></br> 
               
-                <label> <strong> District range is between: </strong> <em> {lower} </em>and <em> {upper} </em> </label> 
+                <label> <strong> District range is between: </strong>  <input style={{width:'75px', borderRadius:'10px'}} value={lower}></input> and <input style={{width:'75px', borderRadius:'10px'}} value={upper}></input> </label> 
                 
-                
+                {localStorage.setItem('lower', lower)}
+                {localStorage.setItem('upper',upper)}
                 
             </p> } 
+
+            </div>
+            
             {<FaPaintBrush className="paint-brush" style={{fontSize:'30px'}} onClick={handlepaint}/>} 
             
             <FaRegHandPaper className="hand-cursor"  onClick={handlecursor}/>
             
-            <BsEraser className='eraser' onClick={() => sendid(100)} /> 
+            <BsEraser className='eraser' onClick={handleeraser} /> 
              <br></br>
-            {colorpalette && (
+            {(mapMode == MAP_MODE_PAINT || mapMode == MAP_MODE_ERASE) && (
                 <>
             <button style={{background:'#ff1a1a', width:'35px', borderRadius: 10,height:'35px', color:'black'}} onClick={() => sendid(11)}>11</button>
             <button style={{background:'#ff8080', width:'35px', borderRadius: 10, height:'35px', color:'black'}} onClick={() => sendid(12)}>12</button>
@@ -181,18 +149,15 @@ function Sidebar() {
                 </>
           
             )}
-            {cursor && colorpalette}
-            {eraser && colorpalette && cursor}
             
             {/* <SketchPicker/> */}
             
-            <button onClick={() => handletab('Inspect')} style={{fontSize:'20px', padding:'10px', width:'150px'}}>Inspect</button>
-            <button onClick={() => handletab('DataLayer')} style={{fontSize: '20px', padding: '10px', width:'150px'}}>Data Layer</button>
-            <button onClick={() => handletab('Evaluation')} style={{fontSize: '20px', padding: '10px', width:'150px'}}>Evaluation</button>
-            {selecttab === 'Inspect' && <Inspect MUid = {id}/>}
-            {selecttab === 'DataLayer' && <DataLayer/>}
-            {selecttab === 'Evaluation' && <Evaluation/>}
-            {/* {console.log("Sidebar",DGUID)} */}
+            <button onClick={() => handletab('Inspect')} style={{fontSize:'20px', padding:'10px', width:'145px'}}>Inspect</button>
+            <button onClick={() => handletab('DataLayer')} style={{fontSize: '20px', padding: '10px', width:'145px'}}>Data Layer</button>
+            <button onClick={() => handletab('Evaluation')} style={{fontSize: '20px', padding: '10px', width:'145px'}}>Evaluation</button>
+            {selecttab === 'Inspect' && <Inspect className = 'inspect' MUid = {id}/>}
+            {selecttab === 'DataLayer' && <DataLayer className = 'dl'/>}
+            {selecttab === 'Evaluation' && <Evaluation className = 'eval'/>}
  
         </div>
        

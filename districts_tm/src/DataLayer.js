@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios, { all } from 'axios';
+import './DataLayer.css';
+import { GradientSelectContext } from './App';
+
 localStorage.setItem('showonmap', '')
 localStorage.setItem('showcoionmap', '')
 localStorage.setItem('gradientstore', '')
 let gradientstore = []
 function DataLayer() {
   const[showVO, setshowVO] = useState(false)
-  // const explanation = JSON.parse(localStorage.getItem('COIexp'))
   const [VOcharact, setVOcharact] = useState(null)
   const [showonmap, setshowonmap] = useState(false)
-
-//  const [showcoionmap, setshowcoionmap] = useState(false)
+  const {data: gradientSelect, callback: setGradientSelect} = useContext(GradientSelectContext)
 
 
  //total population: 5032425
@@ -40,12 +41,11 @@ function DataLayer() {
       
       
     
-      console.log(gradientstore)
       
     }
     handlegradientstore();
     
-  }, [])
+  }, [gradientstore])
  
 
   return (
@@ -54,7 +54,9 @@ function DataLayer() {
       
 
       <h2>Demographic Review</h2>
+      
 
+      
       {/* <label>Show COI </label>
       <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
       {showcoionmap && localStorage.setItem('showcoionmap', 1)}
@@ -71,11 +73,18 @@ function DataLayer() {
           )}
 
       </select>
-      {localStorage.setItem('selectedage', VOcharact)}
-      {VOcharact && <input type='checkbox' value={showonmap} onChange={() =>setshowonmap(!showonmap) }></input>}
-      {console.log(showonmap)}
-      {showonmap && localStorage.setItem('showonmap', 1) }
-      {!showonmap && localStorage.setItem('showonmap', 0) }
+      {/* {localStorage.setItem('selectedage', VOcharact)} */}
+      {VOcharact && <input type='checkbox' value={showonmap} onChange={() => {
+        let toShow = VOcharact;
+        if (showonmap == true)
+          toShow = null;
+        setshowonmap(!showonmap)
+        setGradientSelect(toShow) }}>
+        </input>
+        }
+      
+      {/* {showonmap && localStorage.setItem('showonmap', 1) }
+      {!showonmap && localStorage.setItem('showonmap', 0) } */}
       
       
       </p>}

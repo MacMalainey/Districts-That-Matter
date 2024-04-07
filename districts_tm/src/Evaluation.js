@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
-import { Chart } from 'chart.js';
 import './Evaluation.css';
-let inspectdata = []
-let TTT= []
+// let inspectpop = []
+
 function Evaluation() {
   // implemented FR 6 and FR7 
   // district number is taken as user input and we recalculate population range per district
@@ -16,29 +15,44 @@ function Evaluation() {
   const [selectpop, setselectpop] = useState(false)
   const [selectcharact, setselectcharact] = useState(null)
   const [secondcharact, setsecondcharact] = useState(null)
-  
-
-  
+  const [population, setpopulation] = useState(null)
+ const[disdemo, setdisdemo] = useState(null)
+  //test2
 
   useEffect(()=>{
     const handledistrictdemo = async () =>{
-      inspectdata = []
+     
+      let inspectpop = []
+      let inspectdemo = []
+      let idk = []
+    
       const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
       const inspectDD = response.data
-      for (const k in inspectDD){
-        const temp = inspectDD[k]
-        for (const j in temp){
-          inspectdata.push([k,j,temp[j]])
-          
-          
+      console.log("Raw data", inspectDD)
+        for (let k in inspectDD){
+          console.log(k)
+          idk.push(k)
+          console.log("ids", idk)
+          // inspectpop.push([k,"population", inspectDD[k].population]) 
         }
-         
-      }
-      
-      
-      
-      console.log("Harsh testing, inspect",inspectdata)
+
+        idk.forEach(value =>{
+          console.log(value, inspectDD[value].population)
+          inspectpop.push([value, "population", inspectDD[value].population])
+          setpopulation(inspectpop)
+          for(let j in inspectDD[value]){
+            console.log(value, j, inspectDD[value][j])
+
+            inspectdemo.push([value, j , inspectDD[value][j]])
+            setdisdemo(inspectdemo)
+          }
+          
+        })
+
+
+       
     }
+    
     handledistrictdemo();
 
  
@@ -48,8 +62,8 @@ function Evaluation() {
  
 
   const handleinspectChar = () => {
-    const filteredinspectcharact = inspectdata.filter((arr)=>arr[1]===selectcharact)
-    const filsecondcharact = inspectdata.filter((arr2)=>arr2[1]===secondcharact)
+    const filteredinspectcharact = disdemo.filter((arr)=>arr[1]===selectcharact)
+    // const filsecondcharact = inspectdata.filter((arr2)=>arr2[1]===secondcharact)
     const addcolor = filteredinspectcharact.map((chek)=> {
       console.log(chek[0])
       if(chek[0]==11){
@@ -174,11 +188,11 @@ function Evaluation() {
       }
     })
     
-    return <p> Inspect upto two Characteristics:  
+    return <p> Compare a Characteristic:  
       <select value={selectcharact} onChange={(e)=>setselectcharact(e.target.value)}>
     <option style={{fontStyle:'italic'}}> select...</option>
   
-    {inspectdata.map((charact,indexvalue) =>(
+    {disdemo.map((charact,indexvalue) =>(
       <option key={indexvalue} value={charact[1]}>{charact[1]}</option>
     ))}
 
@@ -252,7 +266,7 @@ function Evaluation() {
 
   
   const handlepopulation = () => {
-    const filteredinspectcharact = inspectdata.filter((arr)=>arr[1]==='population')
+    const filteredinspectcharact = population.filter((arr)=>arr[1]==='population')
     const addcolor = filteredinspectcharact.map((chek)=> {
       console.log(chek[0])
       if(chek[0]==11){
@@ -392,7 +406,7 @@ function Evaluation() {
     {/* </select> */}
        
        {<p>
-        <table> 
+        <table style={{ marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
         <tr>
               <th> DN  </th> 
               <th></th>
@@ -404,13 +418,15 @@ function Evaluation() {
               <th></th>
               <th>{secondcharact}</th>
               <th>Analysis</th>
+              <th> Min Pop</th>
+              <th> Max Pop</th>
             </tr >
 
        
         
         {addcolor.map((charact,indexvalue)=>(
 
-              <tr key={indexvalue}>
+              <tr  key={indexvalue}>
                 <td style={{background: charact[3],width:'35px', borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
                 <td></td>
                 <td></td>
@@ -418,7 +434,11 @@ function Evaluation() {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><progress   max={125810} value={charact[2]} > </progress></td>
+                <td ><progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')} %`, height:'25px' }}  max={localStorage.getItem('upper')} value={charact[2]} >  </progress>
+                <span> {Math.floor(charact[2] / localStorage.getItem('upper') * 100)}%</span>
+                </td>
+                <td> {localStorage.getItem('lower')}</td>
+                <td> {localStorage.getItem('upper')}</td>
               </tr>
 
         ))}
@@ -434,7 +454,7 @@ function Evaluation() {
   
 
   return (
-    <div>
+    <div className='eval'>
       
       
       <label>Show Total Population</label>
