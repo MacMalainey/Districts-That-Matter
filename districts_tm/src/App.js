@@ -16,14 +16,22 @@ export const SchemaContext = createContext(null);
 export const DistrictsContext = createContext(null);
 export const GradientSelectContext = createContext(null);
 export const MapModeContext = createContext(null);
+export const MapUnitsAllCategoryApiContext = createContext(null);
 
-async function MapUnitsAllApi(onUpdate, category) {
+async function MapUnitsAllApi(onUpdate) {
   const response = await axios.get('http://127.0.0.1:5000/api/units/all', {
-    params: {
-      include: category
-    }
+   
   })
   onUpdate(response.data)
+  
+}
+
+async function MapUnitsAllCategoryApi(onUpdate, category) {
+  if(category!=null){
+    const response = await axios.get('http://127.0.0.1:5000/api/units/category/' + category)
+    onUpdate(response.data)
+    console.log(response.data)
+  }
   
 }
 
@@ -47,12 +55,16 @@ function App() {
   const [districtData, setDistrictData] = useState(null);
   const [gradientSelect, setGradientSelect] = useState(null);
   const [mapMode, setMapMode] = useState(MAP_MODE_HAND);
+  const [categoryData, setcategoryData] = useState(null);
+  useEffect(() => {
+    MapUnitsAllApi(setMapUnitData)
+    
+  }, []);
 
   useEffect(() => {
-    MapUnitsAllApi(setMapUnitData, expectedCategory)
+    MapUnitsAllCategoryApi(setcategoryData, expectedCategory)
     category = expectedCategory
   }, [expectedCategory]);
-
   useEffect(() => {
     COIApi(setCOIData)
   }, []);
@@ -62,27 +74,31 @@ function App() {
   }, []);
   return (
     <div className='container'>
-      <MapUnitsAllContext.Provider value={{data:mapUnitData, category:category}}>
+      <MapUnitsAllContext.Provider value={{data:mapUnitData}}>
         <COIContext.Provider value={COIData}>
           <DistrictsContext.Provider value={{data: districtData, callback: setDistrictData}}>
-            <GradientSelectContext.Provider value={{
-                data: gradientSelect,
-                callback: (data) => {
-                  if (data != null && data != "population" && data != "landarea") {
-                    expectedCategory = (data.split('_'))[0]
-                    
+            <MapUnitsAllCategoryApiContext.Provider value = {{data: categoryData, category:category}}>
+              <GradientSelectContext.Provider value={{
+                  data: gradientSelect,
+                  callback: (data) => {
+                    if (data != null && data != "population" && data != "landarea" ) {
+                      expectedCategory = (data.split('_'))[0]
+                      if(expectedCategory == "visible"){
+                        expectedCategory = "visible_minority"
+                      }
 
-                  }
-                  setGradientSelect(data);
-                  
-                },
-                category: expectedCategory
-              }}>
-                <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
-                  <DrawMap/>
-                  <Sidebar/>
-                </MapModeContext.Provider>
-            </GradientSelectContext.Provider>
+                    }
+                    setGradientSelect(data);
+                    
+                  },
+                  category: expectedCategory
+                }}>
+                  <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
+                    <DrawMap/>
+                    <Sidebar/>
+                  </MapModeContext.Provider>
+              </GradientSelectContext.Provider>
+            </MapUnitsAllCategoryApiContext.Provider>
           </DistrictsContext.Provider>
         </COIContext.Provider>
       </MapUnitsAllContext.Provider>

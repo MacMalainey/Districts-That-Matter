@@ -10,7 +10,7 @@ import Sidebar from "./Sidebar";
 import { eventWrapper } from "@testing-library/user-event/dist/utils";
 import { BsBox } from "react-icons/bs";
 import { MAP_MODE_ERASE, MAP_MODE_PAINT, colors } from './config';
-import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext } from "./App";
+import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext, MapUnitsAllCategoryApiContext} from "./App";
 import { ViewAges, ViewPopulation, ViewIncome, ViewBirthplace, ViewVisibleM} from "./GradientViews";
 import { GrAid } from "react-icons/gr";
 
@@ -27,7 +27,8 @@ localStorage.setItem('colorid', '')
 localStorage.setItem('COIexp', '')
 let COIotherarray = [];
 function DrawMap() {
-    const {data: mapData, category:category} = useContext(MapUnitsAllContext);
+    const {data: CategoryData, category:category} = useContext(MapUnitsAllCategoryApiContext)
+    const {data: mapData} = useContext(MapUnitsAllContext);
     const coiData = useContext(COIContext);
     const { data: districtData, callback: districtCallback } = useContext(DistrictsContext);
     const { data: gradientSelect, callback: setGradientSelect, category: expectedcategory} = useContext(GradientSelectContext);
@@ -37,25 +38,26 @@ function DrawMap() {
     const [selectedmapunitid, setselectedmapunitid] = useState(null);
     const [selectedCOI, setselectedCOI] = useState(null)
     const [selectedCOIdata, setselectedCOIdata] = useState(null)
+    console.log("Category Data", CategoryData)
     let baseStyle = { fillColor: 'transparent', color: 'grey', weight: 0.5 };
     
     if(gradientSelect != null && (gradientSelect == "population" || gradientSelect == "landarea" || category == expectedcategory)) {
       
       if (gradientSelect == "population") {
-        baseStyle = (mapunit) => ViewPopulation(mapunit,gradientSelect)
+      
+        baseStyle = (mapunit) => ViewPopulation(mapunit.properties.population,gradientSelect)
       }
-
       else if (expectedcategory == "income") {
-        baseStyle = (mapunit) => ViewIncome(mapunit, gradientSelect)
+        baseStyle = (mapunit) => ViewIncome(CategoryData[mapunit.id], gradientSelect)
       }
       else if (expectedcategory =="ages") {
-        baseStyle = (mapunit) => ViewAges(mapunit, gradientSelect)
+        baseStyle = (mapunit) => ViewAges(CategoryData[mapunit.id], gradientSelect)
       }
       else if (expectedcategory =="birthplace") {
-        baseStyle = (mapunit) => ViewBirthplace(mapunit, gradientSelect)
+        baseStyle = (mapunit) => ViewBirthplace(CategoryData[mapunit.id], gradientSelect)
       }
-      else if (expectedcategory =="visible") {
-        baseStyle = (mapunit) => ViewVisibleM(mapunit, gradientSelect)
+      else if (expectedcategory =="visible_minority") {
+        baseStyle = (mapunit) => ViewVisibleM(CategoryData[mapunit.id], gradientSelect)
       }
     }
     
