@@ -173,6 +173,14 @@ class Processor:
         Fulfills FR4, FR10
         """
         return self._data[fields]
+    
+    def all_map_units_data(self, fields: list[str]):
+        """
+        Returns data for all the map units including a small set of characteristics
+
+        Fulfills FR4, FR10
+        """
+        return self._data[fields].T
 
     def single_map_unit(self, dguid: str):
         """
