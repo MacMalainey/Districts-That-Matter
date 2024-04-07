@@ -43,6 +43,20 @@ def api_units_all():
 
     return processor.all_map_units(fields).to_json()
 
+@app.route("/api/units/category/<category>")
+def api_units_category(category):
+    '''
+    Returns all of the registered map units boundary info
+
+    Fulfills FR3, FR4
+    '''
+    if category not in schema:
+        return {'reason': 'unknown category'}, 400
+    fields = schema[category].copy()
+    fields.append(f"rc_{category}")
+
+    return processor.all_map_units_data(fields).to_json()
+
 @app.route("/api/units/<dguid>/demographics")
 def api_units_demographics(dguid):
     """
