@@ -9,3 +9,8 @@
 .eval{
     overflow-y: auto;
 }
+
+.set{
+    width:var(--progress, 100%);
+    color:'green'
+}

@@ -264,7 +264,7 @@ function Evaluation() {
     
   }
 
-  
+
   const handlepopulation = () => {
     const filteredinspectcharact = population.filter((arr)=>arr[1]==='population')
     const addcolor = filteredinspectcharact.map((chek)=> {
@@ -391,19 +391,16 @@ function Evaluation() {
       }
     })
     
-    return <p> Population analysis  
+
+    return <p>
       
-     {/* <p> with </p> 
-    <select value={secondcharact} onChange={(e)=>setsecondcharact(e.target.value)}>
-    <option style={{fontStyle:'italic'}}> select...</option>
-  
-
-    {inspectdata.map((charact,indexvalue) =>(
-      <option key={indexvalue} value={charact[1]}>{charact[1]}</option>
-    ))} */}
-
-    
-    {/* </select> */}
+      <button style={{ marginTop:'10px', border:' 3px solid green' , width:'30px', borderRadius: 4,height:'15px', fontSize:'10px'}}></button>
+      <label style={{fontSize:'12px'}}> "Population between Min Pop and Max Pop   </label> 
+      <button style={{ marginLeft:'5px', border:' 3px solid red' , width:'30px', borderRadius: 4,height:'15px', fontSize:'10px'}}></button>
+      <label style={{fontSize:'12px'}}> " Otherwise </label>
+      
+      
+     
        
        {<p>
         <table style={{ marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
@@ -418,14 +415,15 @@ function Evaluation() {
               <th></th>
               <th>{secondcharact}</th>
               <th>Analysis</th>
-              <th> Min Pop</th>
-              <th> Max Pop</th>
+              <th></th>
+              <th> Min % req</th>
+              <th> Max % req </th>
             </tr >
 
        
         
         {addcolor.map((charact,indexvalue)=>(
-
+            
               <tr  key={indexvalue}>
                 <td style={{background: charact[3],width:'35px', borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
                 <td></td>
@@ -434,11 +432,21 @@ function Evaluation() {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td ><progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')} %`, height:'25px' }}  max={localStorage.getItem('upper')} value={charact[2]} >  </progress>
+                <td>
+                
+                <div className='set' style={{position:'relative', width:'160px', height:'10px', background:'lightgrey'}}>
+                    <div className='vertical' style={{position:'absolute', width:'1px', height:'100%', background:'black', left:'96px', top:'0px'}}>
+
+                    </div>
+                </div>
+
+                <progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')} %`, height:'25px', border:  charact[2] > localStorage.getItem('upper')? '2px solid red':(charact[2] < localStorage.getItem('lower') ? '2px solid red' :'2px solid green')}}   max={localStorage.getItem('upper')} value={charact[2]} >  </progress>
                 <span> {Math.floor(charact[2] / localStorage.getItem('upper') * 100)}%</span>
+                  
                 </td>
-                <td> {localStorage.getItem('lower')}</td>
-                <td> {localStorage.getItem('upper')}</td>
+                <td></td>
+                <td> {Math.floor(localStorage.getItem('lower') / localStorage.getItem('upper') * 100)}% </td>
+               <td> 100 % </td>
               </tr>
 
         ))}
