@@ -30,7 +30,7 @@ function DrawMap() {
     const {data: CategoryData, category:category} = useContext(MapUnitsAllCategoryApiContext)
     const {data: mapData} = useContext(MapUnitsAllContext);
     const coiData = useContext(COIContext);
-    console.log("COI check", coiData)
+    
     const { data: districtData, callback: districtCallback } = useContext(DistrictsContext);
     const { data: gradientSelect, callback: setGradientSelect, category: expectedcategory} = useContext(GradientSelectContext);
     const { data: mapMode, callback: _ } = useContext(MapModeContext);
@@ -39,7 +39,7 @@ function DrawMap() {
     const [selectedmapunitid, setselectedmapunitid] = useState(null);
     const [selectedCOI, setselectedCOI] = useState(null)
     const [selectedCOIdata, setselectedCOIdata] = useState(null)
-    console.log("Category Data", CategoryData)
+    
     let baseStyle = { fillColor: 'transparent', color: 'grey', weight: 0.5 };
     
     if(gradientSelect != null && (gradientSelect == "population" || gradientSelect == "landarea" || category == expectedcategory)) {
@@ -64,7 +64,7 @@ function DrawMap() {
     
 
     const colormapunit = (mapunit) => {
-      console.log("hello from color:", mapunit)
+      
         const base = {
             fillOpacity: 0,
             weight: 0.5
@@ -93,7 +93,7 @@ function DrawMap() {
                         // console.log("interpretation of {} this item is", reason, ite.interpretation)
                         // COIotherarray.push([tempdata, tempval])
                         COIotherarray.push([tempdata, tempval])
-                        console.log("COIotherarray:", COIotherarray)
+                        // console.log("COIotherarray:", COIotherarray)
                         localStorage.setItem('COIotherarray', JSON.stringify(COIotherarray))
                         // localStorage.setItem('COIexp', JSON.stringify(COIarray))
 

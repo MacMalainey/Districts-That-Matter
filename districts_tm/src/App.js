@@ -17,7 +17,7 @@ export const GradientSelectContext = createContext(null);
 export const MapModeContext = createContext(null);
 export const MapUnitsAllCategoryApiContext = createContext(null);
 export const COISelectContext = createContext(null)
-
+export const EvaluationContext = createContext(null)
 async function MapUnitsAllApi(onUpdate) {
   const response = await axios.get('http://127.0.0.1:5000/api/units/all', {
    
@@ -30,10 +30,20 @@ async function MapUnitsAllCategoryApi(onUpdate, category) {
   if(category!=null){
     const response = await axios.get('http://127.0.0.1:5000/api/units/category/' + category)
     onUpdate(response.data)
-    console.log(response.data)
+    
   }
   
 }
+
+async function Evaluation(onUpdate) {
+  
+    const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
+    onUpdate(response.data)
+    
+
+}
+
+
 
 async function COIApi(onUpdate, category) {
   const response = await axios.get('http://127.0.0.1:5000/api/cois/all')
@@ -57,11 +67,17 @@ function App() {
   const [mapMode, setMapMode] = useState(MAP_MODE_HAND);
   const [categoryData, setcategoryData] = useState(null);
   const [showcoionmap, setshowcoionmap] = useState(false)
+  const [Evaluationdata, setEvaluationdata] = useState(null)
   useEffect(() => {
     MapUnitsAllApi(setMapUnitData)
     
   }, []);
 
+  useEffect(() => {
+    Evaluation(setEvaluationdata)
+    
+  }, [Evaluationdata]);
+  
   useEffect(() => {
     MapUnitsAllCategoryApi(setcategoryData, expectedCategory)
     category = expectedCategory
@@ -96,10 +112,11 @@ function App() {
                   }}>
                   <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
                     <COISelectContext.Provider value={{data:showcoionmap, callback: setshowcoionmap}}>
-                      
+                      <EvaluationContext.Provider value={Evaluationdata}>
                    
                       <DrawMap/>
                       <Sidebar/>
+                      </EvaluationContext.Provider>
                     </COISelectContext.Provider>
                   </MapModeContext.Provider>
                </GradientSelectContext.Provider>

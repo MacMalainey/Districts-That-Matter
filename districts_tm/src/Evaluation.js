@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
 import './Evaluation.css';
+import { COISelectContext, EvaluationContext } from './App';
 // let inspectpop = []
 
 function Evaluation() {
@@ -16,20 +17,25 @@ function Evaluation() {
   const [selectcharact, setselectcharact] = useState(null)
   const [secondcharact, setsecondcharact] = useState(null)
   const [population, setpopulation] = useState(null)
+  const[checkeval, setcheckeval] = useState([])
+  const{EvaluationData} = useContext(COISelectContext)
  const[disdemo, setdisdemo] = useState(null)
   //test2
 
-  useEffect(()=>{
-    const handledistrictdemo = async () =>{
+
+
+  
+    const handledistrictdemo =  () =>{
      
       let inspectpop = []
       let inspectdemo = []
       let idk = []
     
-      const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
-      const inspectDD = response.data
-      console.log("Raw data", inspectDD)
-        for (let k in inspectDD){
+      
+      let inspectDD = EvaluationData
+      setcheckeval(inspectDD)
+      console.log("Raw data", checkeval)
+        for (let k in checkeval){
           console.log(k)
           idk.push(k)
           console.log("ids", idk)
@@ -37,13 +43,13 @@ function Evaluation() {
         }
 
         idk.forEach(value =>{
-          console.log(value, inspectDD[value].population)
-          inspectpop.push([value, "population", inspectDD[value].population])
+          console.log(value, checkeval[value].population)
+          inspectpop.push([value, "population", checkeval[value].population])
           setpopulation(inspectpop)
-          for(let j in inspectDD[value]){
-            console.log(value, j, inspectDD[value][j])
+          for(let j in checkeval[value]){
+            console.log(value, j, checkeval[value][j])
 
-            inspectdemo.push([value, j , inspectDD[value][j]])
+            inspectdemo.push([value, j , checkeval[value][j]])
             setdisdemo(inspectdemo)
           }
           
@@ -53,11 +59,6 @@ function Evaluation() {
        
     }
     
-    handledistrictdemo();
-
- 
-   
-  }, [])
   
  
 
