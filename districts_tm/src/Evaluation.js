@@ -403,21 +403,13 @@ function Evaluation() {
      
        
        {<p>
-        <table style={{ marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
+        <table style={{ width: "100%", marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
         <tr>
               <th> DN  </th> 
-              <th></th>
-              <th></th>
               <th>
                 Population
               </th>
-              <th></th>
-              <th></th>
-              <th>{secondcharact}</th>
               <th>Analysis</th>
-              <th></th>
-              <th> Min % req</th>
-              <th> Max % req </th>
             </tr >
 
        
@@ -425,28 +417,15 @@ function Evaluation() {
         {addcolor.map((charact,indexvalue)=>(
             
               <tr  key={indexvalue}>
-                <td style={{background: charact[3],width:'35px', borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
-                <td></td>
-                <td></td>
-                <td>{charact[2]}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                
-                <div className='set' style={{position:'relative', width:'160px', height:'10px', background:'lightgrey'}}>
-                    <div className='vertical' style={{position:'absolute', width:'1px', height:'100%', background:'black', left:'96px', top:'0px'}}>
-
-                    </div>
+                <td style={{background: charact[3],width:'35px', padding: "8px", borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
+                <td style={{paddingInline: "16px", }}>{charact[2]}</td>
+                <td style={{width:"100%", paddingInline: "16px",}}>
+                <div style={{position: "relative", width: "100%", height:'25px'}}>
+                  <span style={{ width: '10%', padding:'8px'}}>{Math.floor(charact[2] / localStorage.getItem('upper') * 100)}%</span>
+                  <progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')}`, height:'100%', left:'15%', position: 'absolute', width: "70%", border:  charact[2] > localStorage.getItem('upper')? '2px solid red':(charact[2] < localStorage.getItem('lower') ? '2px solid red' :'2px solid green')}}   max={localStorage.getItem('upper')} value={charact[2]} ></progress>
+                  <div className='vertical' style={{position:'absolute', width:'2px', height:'100%', background:'black', left:'57%', top:'0px'}}></div>
                 </div>
-
-                <progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')} %`,  height:'25px', border:  charact[2] > localStorage.getItem('upper')? '2px solid red':(charact[2] < localStorage.getItem('lower') ? '2px solid red' :'2px solid green')}}   max={localStorage.getItem('upper')} value={charact[2]} >  </progress>
-                <span> {Math.floor(charact[2] / localStorage.getItem('upper') * 100)}%</span>
-                  
                 </td>
-                <td></td>
-                <td> {Math.floor(localStorage.getItem('lower') / localStorage.getItem('upper') * 100)}% </td>
-               <td> 100 % </td>
               </tr>
 
         ))}
