@@ -125,8 +125,11 @@ function DrawMap() {
                 />
                 <LayersControl postition='topright'>
                     <LayersControl.BaseLayer name='Baselayer' checked='Baselayer'>
-                        {mapData && <GeoJSON data={mapData} style={baseStyle} eventHandlers={{ click: (e) => { setselectedmapunitid(e.layer.feature.id) } }} />}
-
+                        {mapData && <GeoJSON data={mapData} style={baseStyle} eventHandlers={{ click: (e) => { setselectedmapunitid(e.layer.feature.id) 
+                        
+                        localStorage.setItem('mapid', e.layer.feature.id)
+                        } }} />}
+                          
                     </LayersControl.BaseLayer>
 
 
@@ -177,6 +180,7 @@ function DrawMap() {
                         districtData[e.layer.feature.id] = cid
                         districtCallback(districtData)
                         setselectedmapunitid(e.layer.feature.id);
+                        
                     }
                 }} />}
 

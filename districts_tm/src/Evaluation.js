@@ -440,7 +440,7 @@ function Evaluation() {
                     </div>
                 </div>
 
-                <progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')} %`, height:'25px', border:  charact[2] > localStorage.getItem('upper')? '2px solid red':(charact[2] < localStorage.getItem('lower') ? '2px solid red' :'2px solid green')}}   max={localStorage.getItem('upper')} value={charact[2]} >  </progress>
+                <progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')} %`,  height:'25px', border:  charact[2] > localStorage.getItem('upper')? '2px solid red':(charact[2] < localStorage.getItem('lower') ? '2px solid red' :'2px solid green')}}   max={localStorage.getItem('upper')} value={charact[2]} >  </progress>
                 <span> {Math.floor(charact[2] / localStorage.getItem('upper') * 100)}%</span>
                   
                 </td>
