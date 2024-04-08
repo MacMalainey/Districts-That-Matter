@@ -37,10 +37,11 @@ function Sidebar() {
         else if (tab ==='Inspect') {
             localStorage.setItem('currenttab', 1)
         }
+
         else{
             localStorage.setItem('currenttab', 3)
         }
-        
+
         setselecttab(tab)
     }
 
@@ -82,8 +83,10 @@ function Sidebar() {
         <div className = 'sidebar' style={{marginTop:'2px', marginRight:'2px'}}>
             <div style={{paddingTop: '4px', border: '1px solid black',  boxShadow: '10px 10px 5px #D8BFD8'}}>
             <input style={{border: '1px solid #D8BFD8', fontSize: '14px',borderRadius:'10px'}} type='text' placeholder='Update District Number' value={districtnum} onChange={(e)=>setdistrictnum(e.target.value)}/> 
+
             <Button style={{marginLeft: '5px'}} className= 'submit' type='submit' onClick={submit}>Update</Button> 
             <Button style={{marginLeft:'5px'}} type='submit' onClick={DefinedDistrict}>Save </Button> <br></br>
+
            
            
             {totalpop && <p>

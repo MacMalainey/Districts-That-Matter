@@ -2,7 +2,9 @@ import React, { useEffect, useState, useContext } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
 import './Evaluation.css';
+
 import { EvaluationContext, EvaluationOtherContext, EvaluationPopContext } from './App';
+
 // let inspectpop = []
 
 function Evaluation() {
@@ -17,6 +19,7 @@ function Evaluation() {
   const [selectcharact, setselectcharact] = useState(null)
   const [secondcharact, setsecondcharact] = useState(null)
   const [population, setpopulation] = useState(null)
+
   const[checkeval, setcheckeval] = useState([])
   
  const[disdemo, setdisdemo] = useState(null)
@@ -67,6 +70,7 @@ function Evaluation() {
       handledistrictdemo()
        
     
+
 
     
   }, [checkeval])
@@ -416,18 +420,23 @@ function Evaluation() {
      
        
        {<p>
+
         <table style={{ width: "100%", marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
+
         <tr>
               <th> DN  </th> 
               <th>
                 Population
               </th>
               <th>Analysis</th>
+              <th> Min Pop</th>
+              <th> Max Pop</th>
             </tr >
 
        
         
         {addcolor.map((charact,indexvalue)=>(
+
             
               <tr  key={indexvalue}>
                 <td style={{background: charact[3],width:'35px', padding: "8px", borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
@@ -439,6 +448,7 @@ function Evaluation() {
                   <div className='vertical' style={{position:'absolute', width:'2px', height:'100%', background:'black', left:'57%', top:'0px'}}></div>
                 </div>
                 </td>
+
               </tr>
 
         ))}
