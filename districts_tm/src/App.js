@@ -5,7 +5,6 @@ import DrawMap from './Map';
 import Sidebar from './Sidebar';
 import axios from 'axios';
 import { MAP_MODE_HAND } from './config';
-
 // import DataLayer from './DataLayer';
 // import Inspect from './Inspect';
 
@@ -17,6 +16,7 @@ export const DistrictsContext = createContext(null);
 export const GradientSelectContext = createContext(null);
 export const MapModeContext = createContext(null);
 export const MapUnitsAllCategoryApiContext = createContext(null);
+export const COISelectContext = createContext(null)
 
 async function MapUnitsAllApi(onUpdate) {
   const response = await axios.get('http://127.0.0.1:5000/api/units/all', {
@@ -25,7 +25,7 @@ async function MapUnitsAllApi(onUpdate) {
   onUpdate(response.data)
   
 }
-
+  
 async function MapUnitsAllCategoryApi(onUpdate, category) {
   if(category!=null){
     const response = await axios.get('http://127.0.0.1:5000/api/units/category/' + category)
@@ -56,6 +56,7 @@ function App() {
   const [gradientSelect, setGradientSelect] = useState(null);
   const [mapMode, setMapMode] = useState(MAP_MODE_HAND);
   const [categoryData, setcategoryData] = useState(null);
+  const [showcoionmap, setshowcoionmap] = useState(false)
   useEffect(() => {
     MapUnitsAllApi(setMapUnitData)
     
@@ -76,9 +77,9 @@ function App() {
     <div className='container'>
       <MapUnitsAllContext.Provider value={{data:mapUnitData}}>
         <COIContext.Provider value={COIData}>
-          <DistrictsContext.Provider value={{data: districtData, callback: setDistrictData}}>
-            <MapUnitsAllCategoryApiContext.Provider value = {{data: categoryData, category:category}}>
-              <GradientSelectContext.Provider value={{
+            <DistrictsContext.Provider value={{data: districtData, callback: setDistrictData}}>
+             <MapUnitsAllCategoryApiContext.Provider value = {{data: categoryData, category:category}}>
+               <GradientSelectContext.Provider value={{
                   data: gradientSelect,
                   callback: (data) => {
                     if (data != null && data != "population" && data != "landarea" ) {
@@ -92,14 +93,18 @@ function App() {
                     
                   },
                   category: expectedCategory
-                }}>
+                  }}>
                   <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
-                    <DrawMap/>
-                    <Sidebar/>
+                    <COISelectContext.Provider value={{data:showcoionmap, callback: setshowcoionmap}}>
+                      
+                   
+                      <DrawMap/>
+                      <Sidebar/>
+                    </COISelectContext.Provider>
                   </MapModeContext.Provider>
-              </GradientSelectContext.Provider>
-            </MapUnitsAllCategoryApiContext.Provider>
-          </DistrictsContext.Provider>
+               </GradientSelectContext.Provider>
+              </MapUnitsAllCategoryApiContext.Provider>
+            </DistrictsContext.Provider>
         </COIContext.Provider>
       </MapUnitsAllContext.Provider>
     </div>

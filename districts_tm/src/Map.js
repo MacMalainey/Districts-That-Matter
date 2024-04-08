@@ -10,7 +10,7 @@ import Sidebar from "./Sidebar";
 import { eventWrapper } from "@testing-library/user-event/dist/utils";
 import { BsBox } from "react-icons/bs";
 import { MAP_MODE_ERASE, MAP_MODE_PAINT, colors } from './config';
-import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext, MapUnitsAllCategoryApiContext} from "./App";
+import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext, MapUnitsAllCategoryApiContext, COISelectContext} from "./App";
 import { ViewAges, ViewPopulation, ViewIncome, ViewBirthplace, ViewVisibleM} from "./GradientViews";
 import { GrAid } from "react-icons/gr";
 
@@ -30,10 +30,11 @@ function DrawMap() {
     const {data: CategoryData, category:category} = useContext(MapUnitsAllCategoryApiContext)
     const {data: mapData} = useContext(MapUnitsAllContext);
     const coiData = useContext(COIContext);
+    console.log("COI check", coiData)
     const { data: districtData, callback: districtCallback } = useContext(DistrictsContext);
     const { data: gradientSelect, callback: setGradientSelect, category: expectedcategory} = useContext(GradientSelectContext);
     const { data: mapMode, callback: _ } = useContext(MapModeContext);
-
+    const {data: showcoionmap} = useContext(COISelectContext)
     const center = [43.65107, - 79.347015];
     const [selectedmapunitid, setselectedmapunitid] = useState(null);
     const [selectedCOI, setselectedCOI] = useState(null)
@@ -137,7 +138,7 @@ function DrawMap() {
 
                 </LayersControl>
 
-                {coiData && localStorage.getItem('showcoionmap') == 1 && <GeoJSON data={coiData} style={{ fillColor: 'red', color: 'black', weight: 2, fillOpacity: 0.6 }} eventHandlers={{
+                {coiData && showcoionmap==true && <GeoJSON data={coiData} style={{ fillColor: 'red', color: 'black', weight: 2, fillOpacity: 0.6 }} eventHandlers={{
                     click: (e) => {
                         setselectedCOI(e.layer.feature.properties.explanation);
 
