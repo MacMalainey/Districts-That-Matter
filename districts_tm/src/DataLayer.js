@@ -23,22 +23,26 @@ function DataLayer() {
     
     const handlegradientstore = async () =>{
       gradientstore = []
-      const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
+      const response = await axios.get('http://127.0.0.1:5000/api/schema')
+      // const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
       const inspectDD = response.data
-      
-      if(gradientstore.length != 137) {
+      // console.log("Hi from DL, ", inspectDD)
+      if(gradientstore.length != 105) {
         for (const k in inspectDD){
-          for (const i in inspectDD[k]){
-            gradientstore.push(['charact', i])
+          // console.log(k != "marital_status")
+          if(k == "marital_status" || k == "household" || k == "immigrated" ||  k == "generation"){
+            
           }
-          
-          break
-  
-  
+          else {
+            for(const j in inspectDD[k]) {
+              gradientstore.push([inspectDD[k][j]])
+            }
+          }
+        
         }
 
       }
-      
+      console.log("store", gradientstore)
       
     
       
@@ -69,7 +73,7 @@ function DataLayer() {
       {showVO && <p><label>Select a Characteristic: </label><select value={VOcharact} onChange={(e) => setVOcharact(e.target.value)}>
       <option value='--'>--</option>
           {gradientstore.map((charact, index) => 
-          <option key={index}>{charact[1]}</option>
+          <option key={index}>{charact[0]}</option>
           )}
 
       </select>
