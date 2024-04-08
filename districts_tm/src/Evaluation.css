@@ -8,4 +8,15 @@
 
 .eval{
     overflow-y: auto;
+
 }
+
+.set{
+    width:var(--progress, 100%);
+    color:'green'
+}
+
+progress::-moz-progress-bar { background: royalblue; }
+progress::-webkit-progress-value { background: royalblue; }
+progress::-webkit-progress-bar { background: #fff; }
+

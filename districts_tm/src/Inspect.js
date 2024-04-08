@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, createContext, useContext} from 'react'
 import axios, { all } from 'axios';
+import { COISelectContext } from './App';
 let mapdemoarray = []
+
+
 function Inspect() {
 
     const [mapiddemo, setmapiddemo] = useState(null)
@@ -10,10 +13,10 @@ function Inspect() {
     const[inspectmap, setinspectmap] = useState(false)
     const[inspectCOI,setinspectCOI]= useState(false)
     const[COIcharact, setCOIcharact] = useState(null)
+    const {data: showcoionmap, callback:setshowcoionmap} = useContext(COISelectContext)
     const COIotherarray = JSON.parse(localStorage.getItem('COIotherarray'))
-
     const[newdata, setnewdata] = useState([])
-    const [showcoionmap, setshowcoionmap] = useState(false)
+    // const [showcoionmap, setshowcoionmap] = useState(false)
     const[newcoidata, setnewcoidata] = useState([])
     const currenttab = localStorage.getItem('currenttab')
    // continuously render for the selected map id and set it
@@ -170,8 +173,10 @@ function Inspect() {
 
       <label>Show COI on Map</label>
       <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
-      {showcoionmap && localStorage.setItem('showcoionmap', 1)}
-      {!showcoionmap && localStorage.setItem('showcoionmap', 0)}
+      
+      
+      {/* {showcoionmap && localStorage.setItem('showcoionmap', 1)}
+      {!showcoionmap && localStorage.setItem('showcoionmap', 0)} */}
       {showcoionmap&& <p>
         <label> COI District</label>
       <input type='checkbox' value={inspectCOI} onChange={()=>setinspectCOI(!inspectCOI)}></input>

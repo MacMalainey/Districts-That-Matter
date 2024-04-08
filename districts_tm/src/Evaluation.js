@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
 import './Evaluation.css';
+
+import { EvaluationContext, EvaluationOtherContext, EvaluationPopContext } from './App';
+
 // let inspectpop = []
 
 function Evaluation() {
@@ -16,48 +19,62 @@ function Evaluation() {
   const [selectcharact, setselectcharact] = useState(null)
   const [secondcharact, setsecondcharact] = useState(null)
   const [population, setpopulation] = useState(null)
+
+  const[checkeval, setcheckeval] = useState([])
+  
  const[disdemo, setdisdemo] = useState(null)
-  //test2
+ const tab = localStorage.getItem('currenttab')
+
+
+
+  // reactive population and demo data, as it only makes a get request if its on evaluation tab
 
   useEffect(()=>{
-    const handledistrictdemo = async () =>{
-     
-      let inspectpop = []
-      let inspectdemo = []
-      let idk = []
-    
-      const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
-      const inspectDD = response.data
-      console.log("Raw data", inspectDD)
-        for (let k in inspectDD){
-          console.log(k)
-          idk.push(k)
-          console.log("ids", idk)
-          // inspectpop.push([k,"population", inspectDD[k].population]) 
-        }
 
-        idk.forEach(value =>{
-          console.log(value, inspectDD[value].population)
-          inspectpop.push([value, "population", inspectDD[value].population])
-          setpopulation(inspectpop)
-          for(let j in inspectDD[value]){
-            console.log(value, j, inspectDD[value][j])
-
-            inspectdemo.push([value, j , inspectDD[value][j]])
-            setdisdemo(inspectdemo)
+    const handledistrictdemo =  async() =>{
+      if(tab ==3){
+        const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
+        let inspectpop = []
+        let inspectdemo = []
+        let idk = []
+      
+        
+        let inspectDD = response.data
+        setcheckeval(inspectDD)
+          for (let k in checkeval){
+            console.log(k)
+            idk.push(k)
+            console.log("ids", idk)
+            // inspectpop.push([k,"population", inspectDD[k].population]) 
           }
-          
-        })
+  
+          idk.forEach(value =>{
+            console.log(value, checkeval[value].population)
+            inspectpop.push([value, "population", checkeval[value].population])
+            setpopulation(inspectpop)
+            for(let j in checkeval[value]){
+              console.log(value, j, checkeval[value][j])
+  
+              inspectdemo.push([value, j , checkeval[value][j]])
+              setdisdemo(inspectdemo)
+            }
+            
+          })
+      }
+      
 
 
        
     }
     
-    handledistrictdemo();
+      handledistrictdemo()
+       
+    
 
- 
-   
-  }, [])
+
+    
+  }, [checkeval])
+    
   
  
 
@@ -264,7 +281,7 @@ function Evaluation() {
     
   }
 
-  
+
   const handlepopulation = () => {
     const filteredinspectcharact = population.filter((arr)=>arr[1]==='population')
     const addcolor = filteredinspectcharact.map((chek)=> {
@@ -391,32 +408,26 @@ function Evaluation() {
       }
     })
     
-    return <p> Population analysis  
+
+    return <p>
       
-     {/* <p> with </p> 
-    <select value={secondcharact} onChange={(e)=>setsecondcharact(e.target.value)}>
-    <option style={{fontStyle:'italic'}}> select...</option>
-  
-
-    {inspectdata.map((charact,indexvalue) =>(
-      <option key={indexvalue} value={charact[1]}>{charact[1]}</option>
-    ))} */}
-
-    
-    {/* </select> */}
+      <button style={{ marginTop:'10px', border:' 3px solid green' , width:'30px', borderRadius: 4,height:'15px', fontSize:'10px'}}></button>
+      <label style={{fontSize:'12px'}}> "Population between Min Pop and Max Pop   </label> 
+      <button style={{ marginLeft:'5px', border:' 3px solid red' , width:'30px', borderRadius: 4,height:'15px', fontSize:'10px'}}></button>
+      <label style={{fontSize:'12px'}}> " Otherwise </label>
+      
+      
+     
        
        {<p>
-        <table style={{ marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
+
+        <table style={{ width: "100%", marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
+
         <tr>
               <th> DN  </th> 
-              <th></th>
-              <th></th>
               <th>
                 Population
               </th>
-              <th></th>
-              <th></th>
-              <th>{secondcharact}</th>
               <th>Analysis</th>
               <th> Min Pop</th>
               <th> Max Pop</th>
@@ -426,19 +437,18 @@ function Evaluation() {
         
         {addcolor.map((charact,indexvalue)=>(
 
+            
               <tr  key={indexvalue}>
-                <td style={{background: charact[3],width:'35px', borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
-                <td></td>
-                <td></td>
-                <td>{charact[2]}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td ><progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')} %`, height:'25px' }}  max={localStorage.getItem('upper')} value={charact[2]} >  </progress>
-                <span> {Math.floor(charact[2] / localStorage.getItem('upper') * 100)}%</span>
+                <td style={{background: charact[3],width:'35px', padding: "8px", borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
+                <td style={{paddingInline: "16px", }}>{charact[2]}</td>
+                <td style={{width:"100%", paddingInline: "16px",}}>
+                <div style={{position: "relative", width: "100%", height:'25px'}}>
+                  <span style={{ width: '10%', padding:'8px'}}>{Math.floor(charact[2] / localStorage.getItem('upper') * 100)}%</span>
+                  <progress className='progress' style={{'--progress':`${charact[2] / localStorage.getItem('upper')}`, height:'100%', left:'15%', position: 'absolute', width: "70%", border:  charact[2] > localStorage.getItem('upper')? '2px solid red':(charact[2] < localStorage.getItem('lower') ? '2px solid red' :'2px solid green')}}   max={localStorage.getItem('upper')} value={charact[2]} ></progress>
+                  <div className='vertical' style={{position:'absolute', width:'2px', height:'100%', background:'black', left:'57%', top:'0px'}}></div>
+                </div>
                 </td>
-                <td> {localStorage.getItem('lower')}</td>
-                <td> {localStorage.getItem('upper')}</td>
+
               </tr>
 
         ))}

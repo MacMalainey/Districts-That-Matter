@@ -10,7 +10,10 @@ import Sidebar from "./Sidebar";
 import { eventWrapper } from "@testing-library/user-event/dist/utils";
 import { BsBox } from "react-icons/bs";
 import { MAP_MODE_ERASE, MAP_MODE_PAINT, colors } from './config';
-import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext, MapUnitsAllCategoryApiContext} from "./App";
+
+import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext, MapUnitsAllCategoryApiContext, COISelectContext} from "./App";
+
+
 import { ViewAges, ViewPopulation, ViewIncome, ViewBirthplace, ViewVisibleM} from "./GradientViews";
 import { GrAid } from "react-icons/gr";
 
@@ -30,15 +33,19 @@ function DrawMap() {
     const {data: CategoryData, category:category} = useContext(MapUnitsAllCategoryApiContext)
     const {data: mapData} = useContext(MapUnitsAllContext);
     const coiData = useContext(COIContext);
+    
     const { data: districtData, callback: districtCallback } = useContext(DistrictsContext);
     const { data: gradientSelect, callback: setGradientSelect, category: expectedcategory} = useContext(GradientSelectContext);
     const { data: mapMode, callback: _ } = useContext(MapModeContext);
+    const {data: showcoionmap} = useContext(COISelectContext)
 
     const center = [43.65107, - 79.347015];
     const [selectedmapunitid, setselectedmapunitid] = useState(null);
     const [selectedCOI, setselectedCOI] = useState(null)
     const [selectedCOIdata, setselectedCOIdata] = useState(null)
-    console.log("Category Data", CategoryData)
+
+    
+
     let baseStyle = { fillColor: 'transparent', color: 'grey', weight: 0.5 };
     
     if(gradientSelect != null && (gradientSelect == "population" || gradientSelect == "landarea" || category == expectedcategory)) {
@@ -46,6 +53,7 @@ function DrawMap() {
       if (gradientSelect == "population") {
       
         baseStyle = (mapunit) => ViewPopulation(mapunit.properties.population,gradientSelect)
+
       }
       else if (expectedcategory == "income") {
         baseStyle = (mapunit) => ViewIncome(CategoryData[mapunit.id], gradientSelect)
@@ -59,10 +67,12 @@ function DrawMap() {
       else if (expectedcategory =="visible_minority") {
         baseStyle = (mapunit) => ViewVisibleM(CategoryData[mapunit.id], gradientSelect)
       }
+
     }
     
 
     const colormapunit = (mapunit) => {
+
         const base = {
             fillOpacity: 0,
             weight: 0.5
@@ -91,7 +101,9 @@ function DrawMap() {
                         // console.log("interpretation of {} this item is", reason, ite.interpretation)
                         // COIotherarray.push([tempdata, tempval])
                         COIotherarray.push([tempdata, tempval])
-                        console.log("COIotherarray:", COIotherarray)
+
+                        // console.log("COIotherarray:", COIotherarray)
+
                         localStorage.setItem('COIotherarray', JSON.stringify(COIotherarray))
                         // localStorage.setItem('COIexp', JSON.stringify(COIarray))
 
@@ -121,11 +133,16 @@ function DrawMap() {
 
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
 
+
+
                 />
                 <LayersControl postition='topright'>
                     <LayersControl.BaseLayer name='Baselayer' checked='Baselayer'>
-                        {mapData && <GeoJSON data={mapData} style={baseStyle} eventHandlers={{ click: (e) => { setselectedmapunitid(e.layer.feature.id) } }} />}
-
+                        {mapData && <GeoJSON data={mapData} style={baseStyle} eventHandlers={{ click: (e) => { setselectedmapunitid(e.layer.feature.id) 
+                        
+                        localStorage.setItem('mapid', e.layer.feature.id)
+                        } }} />}
+                          
                     </LayersControl.BaseLayer>
 
 
@@ -133,7 +150,9 @@ function DrawMap() {
 
                 </LayersControl>
 
-                {coiData && localStorage.getItem('showcoionmap') == 1 && <GeoJSON data={coiData} style={{ fillColor: 'red', color: 'black', weight: 2, fillOpacity: 0.6 }} eventHandlers={{
+
+                {coiData && showcoionmap==true && <GeoJSON data={coiData} style={{ fillColor: 'red', color: 'black', weight: 2, fillOpacity: 0.6 }} eventHandlers={{
+
                     click: (e) => {
                         setselectedCOI(e.layer.feature.properties.explanation);
 
@@ -176,6 +195,7 @@ function DrawMap() {
                         districtData[e.layer.feature.id] = cid
                         districtCallback(districtData)
                         setselectedmapunitid(e.layer.feature.id);
+
                     }
                 }} />}
 
