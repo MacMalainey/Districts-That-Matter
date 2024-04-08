@@ -37,6 +37,9 @@ function Sidebar() {
         else if (tab ==='Inspect') {
             localStorage.setItem('currenttab', 1)
         }
+        else{
+            localStorage.setItem('currenttab', 3)
+        }
         
         setselecttab(tab)
     }

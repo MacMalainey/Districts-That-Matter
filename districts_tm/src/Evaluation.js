@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
 import './Evaluation.css';
-import { COISelectContext, EvaluationContext } from './App';
+import { EvaluationContext, EvaluationOtherContext, EvaluationPopContext } from './App';
 // let inspectpop = []
 
 function Evaluation() {
@@ -18,46 +18,58 @@ function Evaluation() {
   const [secondcharact, setsecondcharact] = useState(null)
   const [population, setpopulation] = useState(null)
   const[checkeval, setcheckeval] = useState([])
-  const{EvaluationData} = useContext(COISelectContext)
- const[disdemo, setdisdemo] = useState(null)
-  //test2
-
-
-
   
-    const handledistrictdemo =  () =>{
-     
-      let inspectpop = []
-      let inspectdemo = []
-      let idk = []
-    
+ const[disdemo, setdisdemo] = useState(null)
+ const tab = localStorage.getItem('currenttab')
+
+
+
+  // reactive population and demo data, as it only makes a get request if its on evaluation tab
+
+  useEffect(()=>{
+
+    const handledistrictdemo =  async() =>{
+      if(tab ==3){
+        const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
+        let inspectpop = []
+        let inspectdemo = []
+        let idk = []
       
-      let inspectDD = EvaluationData
-      setcheckeval(inspectDD)
-      console.log("Raw data", checkeval)
-        for (let k in checkeval){
-          console.log(k)
-          idk.push(k)
-          console.log("ids", idk)
-          // inspectpop.push([k,"population", inspectDD[k].population]) 
-        }
-
-        idk.forEach(value =>{
-          console.log(value, checkeval[value].population)
-          inspectpop.push([value, "population", checkeval[value].population])
-          setpopulation(inspectpop)
-          for(let j in checkeval[value]){
-            console.log(value, j, checkeval[value][j])
-
-            inspectdemo.push([value, j , checkeval[value][j]])
-            setdisdemo(inspectdemo)
+        
+        let inspectDD = response.data
+        setcheckeval(inspectDD)
+          for (let k in checkeval){
+            console.log(k)
+            idk.push(k)
+            console.log("ids", idk)
+            // inspectpop.push([k,"population", inspectDD[k].population]) 
           }
-          
-        })
+  
+          idk.forEach(value =>{
+            console.log(value, checkeval[value].population)
+            inspectpop.push([value, "population", checkeval[value].population])
+            setpopulation(inspectpop)
+            for(let j in checkeval[value]){
+              console.log(value, j, checkeval[value][j])
+  
+              inspectdemo.push([value, j , checkeval[value][j]])
+              setdisdemo(inspectdemo)
+            }
+            
+          })
+      }
+      
 
 
        
     }
+    
+      handledistrictdemo()
+       
+    
+
+    
+  }, [checkeval])
     
   
  

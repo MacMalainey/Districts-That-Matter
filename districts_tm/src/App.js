@@ -5,6 +5,7 @@ import DrawMap from './Map';
 import Sidebar from './Sidebar';
 import axios from 'axios';
 import { MAP_MODE_HAND } from './config';
+import { callback } from 'chart.js/helpers';
 // import DataLayer from './DataLayer';
 // import Inspect from './Inspect';
 
@@ -18,6 +19,8 @@ export const MapModeContext = createContext(null);
 export const MapUnitsAllCategoryApiContext = createContext(null);
 export const COISelectContext = createContext(null)
 export const EvaluationContext = createContext(null)
+export const EvaluationPopContext = createContext(null)
+export const EvaluationOtherContext = createContext(null)
 async function MapUnitsAllApi(onUpdate) {
   const response = await axios.get('http://127.0.0.1:5000/api/units/all', {
    
@@ -35,11 +38,12 @@ async function MapUnitsAllCategoryApi(onUpdate, category) {
   
 }
 
-async function Evaluation(onUpdate) {
-  
-    const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
-    onUpdate(response.data)
-    
+async function Evaluation(onUpdate){
+   
+      
+      const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
+      onUpdate(response.data)
+      
 
 }
 
@@ -68,15 +72,19 @@ function App() {
   const [categoryData, setcategoryData] = useState(null);
   const [showcoionmap, setshowcoionmap] = useState(false)
   const [Evaluationdata, setEvaluationdata] = useState(null)
+  const [showpop, setshowpop] = useState(false)
+  const [showother, setshowother] = useState(false)
+  
   useEffect(() => {
     MapUnitsAllApi(setMapUnitData)
     
   }, []);
 
   useEffect(() => {
+    
     Evaluation(setEvaluationdata)
     
-  }, [Evaluationdata]);
+  }, []);
   
   useEffect(() => {
     MapUnitsAllCategoryApi(setcategoryData, expectedCategory)
@@ -112,10 +120,16 @@ function App() {
                   }}>
                   <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
                     <COISelectContext.Provider value={{data:showcoionmap, callback: setshowcoionmap}}>
+                        <DrawMap/>
                       <EvaluationContext.Provider value={Evaluationdata}>
+                        <EvaluationPopContext.Provider value = {{data:showpop, callback:setshowpop}}>
+                          <EvaluationOtherContext.Provider value = {{data:showother, callback:setshowother}}>
                    
-                      <DrawMap/>
-                      <Sidebar/>
+                                
+                                <Sidebar/>
+
+                          </EvaluationOtherContext.Provider>
+                        </EvaluationPopContext.Provider>
                       </EvaluationContext.Provider>
                     </COISelectContext.Provider>
                   </MapModeContext.Provider>
