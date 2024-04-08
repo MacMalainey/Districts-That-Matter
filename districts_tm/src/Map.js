@@ -63,6 +63,7 @@ function DrawMap() {
     
 
     const colormapunit = (mapunit) => {
+      console.log("hello from color:", mapunit)
         const base = {
             fillOpacity: 0,
             weight: 0.5

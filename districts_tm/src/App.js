@@ -42,7 +42,7 @@ async function COIApi(onUpdate, category) {
 
 async function DistrictsContextApi(onUpdate, category) {
   const response = await axios.get('http://127.0.0.1:5000/api/districts')
-  onUpdate("App.js", response.data)
+  onUpdate(response.data)
 }
 
 let category = null;
