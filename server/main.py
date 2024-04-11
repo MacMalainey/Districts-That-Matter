@@ -46,9 +46,9 @@ def api_units_all():
 @app.route("/api/units/category/<category>")
 def api_units_category(category):
     '''
-    Returns all of the registered map units boundary info
+    Returns all of the registered map units demographic info for a specific category
 
-    Fulfills FR3, FR4
+    Fulfills FR4, FR10
     '''
     if category not in schema:
         return {'reason': 'unknown category'}, 400
