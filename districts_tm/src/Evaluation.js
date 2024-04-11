@@ -1,13 +1,13 @@
+//This component allows user to compare drawn districts characteristics and evaluate population between districts
+// This component fulfills FR 22, FR 23, FR 24
 import React, { useEffect, useState, useContext } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
 import './Evaluation.css';
-import { EvaluationContext, EvaluationOtherContext, EvaluationPopContext } from './App';
 // let inspectpop = []
 
 function Evaluation() {
-  // implemented FR 6 and FR7 
-  // district number is taken as user input and we recalculate population range per district
+ 
   const [totalpop, settotalpop] = useState(null)
   const [districtdemo, setdistrictdemo] = useState(null)
   const totaldistrict = localStorage.getItem('TotalDistricts')
@@ -24,10 +24,9 @@ function Evaluation() {
 
 
 
-  // reactive population and demo data, as it only makes a get request if its on evaluation tab
-
   useEffect(()=>{
-
+// this function is rendering constantly for any updated data and shows in real time the saved district in the evaluation tab
+// it makes get request to the server when the user is on evaluation tab.
     const handledistrictdemo =  async() =>{
       if(tab ==3){
         const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
@@ -73,7 +72,8 @@ function Evaluation() {
     
   
  
-
+// this function checks for the selected category and then it assigns the color for that district showing it to the user districts with its color
+//for easier interpretability 
   const handleinspectChar = () => {
     const filteredinspectcharact = disdemo.filter((arr)=>arr[1]===selectcharact)
     // const filsecondcharact = inspectdata.filter((arr2)=>arr2[1]===secondcharact)
@@ -257,27 +257,16 @@ function Evaluation() {
         ))}
         
 
-        {/* {filsecondcharact.map((charact,indexvalue)=>(
-          
-          <tr   key={indexvalue}>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>{charact[2]}</td>
-            
-          </tr>
-
-))} */}
+        
        </table>
       </p>}
     </p>
     
   }
 
-
+// this function is handling population for the saved districts and provides comparision between each 
+// this function also allows user to check if the district they drew is having population within the allowed range 
+//progress bar for populations shows user a green highlight if its within the range but a red if its over or below the allowed range.
   const handlepopulation = () => {
     const filteredinspectcharact = population.filter((arr)=>arr[1]==='population')
     const addcolor = filteredinspectcharact.map((chek)=> {
@@ -452,7 +441,8 @@ function Evaluation() {
   }
   
   
-
+// return is allowing user to select population to be inspected and visualized
+// it allows user to compare demographic characteristics for saved districs 
   return (
     <div className='eval'>
       
