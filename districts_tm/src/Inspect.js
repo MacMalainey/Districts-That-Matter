@@ -1,3 +1,6 @@
+// this component allows user to inspect dempographic data for each map unit, allows user to see COI's on the map and to inspect COI's
+// it fullfills FR 9, FR 11, FR 12, FR 14, FR 15 
+
 import React, { useEffect, useState, createContext, useContext} from 'react'
 import axios, { all } from 'axios';
 import { COISelectContext } from './App';
@@ -26,6 +29,8 @@ function Inspect() {
 
     // check if id is there and tab is inspect
     // run demodata with a get request. 
+    // this function loads the demographic data for the selected map unit (id to capture required data)
+
     useEffect(()=>{
         
 
@@ -65,7 +70,7 @@ function Inspect() {
          
 
    
-
+// once I have the demographic data available for the selected map unit, I am displaying it in a table 
         const handlemapdemo = () => {
             const filteredmaparray = newdata.filter((val) => val[1].startsWith(charact) && val[2]!==0)
             return <p >
@@ -88,7 +93,7 @@ function Inspect() {
             </p>
             
         }
-
+// this function shows a list of categories which user can select to inspect demographic data for
         const showdataformap = () => {
             return <p> 
                     <label>Select a Characteristic : </label>
@@ -117,7 +122,7 @@ function Inspect() {
             setnewcoidata(COIotherarray)
         })
 
-
+// this function handles the COI demograpmic data and showing values for each category in a table
         const handlecoidemo = () => {
             
             const filteredmaparray = newcoidata.filter((par) => par[0].startsWith(COIcharact) && !par[0].includes('ratio') && par[1]!==0)
@@ -141,7 +146,7 @@ function Inspect() {
             
         }
 
-
+// this is a list of characteristics user can select to inspect COIs 
         const showdataforCOI = () => {
             return <p> 
                     <label>Select a COI Characteristic : </label>
@@ -165,6 +170,9 @@ function Inspect() {
             </p>
         }
 
+  // return will allow user to select what category to inspect for a selected COI
+// it will allow user to select what category to inspect for a map unit
+// allow the user to click on showcoionmap to have COIs reflectd on the map
   return (
     <div>
     <h3><em>Demographic Data </em></h3>

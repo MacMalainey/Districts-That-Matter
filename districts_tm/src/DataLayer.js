@@ -1,3 +1,7 @@
+//This component is showing user the gradient overlay for selected categories
+//It includes population, income, birthplace, age, visible_minority
+//User selecting which category to see gradient overlay for and it gets reflected on the map
+
 import React, { useContext, useEffect, useState } from 'react'
 import axios, { all } from 'axios';
 import './DataLayer.css';
@@ -14,22 +18,17 @@ function DataLayer() {
   const {data: gradientSelect, callback: setGradientSelect} = useContext(GradientSelectContext)
 
 
- //total population: 5032425
-   
-  //  for (const k in GS){
-  //   gradientstore.push(['charact', GS])
-  //  }
+  // this function handles the category list on the datalayer
+  // its part of FR 10
   useEffect(()=>{
     
     const handlegradientstore = async () =>{
       gradientstore = []
       const response = await axios.get('http://127.0.0.1:5000/api/schema')
-      // const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
       const inspectDD = response.data
-      // console.log("Hi from DL, ", inspectDD)
       if(gradientstore.length != 105) {
         for (const k in inspectDD){
-          // console.log(k != "marital_status")
+
           if(k == "marital_status" || k == "household" || k == "immigrated" ||  k == "generation"){
             
           }
@@ -51,7 +50,8 @@ function DataLayer() {
     
   }, [gradientstore])
  
-
+//return is allowing user to select a category they want the visual overlay for 
+// and once the user selects an overlayer, user selects show on map and that gets reflected on the map 
   return (
     <div>
       
@@ -61,10 +61,6 @@ function DataLayer() {
       
 
       
-      {/* <label>Show COI </label>
-      <input type='checkbox' value={showcoionmap} onChange={()=>setshowcoionmap(!showcoionmap)}></input>
-      {showcoionmap && localStorage.setItem('showcoionmap', 1)}
-      {!showcoionmap && localStorage.setItem('showcoionmap', 0)} */}
 
 
       <label>View Visual Overlay</label>
@@ -87,8 +83,8 @@ function DataLayer() {
         </input>
         }
       
-      {/* {showonmap && localStorage.setItem('showonmap', 1) }
-      {!showonmap && localStorage.setItem('showonmap', 0) } */}
+    
+
       
       
       </p>}

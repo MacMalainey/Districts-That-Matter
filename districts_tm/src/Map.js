@@ -1,8 +1,12 @@
+// this component is capturing all required data and showing it on the map, be it for mapunits, coloring, erasing map units, seeing COI on the map,
+// seeing gradient on the map as an overlayer 
+// it fullfills FR 1, FR 2, FR 3, FR 4, FR 5, FR 8, FR 9, FR 10, FR 11, FR 12, FR 14, FR 15, FR 16, FR 17, FR 18, FR 19, FR 20, FR 21
 import { Draw } from "leaflet"
 import React, { useContext, useEffect, useState } from "react"
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Polyline, GeoJSON, LayersControl, Marker, Popup } from 'react-leaflet';
-import TestPoly from "./TestGeo";
+
+
 import L from 'leaflet';
 import './Map.css';
 import axios from 'axios';
@@ -10,18 +14,12 @@ import Sidebar from "./Sidebar";
 import { eventWrapper } from "@testing-library/user-event/dist/utils";
 import { BsBox } from "react-icons/bs";
 import { MAP_MODE_ERASE, MAP_MODE_PAINT, colors } from './config';
-
 import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext, MapUnitsAllCategoryApiContext, COISelectContext} from "./App";
-
-
 import { ViewAges, ViewPopulation, ViewIncome, ViewBirthplace, ViewVisibleM} from "./GradientViews";
 import { GrAid } from "react-icons/gr";
 
-// FR1: Map Render
-// FR2: Map Fetch
-// FR3: Map.Units.Render
-// FR4: Map.Units.Fetch
-// FR5: Map.Navigate
+
+
 let COIarray = [];  
 
 localStorage.setItem('coloractive', '')
@@ -38,22 +36,19 @@ function DrawMap() {
     const { data: gradientSelect, callback: setGradientSelect, category: expectedcategory} = useContext(GradientSelectContext);
     const { data: mapMode, callback: _ } = useContext(MapModeContext);
     const {data: showcoionmap} = useContext(COISelectContext)
-
     const center = [43.65107, - 79.347015];
-    const [selectedmapunitid, setselectedmapunitid] = useState(null);
+    const [selectedmapunitid, setselectedmapunitid] = useState(null); // FR9
     const [selectedCOI, setselectedCOI] = useState(null)
     const [selectedCOIdata, setselectedCOIdata] = useState(null)
-
     
-
     let baseStyle = { fillColor: 'transparent', color: 'grey', weight: 0.5 };
-    
+    //fulfills FR 10
+
     if(gradientSelect != null && (gradientSelect == "population" || gradientSelect == "landarea" || category == expectedcategory)) {
       
       if (gradientSelect == "population") {
       
         baseStyle = (mapunit) => ViewPopulation(mapunit.properties.population,gradientSelect)
-
       }
       else if (expectedcategory == "income") {
         baseStyle = (mapunit) => ViewIncome(CategoryData[mapunit.id], gradientSelect)
@@ -67,12 +62,11 @@ function DrawMap() {
       else if (expectedcategory =="visible_minority") {
         baseStyle = (mapunit) => ViewVisibleM(CategoryData[mapunit.id], gradientSelect)
       }
-
     }
     
-
+    //FUlfills FR 16, FR 17, FR 18, FR21
     const colormapunit = (mapunit) => {
-
+      
         const base = {
             fillOpacity: 0,
             weight: 0.5
@@ -95,15 +89,14 @@ function DrawMap() {
                 if (COIotherarray.length != 132) {
 
 
+
                     for (const tempdata in selectedCOIdata) {
                         // console.log(tempdata,selectedCOIdata)
                         const tempval = selectedCOIdata[tempdata]
                         // console.log("interpretation of {} this item is", reason, ite.interpretation)
                         // COIotherarray.push([tempdata, tempval])
                         COIotherarray.push([tempdata, tempval])
-
                         // console.log("COIotherarray:", COIotherarray)
-
                         localStorage.setItem('COIotherarray', JSON.stringify(COIotherarray))
                         // localStorage.setItem('COIexp', JSON.stringify(COIarray))
 
@@ -122,6 +115,14 @@ function DrawMap() {
 
     }, [selectedCOIdata])
 
+    // return handles plotting of map units as the base layer
+    // it plots another layer for user to color/erase map units
+    // it plots COI data as another layer (checks for user selection of showonmap) and allowing user to click on a COI to check for explanation for that map unit
+    // the explanation takes a second to load 
+    // it plots gradient overlay on the map using the required data ( checks for user selection to show on map)
+    // fullfills FR 1-4, FR 8, FR 9, FR 10, FR 11, FR 12
+    // fullfills FR 14 
+    //fullfills FR 16,FR17,FR18, FR19, FR20, FR 21
     return (
 
         <div className="map">
@@ -132,8 +133,6 @@ function DrawMap() {
                 <TileLayer
 
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-
-
 
                 />
                 <LayersControl postition='topright'>
@@ -148,8 +147,8 @@ function DrawMap() {
 
 
 
-                </LayersControl>
 
+                </LayersControl>
 
                 {coiData && showcoionmap==true && <GeoJSON data={coiData} style={{ fillColor: 'red', color: 'black', weight: 2, fillOpacity: 0.6 }} eventHandlers={{
 

@@ -1,3 +1,6 @@
+//This component is the parent component for our webapp which handles most of api calls
+
+
 import logo from './logo.svg';
 import './App.css';
 import React, { useEffect, useState, createContext } from 'react';
@@ -7,6 +10,8 @@ import axios from 'axios';
 import { MAP_MODE_HAND } from './config';
 
 import { callback } from 'chart.js/helpers';
+
+
 
 // import DataLayer from './DataLayer';
 // import Inspect from './Inspect';
@@ -21,9 +26,10 @@ export const MapModeContext = createContext(null);
 export const MapUnitsAllCategoryApiContext = createContext(null);
 
 export const COISelectContext = createContext(null)
-export const EvaluationContext = createContext(null)
-export const EvaluationPopContext = createContext(null)
-export const EvaluationOtherContext = createContext(null)
+
+
+
+//This function handles data for FR3 and FR4
 
 async function MapUnitsAllApi(onUpdate) {
   const response = await axios.get('http://127.0.0.1:5000/api/units/all', {
@@ -32,33 +38,25 @@ async function MapUnitsAllApi(onUpdate) {
   onUpdate(response.data)
   
 }
+//This function handles data for FR 10 as visualoverlay of certain demographic data
 
 async function MapUnitsAllCategoryApi(onUpdate, category) {
   if(category!=null){
     const response = await axios.get('http://127.0.0.1:5000/api/units/category/' + category)
     onUpdate(response.data)
-
     
   }
   
 }
 
-async function Evaluation(onUpdate){
-   
-      
-      const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
-      onUpdate(response.data)
-      
 
-}
-
-
-
+// This function handles data for FR 13, FR 14, FR 15
 async function COIApi(onUpdate, category) {
   const response = await axios.get('http://127.0.0.1:5000/api/cois/all')
   onUpdate(response.data)
 }
 
+//This function handles data for FR 21 for loading districts on application launch 
 async function DistrictsContextApi(onUpdate, category) {
   const response = await axios.get('http://127.0.0.1:5000/api/districts')
   onUpdate(response.data)
@@ -66,7 +64,7 @@ async function DistrictsContextApi(onUpdate, category) {
 
 let category = null;
 
-let expectedCategory = null;
+let expectedCategory = null; // user selected category gets parsed for the api call
 
 function App() {
   const [COIData, setCOIData] = useState(null);
@@ -76,20 +74,15 @@ function App() {
   const [mapMode, setMapMode] = useState(MAP_MODE_HAND);
   const [categoryData, setcategoryData] = useState(null);
   const [showcoionmap, setshowcoionmap] = useState(false)
-  const [Evaluationdata, setEvaluationdata] = useState(null)
-  const [showpop, setshowpop] = useState(false)
-  const [showother, setshowother] = useState(false)
   
+  // underlined useEffects are for constantly checking the state of the data and providing updates
+
   useEffect(() => {
     MapUnitsAllApi(setMapUnitData)
     
   }, []);
 
-  useEffect(() => {
-    
-    Evaluation(setEvaluationdata)
-    
-  }, []);
+  
   
   useEffect(() => {
 
@@ -103,11 +96,19 @@ function App() {
   useEffect(() => {
     DistrictsContextApi(setDistrictData)
   }, []);
+  // return will have multiple component rendering with different useability 
+  // MapUnitsAllContext -> Mapunits data 
+  //COIContenxt -> COI data
+  //DistrictContext -> Loading saved districts
+  //MapunitsAllCategoryApiContext -> Gradient Overlay data for selected category
+  //GradientSelectContext -> Gets user selected cagetory and parsing it
+  //MapModeContenxt -> checks for which mode is active from paint, cursor, earse
+  //COISelectContext -> Checks for if COI show on map is active or not and if it is, it shows COI on the map
+
   return (
     <div className='container'>
       <MapUnitsAllContext.Provider value={{data:mapUnitData}}>
         <COIContext.Provider value={COIData}>
-
             <DistrictsContext.Provider value={{data: districtData, callback: setDistrictData}}>
              <MapUnitsAllCategoryApiContext.Provider value = {{data: categoryData, category:category}}>
                <GradientSelectContext.Provider value={{
@@ -130,16 +131,13 @@ function App() {
                   <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
                     <COISelectContext.Provider value={{data:showcoionmap, callback: setshowcoionmap}}>
                         <DrawMap/>
-                      <EvaluationContext.Provider value={Evaluationdata}>
-                        <EvaluationPopContext.Provider value = {{data:showpop, callback:setshowpop}}>
-                          <EvaluationOtherContext.Provider value = {{data:showother, callback:setshowother}}>
+                      
                    
                                 
-                                <Sidebar/>
+                        <Sidebar/>
 
-                          </EvaluationOtherContext.Provider>
-                        </EvaluationPopContext.Provider>
-                      </EvaluationContext.Provider>
+                          
+
                     </COISelectContext.Provider>
                   </MapModeContext.Provider>
                </GradientSelectContext.Provider>

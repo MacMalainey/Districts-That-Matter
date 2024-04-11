@@ -1,3 +1,15 @@
+// this function is handling the gradient for each category
+// it calculated the % by taking in the actual value of that category and dividing it with the registered count to keep gradient range consistent
+// the gradient range  for all category is 
+//1)	If % < 14.9 -> color: #D3D3D3
+// 2)	If % >= 14.9 but < 29.9 -> color: #C0C0C0
+// 3)	If % >= 29.9 but < 44.9 -> color : #DCDCDC
+// 4)	If % >= 44.9 but < 59.9 -> color: #808080
+// 5)	If % >= 59.9 but <74.9 -> color: #696969
+// 6)	If % >= 74.9 but < 89.9 -> color: #A9A9A9
+// 7)	Otherwise return -> color: #444444
+
+
 export const ViewAges = (mapunit, value) => {
     const testage = mapunit[value]
     const testrc = mapunit['rc_ages']
@@ -305,7 +317,8 @@ export const ViewPopulation = (mapunit, _) => {
 
         };
     }
-    else if (result > 15 && result < 29.9) {
+    else if (result >= 14.9 && result < 29.9) {
+
         return {
             fillColor: '#C0C0C0',
             color: 'lightgrey',
@@ -314,7 +327,8 @@ export const ViewPopulation = (mapunit, _) => {
 
         };
     }
-    else if (result > 30 && result < 44.9) {
+    else if (result >= 29.9 && result < 44.9) {
+
         return {
             fillColor: '#DCDCDC',
             color: 'lightgrey',
@@ -323,7 +337,8 @@ export const ViewPopulation = (mapunit, _) => {
 
         };
     }
-    else if (result > 45 && result < 59.9) {
+    else if (result >= 44.9 && result < 59.9) {
+
         return {
             fillColor: '#808080',
             color: 'lightgrey',
@@ -332,7 +347,8 @@ export const ViewPopulation = (mapunit, _) => {
 
         };
     }
-    else if (result > 60 && result < 74.9) {
+    else if (result >= 59.9 && result < 74.9) {
+
         return {
             fillColor: '#696969',
             color: 'lightgrey',
@@ -341,7 +357,8 @@ export const ViewPopulation = (mapunit, _) => {
 
         };
     }
-    else if (result > 75 && result < 89.9) {
+    else if (result >= 74.9 && result < 89.9) {
+
         return {
             fillColor: '#A9A9A9',
             color: 'lightgrey',

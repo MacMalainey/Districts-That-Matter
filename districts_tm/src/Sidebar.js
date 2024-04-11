@@ -1,3 +1,9 @@
+// this component allows user to set number of districts and get a population range for each district
+// allows user to toggle between paint, erase and back to cursor
+// allows user to save districts once they are drawn 
+//fullfills FR 6. FR 7, FR 16, FR 17, FR 18, FR 19, FR 20
+
+
 import {React, useContext, useEffect, useState} from 'react'
 import './Sidebar.css'; // Import your CSS file
 import {SketchPicker} from 'react-color'
@@ -37,10 +43,10 @@ function Sidebar() {
         else if (tab ==='Inspect') {
             localStorage.setItem('currenttab', 1)
         }
-
         else{
             localStorage.setItem('currenttab', 3)
         }
+        
 
         setselecttab(tab)
     }
@@ -59,6 +65,8 @@ function Sidebar() {
     }
     
     // this function is saving the map units for a district
+    //fullfills FR 19
+
     const DefinedDistrict = async () => {
             const testar = districtData
             let array = []
@@ -67,7 +75,7 @@ function Sidebar() {
             }
             await axios.post('http://127.0.0.1:5000/api/districts/update', array).catch(error =>{console.log(error)});
           }
-            
+            //Fullfills FR 6
     useEffect(()=>{
             const handlepopulation = async () =>{
               const response = await axios.get('http://127.0.0.1:5000/api/units/totals')
@@ -77,13 +85,16 @@ function Sidebar() {
             }
             handlepopulation();
           }, [])
-   
+   //return is handling user input for number of districts 
+   // it allows user to toggle between paint, erase, cursor
+   // it allows user to save drawn districts with a POST request
+   // it draws color pallete with district numbers on it
+   // it allows user to toggler between inspect tab, data layer tab and evaluation tab
   return (
     
         <div className = 'sidebar' style={{marginTop:'2px', marginRight:'2px'}}>
             <div style={{paddingTop: '4px', border: '1px solid black',  boxShadow: '10px 10px 5px #D8BFD8'}}>
             <input style={{border: '1px solid #D8BFD8', fontSize: '14px',borderRadius:'10px'}} type='text' placeholder='Update District Number' value={districtnum} onChange={(e)=>setdistrictnum(e.target.value)}/> 
-
             <Button style={{marginLeft: '5px'}} className= 'submit' type='submit' onClick={submit}>Update</Button> 
             <Button style={{marginLeft:'5px'}} type='submit' onClick={DefinedDistrict}>Save </Button> <br></br>
 
