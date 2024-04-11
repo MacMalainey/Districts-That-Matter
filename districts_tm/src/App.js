@@ -8,7 +8,11 @@ import DrawMap from './Map';
 import Sidebar from './Sidebar';
 import axios from 'axios';
 import { MAP_MODE_HAND } from './config';
+
 import { callback } from 'chart.js/helpers';
+
+
+
 // import DataLayer from './DataLayer';
 // import Inspect from './Inspect';
 
@@ -20,11 +24,13 @@ export const DistrictsContext = createContext(null);
 export const GradientSelectContext = createContext(null);
 export const MapModeContext = createContext(null);
 export const MapUnitsAllCategoryApiContext = createContext(null);
+
 export const COISelectContext = createContext(null)
 
 
 
 //This function handles data for FR3 and FR4
+
 async function MapUnitsAllApi(onUpdate) {
   const response = await axios.get('http://127.0.0.1:5000/api/units/all', {
    
@@ -33,6 +39,7 @@ async function MapUnitsAllApi(onUpdate) {
   
 }
 //This function handles data for FR 10 as visualoverlay of certain demographic data
+
 async function MapUnitsAllCategoryApi(onUpdate, category) {
   if(category!=null){
     const response = await axios.get('http://127.0.0.1:5000/api/units/category/' + category)
@@ -78,6 +85,7 @@ function App() {
   
   
   useEffect(() => {
+
     MapUnitsAllCategoryApi(setcategoryData, expectedCategory)
     category = expectedCategory
   }, [expectedCategory]);
@@ -96,6 +104,7 @@ function App() {
   //GradientSelectContext -> Gets user selected cagetory and parsing it
   //MapModeContenxt -> checks for which mode is active from paint, cursor, earse
   //COISelectContext -> Checks for if COI show on map is active or not and if it is, it shows COI on the map
+
   return (
     <div className='container'>
       <MapUnitsAllContext.Provider value={{data:mapUnitData}}>
@@ -103,6 +112,7 @@ function App() {
             <DistrictsContext.Provider value={{data: districtData, callback: setDistrictData}}>
              <MapUnitsAllCategoryApiContext.Provider value = {{data: categoryData, category:category}}>
                <GradientSelectContext.Provider value={{
+
                   data: gradientSelect,
                   callback: (data) => {
                     if (data != null && data != "population" && data != "landarea" ) {
@@ -116,6 +126,7 @@ function App() {
                     
                   },
                   category: expectedCategory
+
                   }}>
                   <MapModeContext.Provider value = {{data: mapMode, callback: setMapMode}}>
                     <COISelectContext.Provider value={{data:showcoionmap, callback: setshowcoionmap}}>
@@ -126,11 +137,13 @@ function App() {
                         <Sidebar/>
 
                           
+
                     </COISelectContext.Provider>
                   </MapModeContext.Provider>
                </GradientSelectContext.Provider>
               </MapUnitsAllCategoryApiContext.Provider>
             </DistrictsContext.Provider>
+
         </COIContext.Provider>
       </MapUnitsAllContext.Provider>
     </div>

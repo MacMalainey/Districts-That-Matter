@@ -1,9 +1,11 @@
 //This component allows user to compare drawn districts characteristics and evaluate population between districts
 // This component fulfills FR 22, FR 23, FR 24
+
 import React, { useEffect, useState, useContext } from 'react'
 import axios, { all } from 'axios';
 import { click } from '@testing-library/user-event/dist/click';
 import './Evaluation.css';
+
 // let inspectpop = []
 
 function Evaluation() {
@@ -27,6 +29,7 @@ function Evaluation() {
   useEffect(()=>{
 // this function is rendering constantly for any updated data and shows in real time the saved district in the evaluation tab
 // it makes get request to the server when the user is on evaluation tab.
+
     const handledistrictdemo =  async() =>{
       if(tab ==3){
         const response = await axios.get('http://127.0.0.1:5000/api/districts/demographics')
@@ -66,6 +69,7 @@ function Evaluation() {
       handledistrictdemo()
        
     
+
 
     
   }, [checkeval])
@@ -267,6 +271,7 @@ function Evaluation() {
 // this function is handling population for the saved districts and provides comparision between each 
 // this function also allows user to check if the district they drew is having population within the allowed range 
 //progress bar for populations shows user a green highlight if its within the range but a red if its over or below the allowed range.
+
   const handlepopulation = () => {
     const filteredinspectcharact = population.filter((arr)=>arr[1]==='population')
     const addcolor = filteredinspectcharact.map((chek)=> {
@@ -406,17 +411,21 @@ function Evaluation() {
        
        {<p>
         <table style={{ width: "100%", marginRight:'3px', boxShadow: '10px 20px 9px darkgrey'}}> 
+
         <tr>
               <th> DN  </th> 
               <th>
                 Population
               </th>
               <th>Analysis</th>
+              <th> Min Pop</th>
+              <th> Max Pop</th>
             </tr >
 
        
         
         {addcolor.map((charact,indexvalue)=>(
+
             
               <tr  key={indexvalue}>
                 <td style={{background: charact[3],width:'35px', padding: "8px", borderRadius:10, height:'15px', color:'black', paddingLeft:'20px'}}> {charact[0]} </td>
@@ -428,6 +437,7 @@ function Evaluation() {
                   <div className='vertical' style={{position:'absolute', width:'2px', height:'100%', background:'black', left:'57%', top:'0px'}}></div>
                 </div>
                 </td>
+
               </tr>
 
         ))}

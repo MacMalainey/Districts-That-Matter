@@ -1,5 +1,6 @@
 // this component allows user to inspect dempographic data for each map unit, allows user to see COI's on the map and to inspect COI's
 // it fullfills FR 9, FR 11, FR 12, FR 14, FR 15 
+
 import React, { useEffect, useState, createContext, useContext} from 'react'
 import axios, { all } from 'axios';
 import { COISelectContext } from './App';
@@ -29,6 +30,7 @@ function Inspect() {
     // check if id is there and tab is inspect
     // run demodata with a get request. 
     // this function loads the demographic data for the selected map unit (id to capture required data)
+
     useEffect(()=>{
         
 

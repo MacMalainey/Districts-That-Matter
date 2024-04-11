@@ -3,6 +3,7 @@
 // allows user to save districts once they are drawn 
 //fullfills FR 6. FR 7, FR 16, FR 17, FR 18, FR 19, FR 20
 
+
 import {React, useContext, useEffect, useState} from 'react'
 import './Sidebar.css'; // Import your CSS file
 import {SketchPicker} from 'react-color'
@@ -46,6 +47,7 @@ function Sidebar() {
             localStorage.setItem('currenttab', 3)
         }
         
+
         setselecttab(tab)
     }
 
@@ -64,6 +66,7 @@ function Sidebar() {
     
     // this function is saving the map units for a district
     //fullfills FR 19
+
     const DefinedDistrict = async () => {
             const testar = districtData
             let array = []
@@ -94,6 +97,7 @@ function Sidebar() {
             <input style={{border: '1px solid #D8BFD8', fontSize: '14px',borderRadius:'10px'}} type='text' placeholder='Update District Number' value={districtnum} onChange={(e)=>setdistrictnum(e.target.value)}/> 
             <Button style={{marginLeft: '5px'}} className= 'submit' type='submit' onClick={submit}>Update</Button> 
             <Button style={{marginLeft:'5px'}} type='submit' onClick={DefinedDistrict}>Save </Button> <br></br>
+
            
            
             {totalpop && <p>

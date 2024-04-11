@@ -1,6 +1,7 @@
 //This component is showing user the gradient overlay for selected categories
 //It includes population, income, birthplace, age, visible_minority
 //User selecting which category to see gradient overlay for and it gets reflected on the map
+
 import React, { useContext, useEffect, useState } from 'react'
 import axios, { all } from 'axios';
 import './DataLayer.css';
@@ -27,6 +28,7 @@ function DataLayer() {
       const inspectDD = response.data
       if(gradientstore.length != 105) {
         for (const k in inspectDD){
+
           if(k == "marital_status" || k == "household" || k == "immigrated" ||  k == "generation"){
             
           }
@@ -82,6 +84,7 @@ function DataLayer() {
         }
       
     
+
       
       
       </p>}

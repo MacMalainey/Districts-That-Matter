@@ -5,6 +5,8 @@ import { Draw } from "leaflet"
 import React, { useContext, useEffect, useState } from "react"
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Polyline, GeoJSON, LayersControl, Marker, Popup } from 'react-leaflet';
+
+
 import L from 'leaflet';
 import './Map.css';
 import axios from 'axios';
@@ -15,6 +17,7 @@ import { MAP_MODE_ERASE, MAP_MODE_PAINT, colors } from './config';
 import { MapUnitsAllContext, COIContext, DistrictsContext, GradientSelectContext, MapModeContext, MapUnitsAllCategoryApiContext, COISelectContext} from "./App";
 import { ViewAges, ViewPopulation, ViewIncome, ViewBirthplace, ViewVisibleM} from "./GradientViews";
 import { GrAid } from "react-icons/gr";
+
 
 
 let COIarray = [];  
@@ -40,6 +43,7 @@ function DrawMap() {
     
     let baseStyle = { fillColor: 'transparent', color: 'grey', weight: 0.5 };
     //fulfills FR 10
+
     if(gradientSelect != null && (gradientSelect == "population" || gradientSelect == "landarea" || category == expectedcategory)) {
       
       if (gradientSelect == "population") {
@@ -83,6 +87,7 @@ function DrawMap() {
             COIotherarray = []
             try {
                 if (COIotherarray.length != 132) {
+
 
 
                     for (const tempdata in selectedCOIdata) {
@@ -142,9 +147,11 @@ function DrawMap() {
 
 
 
+
                 </LayersControl>
 
                 {coiData && showcoionmap==true && <GeoJSON data={coiData} style={{ fillColor: 'red', color: 'black', weight: 2, fillOpacity: 0.6 }} eventHandlers={{
+
                     click: (e) => {
                         setselectedCOI(e.layer.feature.properties.explanation);
 
@@ -187,7 +194,7 @@ function DrawMap() {
                         districtData[e.layer.feature.id] = cid
                         districtCallback(districtData)
                         setselectedmapunitid(e.layer.feature.id);
-                        
+
                     }
                 }} />}
 

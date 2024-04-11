@@ -9,6 +9,7 @@
 // 6)	If % >= 74.9 but < 89.9 -> color: #A9A9A9
 // 7)	Otherwise return -> color: #444444
 
+
 export const ViewAges = (mapunit, value) => {
     const testage = mapunit[value]
     const testrc = mapunit['rc_ages']
@@ -317,6 +318,7 @@ export const ViewPopulation = (mapunit, _) => {
         };
     }
     else if (result >= 14.9 && result < 29.9) {
+
         return {
             fillColor: '#C0C0C0',
             color: 'lightgrey',
@@ -326,6 +328,7 @@ export const ViewPopulation = (mapunit, _) => {
         };
     }
     else if (result >= 29.9 && result < 44.9) {
+
         return {
             fillColor: '#DCDCDC',
             color: 'lightgrey',
@@ -335,6 +338,7 @@ export const ViewPopulation = (mapunit, _) => {
         };
     }
     else if (result >= 44.9 && result < 59.9) {
+
         return {
             fillColor: '#808080',
             color: 'lightgrey',
@@ -344,6 +348,7 @@ export const ViewPopulation = (mapunit, _) => {
         };
     }
     else if (result >= 59.9 && result < 74.9) {
+
         return {
             fillColor: '#696969',
             color: 'lightgrey',
@@ -353,6 +358,7 @@ export const ViewPopulation = (mapunit, _) => {
         };
     }
     else if (result >= 74.9 && result < 89.9) {
+
         return {
             fillColor: '#A9A9A9',
             color: 'lightgrey',
